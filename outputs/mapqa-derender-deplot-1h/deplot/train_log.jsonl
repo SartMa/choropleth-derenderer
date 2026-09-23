@@ -1,0 +1,12 @@
+{"epoch": 0, "update": 1, "of": 1401, "loss": 3.642, "lr": 2.3809523809523808e-06, "minutes": 0.3}
+{"epoch": 0, "update": 20, "of": 226, "loss": 2.41, "lr": 2.5e-05, "minutes": 5.3}
+{"epoch": 0, "update": 40, "of": 226, "loss": 0.8981, "lr": 4.725068941086692e-05, "minutes": 10.7}
+{"epoch": 0, "update": 60, "of": 226, "loss": 0.4644, "lr": 4.311583397441697e-05, "minutes": 16.2}
+{"epoch": 0, "update": 80, "of": 226, "loss": 0.3945, "lr": 3.7500000000000003e-05, "minutes": 21.6}
+{"epoch": 0, "update": 100, "of": 226, "loss": 0.3966, "lr": 3.086228473926024e-05, "minutes": 27.0}
+{"epoch": 0, "update": 120, "of": 226, "loss": 0.3883, "lr": 2.3745324752908823e-05, "minutes": 32.5}
+{"epoch": 0, "update": 140, "of": 226, "loss": 0.3751, "lr": 1.67309350989906e-05, "minutes": 37.9}
+{"epoch": 0, "update": 160, "of": 226, "loss": 0.3921, "lr": 1.0392545659290789e-05, "minutes": 43.3}
+{"epoch": 0, "update": 180, "of": 226, "loss": 0.3937, "lr": 5.248322958117815e-06, "minutes": 48.7}
+{"epoch": 0, "update": 200, "of": 226, "loss": 0.3935, "lr": 1.7188097883521354e-06, "minutes": 54.2}
+{"epoch": 0, "update": 220, "of": 226, "loss": 0.3747, "lr": 9.25456266348046e-08, "minutes": 59.6}

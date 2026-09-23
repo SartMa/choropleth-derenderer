@@ -1,0 +1,146 @@
+[{"stream_name":"stderr","time":7.602457523,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.602511552,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.602516015,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.6025184679999995,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.215993669,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.216024837,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.216030063,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.216034113,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.30506076,"data":"$ nvidia-smi\n"}
+,{"stream_name":"stdout","time":9.337373798,"data":"Wed Sep 16 05:58:54 2026       \n"}
+,{"stream_name":"stdout","time":9.338289829,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.339298477,"data":"| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":9.340223137,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.340997109,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":9.341781757,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":9.342568266,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":9.343330327,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":9.39088328,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.391807572,"data":"| N/A   45C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.392869602,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.393895239999999,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.394743484,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.395761544,"data":"| N/A   44C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.396593267,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.397502287,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.398466638,"data":"\n"}
+,{"stream_name":"stdout","time":9.399473684,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.400155241,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":9.400900915,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":9.401598498,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":9.402273791,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":9.402932098,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":9.403641088,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.738635619,"data":"$ pip install -q transformers==4.57.1 peft==0.17.1 accelerate\n"}
+,{"stream_name":"stdout","time":12.299217991,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.0/44.0 kB 1.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":13.282173173,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.0/12.0 MB 74.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":13.316367758,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 504.9/504.9 kB 27.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":13.347526421,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 kB 35.1 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":27.174494195,"data":"Writing convert_mapqa.py\n"}
+,{"stream_name":"stdout","time":27.192113162,"data":"Writing common.py\n"}
+,{"stream_name":"stdout","time":27.205402319,"data":"Writing train_deplot.py\n"}
+,{"stream_name":"stdout","time":27.217449342,"data":"$ python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data\n"}
+,{"stream_name":"stdout","time":252.051061807,"data":"Read 20789 maps from /kaggle/input\n"}
+,{"stream_name":"stdout","time":252.05210566,"data":"  train  12470 maps (9421 discrete, 3049 continuous) -\u003e /kaggle/working/data/train.jsonl\n"}
+,{"stream_name":"stdout","time":252.05305944,"data":"  dev     4155 maps (3187 discrete, 968 continuous) -\u003e /kaggle/working/data/dev.jsonl\n"}
+,{"stream_name":"stdout","time":252.053959662,"data":"  test    4157 maps (3114 discrete, 1043 continuous) -\u003e /kaggle/working/data/test.jsonl\n"}
+,{"stream_name":"stdout","time":252.054979354,"data":"  skipped 7 map(s) that no question file uses: [135, 2139, 3711, 6802, 13284, 13932, 16473]\n"}
+,{"stream_name":"stdout","time":252.055984094,"data":"  target length in characters: min 488, median 546, max 784\n"}
+,{"stream_name":"stdout","time":252.075642303,"data":"$ python train_deplot.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/deplot --synth /kaggle/input --skip-train --model /kaggle/input --eval-maps 100 --synth-eval-maps 100 --eval-batch-size 8 --max-new-tokens 560\n"}
+,{"stream_name":"stdout","time":294.458279713,"data":"scoring 100 mapqa test maps\n"}
+,{"stream_name":"stdout","time":461.821754318,"data":"predicted 8/100 (2.8 min)\n"}
+,{"stream_name":"stdout","time":733.83143462,"data":"predicted 16/100 (7.3 min)\n"}
+,{"stream_name":"stdout","time":920.238834251,"data":"predicted 24/100 (10.4 min)\n"}
+,{"stream_name":"stdout","time":1242.753073385,"data":"predicted 32/100 (15.8 min)\n"}
+,{"stream_name":"stdout","time":1429.288421303,"data":"predicted 40/100 (18.9 min)\n"}
+,{"stream_name":"stdout","time":1703.816848401,"data":"predicted 48/100 (23.5 min)\n"}
+,{"stream_name":"stdout","time":1821.709382979,"data":"predicted 56/100 (25.5 min)\n"}
+,{"stream_name":"stdout","time":1939.088775875,"data":"predicted 64/100 (27.4 min)\n"}
+,{"stream_name":"stdout","time":2056.504614245,"data":"predicted 72/100 (29.4 min)\n"}
+,{"stream_name":"stdout","time":2183.377767428,"data":"predicted 80/100 (31.5 min)\n"}
+,{"stream_name":"stdout","time":2455.036521254,"data":"predicted 88/100 (36.0 min)\n"}
+,{"stream_name":"stdout","time":2640.33795123,"data":"predicted 96/100 (39.1 min)\n"}
+,{"stream_name":"stdout","time":2702.116768142,"data":"predicted 100/100 (40.1 min)\n"}
+,{"stream_name":"stdout","time":2702.142451192,"data":"mapqa test maps:\n"}
+,{"stream_name":"stdout","time":2702.143216704,"data":"{\n"}
+,{"stream_name":"stdout","time":2702.144297291,"data":"  \"discrete\": {\n"}
+,{"stream_name":"stdout","time":2702.145434747,"data":"    \"maps\": 81,\n"}
+,{"stream_name":"stdout","time":2702.146462291,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.147484897,"data":"    \"exact_match\": 0.0,\n"}
+,{"stream_name":"stdout","time":2702.148472889,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.149502291,"data":"    \"legend_title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.150477371,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.151481918,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.152465319,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.153514485,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":2702.154450971,"data":"    \"ranges_correct\": 0.9012,\n"}
+,{"stream_name":"stdout","time":2702.15544496,"data":"    \"state_accuracy\": 0.3825\n"}
+,{"stream_name":"stdout","time":2702.156529043,"data":"  },\n"}
+,{"stream_name":"stdout","time":2702.157471664,"data":"  \"continuous\": {\n"}
+,{"stream_name":"stdout","time":2702.158561202,"data":"    \"maps\": 19,\n"}
+,{"stream_name":"stdout","time":2702.15948237,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.160632268,"data":"    \"exact_match\": 0.0,\n"}
+,{"stream_name":"stdout","time":2702.16153231,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.162552519,"data":"    \"legend_title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.163547723,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.164599449,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.165639215,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":2702.166681948,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":2702.16770869,"data":"    \"nmae\": 0.4608,\n"}
+,{"stream_name":"stdout","time":2702.168723329,"data":"    \"nrmse\": 0.5036,\n"}
+,{"stream_name":"stdout","time":2702.169792167,"data":"    \"within_5pct\": 0.0884\n"}
+,{"stream_name":"stdout","time":2702.170727632,"data":"  }\n"}
+,{"stream_name":"stdout","time":2702.171814375,"data":"}\n"}
+,{"stream_name":"stdout","time":2702.172847964,"data":"scoring 100 synth test maps\n"}
+,{"stream_name":"stdout","time":2896.773541351,"data":"predicted 8/100 (3.2 min)\n"}
+,{"stream_name":"stdout","time":3087.016711557,"data":"predicted 16/100 (6.4 min)\n"}
+,{"stream_name":"stdout","time":3278.572578656,"data":"predicted 24/100 (9.6 min)\n"}
+,{"stream_name":"stdout","time":3468.368923588,"data":"predicted 32/100 (12.8 min)\n"}
+,{"stream_name":"stdout","time":3659.097420217,"data":"predicted 40/100 (15.9 min)\n"}
+,{"stream_name":"stdout","time":3850.382828634,"data":"predicted 48/100 (19.1 min)\n"}
+,{"stream_name":"stdout","time":4042.441500724,"data":"predicted 56/100 (22.3 min)\n"}
+,{"stream_name":"stdout","time":4232.169007926,"data":"predicted 64/100 (25.5 min)\n"}
+,{"stream_name":"stdout","time":4420.77749078,"data":"predicted 72/100 (28.6 min)\n"}
+,{"stream_name":"stdout","time":4611.181709226,"data":"predicted 80/100 (31.8 min)\n"}
+,{"stream_name":"stdout","time":4805.585539296,"data":"predicted 88/100 (35.1 min)\n"}
+,{"stream_name":"stdout","time":4997.822128162,"data":"predicted 96/100 (38.3 min)\n"}
+,{"stream_name":"stdout","time":5094.206421347,"data":"predicted 100/100 (39.9 min)\n"}
+,{"stream_name":"stdout","time":5094.252215317,"data":"synth test maps:\n"}
+,{"stream_name":"stdout","time":5094.253190781,"data":"{\n"}
+,{"stream_name":"stdout","time":5094.254062524,"data":"  \"discrete\": {\n"}
+,{"stream_name":"stdout","time":5094.255014968,"data":"    \"maps\": 47,\n"}
+,{"stream_name":"stdout","time":5094.255947867,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.256914096,"data":"    \"exact_match\": 0.0,\n"}
+,{"stream_name":"stdout","time":5094.258384947,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.258811388,"data":"    \"legend_title_correct\": 0.9362,\n"}
+,{"stream_name":"stdout","time":5094.259779305,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.260759398,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.261703858,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.262611962,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":5094.263738617,"data":"    \"ranges_correct\": 0.9362,\n"}
+,{"stream_name":"stdout","time":5094.264841034,"data":"    \"state_accuracy\": 0.2519\n"}
+,{"stream_name":"stdout","time":5094.265769492,"data":"  },\n"}
+,{"stream_name":"stdout","time":5094.26667302,"data":"  \"continuous\": {\n"}
+,{"stream_name":"stdout","time":5094.267691975,"data":"    \"maps\": 53,\n"}
+,{"stream_name":"stdout","time":5094.26877485,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.269614806,"data":"    \"exact_match\": 0.0,\n"}
+,{"stream_name":"stdout","time":5094.270478187,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.271317896,"data":"    \"legend_title_correct\": 0.9057,\n"}
+,{"stream_name":"stdout","time":5094.272121605,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.272895141,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.273674393,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":5094.274411415,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":5094.275124253,"data":"    \"nmae\": 0.2878,\n"}
+,{"stream_name":"stdout","time":5094.276017294,"data":"    \"nrmse\": 0.3288,\n"}
+,{"stream_name":"stdout","time":5094.276841122,"data":"    \"within_5pct\": 0.0913\n"}
+,{"stream_name":"stdout","time":5094.277603742,"data":"  }\n"}
+,{"stream_name":"stdout","time":5094.278324862,"data":"}\n"}
+,{"stream_name":"stderr","time":5100.795176488,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":5100.795233711,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":5100.969426568,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":5100.969464304,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":5101.600300872,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":5101.902972776,"data":"[NbConvertApp] Writing 48823 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":5104.209193394,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":5105.065003475,"data":"[NbConvertApp] Writing 428859 bytes to __results__.html\n"}
+]

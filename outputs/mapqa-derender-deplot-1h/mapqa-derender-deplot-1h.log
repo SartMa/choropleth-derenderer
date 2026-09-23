@@ -1,0 +1,153 @@
+[{"stream_name":"stderr","time":7.359265524,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.359353876,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.359361089,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.3593659989999995,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.970721814,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.970754891,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.970760153,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.970764266,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.059377648,"data":"$ nvidia-smi\n"}
+,{"stream_name":"stdout","time":9.091924934,"data":"Tue Sep 15 11:46:02 2026       \n"}
+,{"stream_name":"stdout","time":9.093088873,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.094144527,"data":"| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":9.095206046,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.096045956,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":9.096862926,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":9.097542508,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":9.098271255,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":9.148065689,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.149058068,"data":"| N/A   36C    P8              8W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.150117629,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.151087631,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.15209348,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.153018215,"data":"| N/A   38C    P8              9W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.153938266,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.154981013,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.155827363,"data":"\n"}
+,{"stream_name":"stdout","time":9.156797652,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.157564365,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":9.158258616,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":9.159015407,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":9.15978399,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":9.160576008,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":9.161308906,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.492378655,"data":"$ pip install -q transformers==4.57.1 peft==0.17.1 accelerate\n"}
+,{"stream_name":"stdout","time":11.904213043,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.0/44.0 kB 2.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":12.769542634,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.0/12.0 MB 91.3 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":12.795906535,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 504.9/504.9 kB 28.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":12.827715182,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 kB 26.7 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":26.757041364,"data":"Writing convert_mapqa.py\n"}
+,{"stream_name":"stdout","time":26.774498072,"data":"Writing common.py\n"}
+,{"stream_name":"stdout","time":26.789061253,"data":"Writing train_deplot.py\n"}
+,{"stream_name":"stdout","time":26.801011925,"data":"$ python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data\n"}
+,{"stream_name":"stdout","time":134.816000996,"data":"Read 20789 maps from /kaggle/input\n"}
+,{"stream_name":"stdout","time":134.816865784,"data":"  train  12470 maps (9421 discrete, 3049 continuous) -\u003e /kaggle/working/data/train.jsonl\n"}
+,{"stream_name":"stdout","time":134.817586579,"data":"  dev     4155 maps (3187 discrete, 968 continuous) -\u003e /kaggle/working/data/dev.jsonl\n"}
+,{"stream_name":"stdout","time":134.818287486,"data":"  test    4157 maps (3114 discrete, 1043 continuous) -\u003e /kaggle/working/data/test.jsonl\n"}
+,{"stream_name":"stdout","time":134.8190421,"data":"  skipped 7 map(s) that no question file uses: [135, 2139, 3711, 6802, 13284, 13932, 16473]\n"}
+,{"stream_name":"stdout","time":134.819788426,"data":"  target length in characters: min 488, median 546, max 784\n"}
+,{"stream_name":"stdout","time":134.840783546,"data":"$ python train_deplot.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/deplot --synth /kaggle/input --hours 1 --epochs 1 --eval-maps 24 --synth-eval-maps 8 --eval-batch-size 16 --max-new-tokens 560 --log-every 20\n"}
+,{"stream_name":"stdout","time":211.035034416,"data":"training maps: 12470 MapQA + 9938 synthetic\n"}
+,{"stream_name":"stdout","time":211.035853099,"data":"22408 batches per epoch\n"}
+,{"stream_name":"stdout","time":230.386976142,"data":"{\"epoch\": 0, \"update\": 1, \"of\": 1401, \"loss\": 3.642, \"lr\": 2.3809523809523808e-06, \"minutes\": 0.3}\n"}
+,{"stream_name":"stdout","time":529.310246726,"data":"{\"epoch\": 0, \"update\": 20, \"of\": 226, \"loss\": 2.41, \"lr\": 2.5e-05, \"minutes\": 5.3}\n"}
+,{"stream_name":"stdout","time":855.522752155,"data":"{\"epoch\": 0, \"update\": 40, \"of\": 226, \"loss\": 0.8981, \"lr\": 4.725068941086692e-05, \"minutes\": 10.7}\n"}
+,{"stream_name":"stdout","time":1180.503670954,"data":"{\"epoch\": 0, \"update\": 60, \"of\": 226, \"loss\": 0.4644, \"lr\": 4.311583397441697e-05, \"minutes\": 16.2}\n"}
+,{"stream_name":"stdout","time":1506.44905568,"data":"{\"epoch\": 0, \"update\": 80, \"of\": 226, \"loss\": 0.3945, \"lr\": 3.7500000000000003e-05, \"minutes\": 21.6}\n"}
+,{"stream_name":"stdout","time":1832.178980146,"data":"{\"epoch\": 0, \"update\": 100, \"of\": 226, \"loss\": 0.3966, \"lr\": 3.086228473926024e-05, \"minutes\": 27.0}\n"}
+,{"stream_name":"stdout","time":2158.317890909,"data":"{\"epoch\": 0, \"update\": 120, \"of\": 226, \"loss\": 0.3883, \"lr\": 2.3745324752908823e-05, \"minutes\": 32.5}\n"}
+,{"stream_name":"stdout","time":2484.340039245,"data":"{\"epoch\": 0, \"update\": 140, \"of\": 226, \"loss\": 0.3751, \"lr\": 1.67309350989906e-05, \"minutes\": 37.9}\n"}
+,{"stream_name":"stdout","time":2809.649428428,"data":"{\"epoch\": 0, \"update\": 160, \"of\": 226, \"loss\": 0.3921, \"lr\": 1.0392545659290789e-05, \"minutes\": 43.3}\n"}
+,{"stream_name":"stdout","time":3135.510928461,"data":"{\"epoch\": 0, \"update\": 180, \"of\": 226, \"loss\": 0.3937, \"lr\": 5.248322958117815e-06, \"minutes\": 48.7}\n"}
+,{"stream_name":"stdout","time":3461.400375558,"data":"{\"epoch\": 0, \"update\": 200, \"of\": 226, \"loss\": 0.3935, \"lr\": 1.7188097883521354e-06, \"minutes\": 54.2}\n"}
+,{"stream_name":"stdout","time":3786.806500404,"data":"{\"epoch\": 0, \"update\": 220, \"of\": 226, \"loss\": 0.3747, \"lr\": 9.25456266348046e-08, \"minutes\": 59.6}\n"}
+,{"stream_name":"stdout","time":3819.206963091,"data":"stopping after 222 updates (1.00 h)\n"}
+,{"stream_name":"stdout","time":3821.687135091,"data":"scoring 24 mapqa test maps\n"}
+,{"stream_name":"stdout","time":3828.080134305,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stdout","time":3828.081439022,"data":"  File \"/kaggle/working/train_deplot.py\", line 103, in \u003cmodule\u003e\n"}
+,{"stream_name":"stdout","time":3828.082655572,"data":"    main()\n"}
+,{"stream_name":"stdout","time":3828.083245051,"data":"  File \"/kaggle/working/train_deplot.py\", line 99, in main\n"}
+,{"stream_name":"stdout","time":3828.084214404,"data":"    evaluate_and_save(records, predict(model, processor, records, args, device, amp_dtype), args.out, name)\n"}
+,{"stream_name":"stdout","time":3828.085174941,"data":"                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.086161254,"data":"  File \"/kaggle/working/train_deplot.py\", line 53, in predict\n"}
+,{"stream_name":"stdout","time":3828.087118652,"data":"    ids = model.generate(**enc, max_new_tokens=args.max_new_tokens, do_sample=False, num_beams=1)\n"}
+,{"stream_name":"stdout","time":3828.088012859,"data":"          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.08892005,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/utils/_contextlib.py\", line 124, in decorate_context\n"}
+,{"stream_name":"stdout","time":3828.089908482,"data":"    return func(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.090942322,"data":"           ^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.091742767,"data":"  File \"/usr/local/lib/python3.12/dist-packages/transformers/generation/utils.py\", line 2465, in generate\n"}
+,{"stream_name":"stdout","time":3828.092713588,"data":"    model_kwargs = self._prepare_encoder_decoder_kwargs_for_generation(\n"}
+,{"stream_name":"stdout","time":3828.093726009,"data":"                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.094699245,"data":"  File \"/usr/local/lib/python3.12/dist-packages/transformers/generation/utils.py\", line 861, in _prepare_encoder_decoder_kwargs_for_generation\n"}
+,{"stream_name":"stdout","time":3828.095751474,"data":"    model_kwargs[\"encoder_outputs\"]: ModelOutput = encoder(**encoder_kwargs)  # type: ignore\n"}
+,{"stream_name":"stdout","time":3828.096452981,"data":"                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.09742755,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1776, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":3828.098337962,"data":"    return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.099233763,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.100154722,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1787, in _call_impl\n"}
+,{"stream_name":"stdout","time":3828.101116594,"data":"    return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.101926187,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.102901518,"data":"  File \"/usr/local/lib/python3.12/dist-packages/transformers/models/pix2struct/modeling_pix2struct.py\", line 565, in forward\n"}
+,{"stream_name":"stdout","time":3828.103805967,"data":"    encoder_outputs = self.encoder(\n"}
+,{"stream_name":"stdout","time":3828.104796485,"data":"                      ^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.105779882,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1776, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":3828.106682655,"data":"    return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.10768682,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.108589114,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1787, in _call_impl\n"}
+,{"stream_name":"stdout","time":3828.109634605,"data":"    return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.110602102,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.111433481,"data":"  File \"/usr/local/lib/python3.12/dist-packages/transformers/models/pix2struct/modeling_pix2struct.py\", line 331, in forward\n"}
+,{"stream_name":"stdout","time":3828.112353637,"data":"    layer_outputs = layer_module(hidden_states, attention_mask, layer_head_mask, output_attentions)\n"}
+,{"stream_name":"stdout","time":3828.113230556,"data":"                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.114164971,"data":"  File \"/usr/local/lib/python3.12/dist-packages/transformers/modeling_layers.py\", line 94, in __call__\n"}
+,{"stream_name":"stdout","time":3828.115090591,"data":"    return super().__call__(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.115998392,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.1167629,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1776, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":3828.11741822,"data":"    return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.118124415,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.118850199,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1787, in _call_impl\n"}
+,{"stream_name":"stdout","time":3828.11955161,"data":"    return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.120241069,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.120980452,"data":"  File \"/usr/local/lib/python3.12/dist-packages/transformers/models/pix2struct/modeling_pix2struct.py\", line 285, in forward\n"}
+,{"stream_name":"stdout","time":3828.121722232,"data":"    self_attention_outputs = self.attention(\n"}
+,{"stream_name":"stdout","time":3828.122438317,"data":"                             ^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.123124349,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1776, in _wrapped_call_impl\n"}
+,{"stream_name":"stdout","time":3828.12384843,"data":"    return self._call_impl(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.124587507,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.125340967,"data":"  File \"/usr/local/lib/python3.12/dist-packages/torch/nn/modules/module.py\", line 1787, in _call_impl\n"}
+,{"stream_name":"stdout","time":3828.126135864,"data":"    return forward_call(*args, **kwargs)\n"}
+,{"stream_name":"stdout","time":3828.126896081,"data":"           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.127718916,"data":"  File \"/usr/local/lib/python3.12/dist-packages/transformers/models/pix2struct/modeling_pix2struct.py\", line 205, in forward\n"}
+,{"stream_name":"stdout","time":3828.128435088,"data":"    position_bias_masked = position_bias.masked_fill(position_bias == 1, torch.finfo(scores.dtype).min)\n"}
+,{"stream_name":"stdout","time":3828.129203203,"data":"                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stdout","time":3828.129997335,"data":"torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 3.00 GiB. GPU 0 has a total capacity of 14.56 GiB of which 444.81 MiB is free. Including non-PyTorch memory, this process has 14.12 GiB memory in use. Of the allocated memory 11.48 GiB is allocated by PyTorch, and 2.52 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)\n"}
+,{"stream_name":"stderr","time":3832.834227183,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":3832.834257358,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":3832.834261963,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":3832.834506969,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":3832.834579823,"data":"  File \"/usr/local/lib/python3.12/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":3832.834764552,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":3832.834917507,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":3832.834924441,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":3832.834927226,"data":"Exception encountered at \"In [7]\":\n"}
+,{"stream_name":"stderr","time":3832.834929889,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":3832.834932531,"data":"RuntimeError                              Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":3832.834944247,"data":"/tmp/ipykernel_22/72402765.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":3832.83496421,"data":"----\u003e 1 run('python train_deplot.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/deplot --synth /kaggle/input --hours 1 --epochs 1 --eval-maps 24 --synth-eval-maps 8 --eval-batch-size 16 --max-new-tokens 560 --log-every 20')\n"}
+,{"stream_name":"stderr","time":3832.834969275,"data":"\n"}
+,{"stream_name":"stderr","time":3832.834973128,"data":"/tmp/ipykernel_22/1309308765.py in run(command)\n"}
+,{"stream_name":"stderr","time":3832.834977001,"data":"      8         print(line, end=\"\", flush=True)\n"}
+,{"stream_name":"stderr","time":3832.834981193,"data":"      9     if process.wait() != 0:\n"}
+,{"stream_name":"stderr","time":3832.834984783,"data":"---\u003e 10         raise RuntimeError(f\"exit code {process.returncode}: {command}\")\n"}
+,{"stream_name":"stderr","time":3832.834988883,"data":"\n"}
+,{"stream_name":"stderr","time":3832.834992373,"data":"RuntimeError: exit code 1: python train_deplot.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/deplot --synth /kaggle/input --hours 1 --epochs 1 --eval-maps 24 --synth-eval-maps 8 --eval-batch-size 16 --max-new-tokens 560 --log-every 20\n"}
+,{"stream_name":"stderr","time":3832.834996681,"data":"\n"}
+,{"stream_name":"stderr","time":3834.952619192,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3834.95265103,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3835.124711341,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3835.124739186,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3835.758222388,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3836.074916212,"data":"[NbConvertApp] Writing 54102 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3838.45875035,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3839.335997397,"data":"[NbConvertApp] Writing 431950 bytes to __results__.html\n"}
+]

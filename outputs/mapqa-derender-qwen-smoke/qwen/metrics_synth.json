@@ -1,0 +1,29 @@
+{
+  "discrete": {
+    "maps": 2,
+    "parsed": 1.0,
+    "exact_match": 0.0,
+    "title_correct": 1.0,
+    "legend_title_correct": 1.0,
+    "legend_type_correct": 1.0,
+    "data_type_correct": 1.0,
+    "coverage": 1.0,
+    "extra_keys": 0.0,
+    "ranges_correct": 0.0,
+    "state_accuracy": 0.35
+  },
+  "continuous": {
+    "maps": 6,
+    "parsed": 1.0,
+    "exact_match": 0.0,
+    "title_correct": 1.0,
+    "legend_title_correct": 0.8333,
+    "legend_type_correct": 0.8333,
+    "data_type_correct": 1.0,
+    "coverage": 1.0,
+    "extra_keys": 0.0,
+    "nmae": 0.4199,
+    "nrmse": 0.438,
+    "within_5pct": 0.1
+  }
+}

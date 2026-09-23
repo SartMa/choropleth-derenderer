@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+*.pyc
+
+# regenerated locally or fetched from Kaggle; see README
+data/
