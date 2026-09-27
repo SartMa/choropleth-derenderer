@@ -75,11 +75,11 @@ def kaggle(cli, *args, check=True):
     return output
 
 
-def push(cli, ref, slug, model, train_args, datasets, machine, timeout, kernel_sources=()):
-    """datasets: the MapQA dataset first, then optionally the synthetic maps dataset."""
+def push(cli, ref, slug, model, train_args, datasets, machine, timeout, kernel_sources=(), use_synth=False):
+    """datasets: the MapQA dataset first, then any others (synthetic maps, a saved model)."""
     folder = PROJECT / "kaggle" / "runs" / slug
     folder.mkdir(parents=True, exist_ok=True)
-    notebook = build_notebook(model, train_args, synth=len(datasets) > 1)
+    notebook = build_notebook(model, train_args, synth=use_synth)
     (folder / "notebook.ipynb").write_text(json.dumps(notebook, indent=1))
     (folder / "kernel-metadata.json").write_text(json.dumps({
         "id": ref, "title": slug, "code_file": "notebook.ipynb", "language": "python", "kernel_type": "notebook",
@@ -171,7 +171,7 @@ def main():
         datasets += [d if "/" in d else f"{owner}/{d}" for d in args.extra_dataset]
         sources = [s if "/" in s else f"{owner}/{s}" for s in args.from_run]
         push(args.kaggle, ref, slug, args.model, run_args, datasets, args.machine,
-             SMOKE_TIMEOUT_SECONDS if args.smoke else None, sources)
+             SMOKE_TIMEOUT_SECONDS if args.smoke else None, sources, args.synth_dataset != "none")
         if args.no_wait:
             flags = (" --smoke" if args.smoke else "") + (f" --tag {args.tag}" if args.tag else "")
             print(f"pushed; later run: python kaggle/launch.py {args.model}{flags} --wait-only")
