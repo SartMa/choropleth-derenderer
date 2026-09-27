@@ -12,6 +12,7 @@ each test set (mapqa, plus synth when --synth is given).
 
 import argparse
 import json
+import math
 import os
 import random
 import time
@@ -47,6 +48,98 @@ LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", 
 # and "proj", which the names above do not match, so the vision tower's attention is otherwise never trained.
 VISION_LORA_REGEX = (r"(.*\.(?:q_proj|k_proj|v_proj|o_proj|gate_proj|up_proj|down_proj|qkv))"
                      r"|(.*\.attn\.proj)|(.*visual\.merger\.mlp\.[02])")
+
+
+def resized_size(width, height, factor, min_pixels, max_pixels):
+    """The size Qwen's processor resizes an image to: each side a multiple of factor, area within bounds."""
+    height_out = max(factor, round(height / factor) * factor)
+    width_out = max(factor, round(width / factor) * factor)
+    if height_out * width_out > max_pixels:
+        shrink = math.sqrt(height * width / max_pixels)
+        height_out = max(factor, math.floor(height / shrink / factor) * factor)
+        width_out = max(factor, math.floor(width / shrink / factor) * factor)
+    elif height_out * width_out < min_pixels:
+        grow = math.sqrt(min_pixels / (height * width))
+        height_out = math.ceil(height * grow / factor) * factor
+        width_out = math.ceil(width * grow / factor) * factor
+    return width_out, height_out
+
+
+def two_scale_images(processor, images, scale):
+    """Each image at the size the tower normally sees, and the same image `scale` times larger."""
+    image_processor = processor.image_processor
+    factor = image_processor.patch_size * image_processor.merge_size
+    coarse, fine = [], []
+    for image in images:
+        width, height = resized_size(image.width, image.height, factor,
+                                     image_processor.min_pixels, image_processor.max_pixels)
+        coarse.append(image.resize((width, height), Image.BICUBIC))
+        fine.append(image.resize((width * scale, height * scale), Image.BICUBIC))
+    return coarse, fine
+
+
+def pool_to_coarse(fine, fine_grid, coarse_grid, merge, scale):
+    """Average the fine pass's tokens over the area of each coarse token, image by image."""
+    pooled, at = [], 0
+    for (frames, fine_h, fine_w), (_, coarse_h, coarse_w) in zip(fine_grid.tolist(), coarse_grid.tolist()):
+        rows, columns = coarse_h // merge, coarse_w // merge
+        count = frames * rows * scale * columns * scale
+        block = fine[at: at + count].view(frames, rows, scale, columns, scale, -1)
+        at += count
+        pooled.append(block.mean(dim=(2, 4)).reshape(frames * rows * columns, -1))
+    return torch.cat(pooled)
+
+
+class S2Visual(torch.nn.Module):
+    """The vision tower run at two scales and fused - "scaling on scales".
+
+    The second pass sees the map enlarged, so a state covering a fraction of one 28x28-pixel token in the
+    first pass covers several tokens here. Those fine tokens are averaged back onto the coarse grid and
+    concatenated with it, so the language model still receives exactly as many tokens as before; each one
+    now also carries what its own patch of map looks like close up.
+
+    The fusion starts as a pass-through of the coarse pass (the fine half of its weights is zero), so a
+    model trained without S2 behaves identically until training moves those weights.
+    """
+
+    def __init__(self, visual, scale):
+        super().__init__()
+        self.visual = visual
+        self.scale = scale
+        width = visual.config.out_hidden_size
+        self.fuse = torch.nn.Linear(2 * width, width, bias=False)
+        with torch.no_grad():
+            self.fuse.weight.zero_()
+            self.fuse.weight[:, :width].copy_(torch.eye(width))
+        self.pending = None
+
+    def __getattr__(self, name):  # dtype, spatial_merge_size, config and friends come from the tower
+        try:
+            return super().__getattr__(name)
+        except AttributeError:
+            return getattr(self._modules["visual"], name)
+
+    def forward(self, hidden_states, grid_thw, **kwargs):
+        coarse = self.visual(hidden_states, grid_thw=grid_thw, **kwargs)
+        pending, self.pending = self.pending, None
+        if pending is None:
+            return coarse
+        pixels, fine_grid = pending
+        with torch.no_grad():  # the tower is frozen here; only the fusion learns
+            fine = self.visual(pixels.type(self.visual.dtype), grid_thw=fine_grid, **kwargs)
+        pooled = pool_to_coarse(fine, fine_grid, grid_thw, self.visual.spatial_merge_size, self.scale)
+        return self.fuse(torch.cat([coarse, pooled.to(coarse.dtype)], dim=-1))
+
+
+def attach_s2(model, scale, device):
+    """Replace the vision tower with the two-scale version, wherever it sits in the wrapped model."""
+    for module in model.modules():
+        if "visual" in module._modules and not isinstance(module._modules["visual"], S2Visual):
+            wrapper = S2Visual(module._modules["visual"], scale)
+            wrapper.fuse.to(device=device, dtype=torch.float32).requires_grad_(True)
+            module._modules["visual"] = wrapper
+            return wrapper
+    raise SystemExit("could not find the vision tower to attach S2 to")
 
 # Boxes in MapQA's 700x500 albers-usa layout; scaled if a map is a different size. NE_BOX was measured
 # from the rendered maps: the small north-eastern fills span x 455-549, y 139-258 in every map.
@@ -113,8 +206,10 @@ class CropDataset(torch.utils.data.Dataset):
 class TrainCollate:
     """Image(s) + prompt + answer, with labels only on the answer tokens."""
 
-    def __init__(self, processor):
+    def __init__(self, processor, fine_processor=None, scale=2):
         self.processor = processor
+        self.fine_processor = fine_processor  # same processor, allowed more pixels, for the second scale
+        self.scale = scale
         self.answer_start = processor.tokenizer.encode("<|im_start|>assistant\n", add_special_tokens=False)
 
     def __call__(self, batch):
@@ -122,7 +217,13 @@ class TrainCollate:
         for sample_images, target in batch:
             images.extend(sample_images)
             texts.append(chat_text(self.processor, target, len(sample_images)))
+        fine = None
+        if self.fine_processor is not None:
+            images, fine_images = two_scale_images(self.processor, images, self.scale)
+            fine = self.fine_processor.image_processor(images=fine_images, return_tensors="pt")
         enc = self.processor(text=texts, images=images, padding=True, return_tensors="pt")
+        if fine is not None:
+            enc["s2_pixel_values"], enc["s2_grid_thw"] = fine["pixel_values"], fine["image_grid_thw"]
         labels = enc["input_ids"].clone()
         labels[enc["attention_mask"] == 0] = -100
         marker = torch.tensor(self.answer_start)
@@ -133,7 +234,7 @@ class TrainCollate:
         return enc
 
 
-def predict(model, processor, records, args, device, amp_dtype, crop=False):
+def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=None, fine_processor=None):
     predictions = []
     began = time.time()
     with torch.no_grad():
@@ -146,7 +247,13 @@ def predict(model, processor, records, args, device, amp_dtype, crop=False):
                 if crop:
                     images.append(make_crop(image, random, train=False))
                 texts.append(chat_text(processor, images=2 if crop else 1))
+            fine = None
+            if fine_processor is not None:
+                images, fine_images = two_scale_images(processor, images, args.s2_scale)
+                fine = fine_processor.image_processor(images=fine_images, return_tensors="pt")
             enc = processor(text=texts, images=images, padding=True, return_tensors="pt").to(device)
+            if fine is not None:
+                s2.pending = (fine["pixel_values"].to(device), fine["image_grid_thw"].to(device))
             with autocast(device, amp_dtype):
                 ids = model.generate(**enc, max_new_tokens=args.max_new_tokens, do_sample=False,
                                      repetition_penalty=1.0, use_cache=True)
@@ -201,6 +308,10 @@ def main():
                         help="share of training examples that keep the full map alone")
     parser.add_argument("--eval-both", action="store_true",
                         help="with --crop, also score without the crop, to separate its effect")
+    parser.add_argument("--s2", action="store_true",
+                        help="run the vision tower at two scales and fuse them, instead of cropping by hand")
+    parser.add_argument("--s2-scale", type=int, default=2,
+                        help="how many times larger the second pass sees the map")
     # A T4 trains about 2.3 s per MapQA map; 8 h leaves room for scoring inside Kaggle's 12-hour limit
     parser.set_defaults(epochs=1, hours=8.0, lr=2e-4, batch_size=2, grad_accum=8, eval_batch_size=16,
                         max_new_tokens=600)
@@ -237,6 +348,14 @@ def main():
         if args.vision_lora and not vision_attention:
             raise SystemExit("--vision-lora matched no vision attention; check VISION_LORA_REGEX")
 
+    s2 = fine_processor = None
+    if args.s2:
+        s2 = attach_s2(model, args.s2_scale, device)
+        fine_processor = AutoProcessor.from_pretrained(args.model,
+                                                       max_pixels=args.max_pixels * args.s2_scale ** 2)
+        print(f"S2: second pass at {args.s2_scale}x the size, fusing into "
+              f"{s2.fuse.weight.numel():,} trainable weights", flush=True)
+
     if not args.skip_train:
         model.print_trainable_parameters()
         model.config.use_cache = False
@@ -245,14 +364,19 @@ def main():
         train = training_records(args, root)
         dataset = CropDataset(train, args.crop_dropout if args.crop else 1.0)
         loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers,
-                            collate_fn=TrainCollate(processor))
+                            collate_fn=TrainCollate(processor, fine_processor, args.s2_scale))
 
         def forward(batch):
-            return model(**batch.to(device)).loss
+            batch = batch.to(device)
+            if s2 is not None:
+                s2.pending = (batch.pop("s2_pixel_values"), batch.pop("s2_grid_thw"))
+            return model(**batch).loss
 
         print(f"{len(loader)} batches per epoch", flush=True)
         train_loop(model, loader, args, forward, args.out, amp_dtype)
         model.save_pretrained(args.out / "adapter")
+        if s2 is not None:  # the fusion is not part of the LoRA adapter, so it is saved beside it
+            torch.save(s2.fuse.state_dict(), args.out / "s2_fuse.pt")
 
     model.eval()
     if device.type == "cuda":
@@ -263,7 +387,8 @@ def main():
     for name, records in evaluation_sets(args, root):
         for suffix, use_crop in variants:
             print(f"scoring {len(records)} {name} test maps{' without the crop' if suffix else ''}", flush=True)
-            predictions = predict(model, processor, records, args, device, amp_dtype, crop=use_crop)
+            predictions = predict(model, processor, records, args, device, amp_dtype, crop=use_crop,
+                                  s2=s2, fine_processor=fine_processor)
             evaluate_and_save(records, predictions, args.out, name + suffix)
 
 
