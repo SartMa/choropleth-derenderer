@@ -43,6 +43,8 @@ def add_common_args(parser):
     parser.add_argument("--synth-train-maps", type=int, help="train on a random subset of this many synthetic maps")
     parser.add_argument("--eval-maps", type=int, default=400, help="MapQA test maps to score (same maps for every model)")
     parser.add_argument("--synth-eval-maps", type=int, default=200, help="synthetic test maps to score")
+    parser.add_argument("--eval-limit", type=int, help="score only the first N sampled test maps; a prefix of the "
+                                                       "usual set, so results stay comparable with earlier runs")
     parser.add_argument("--epochs", type=int, default=2)
     parser.add_argument("--hours", type=float, default=8.0,
                         help="training time budget; the learning-rate schedule is shortened to fit it")
@@ -131,6 +133,8 @@ def evaluation_sets(args, mapqa_root):
     if args.synth:
         folder = find_images_root(args.synth, "synth_*")
         sets.append(("synth", sample_records(read_split(folder, "test", folder), args.synth_eval_maps, seed=0)))
+    if args.eval_limit:
+        sets = [(name, records[: args.eval_limit]) for name, records in sets]
     return sets
 
 
@@ -255,14 +259,19 @@ def score_map(record, prediction_text):
     score["extra_keys"] = sum(k not in target["values"] for k in values)
     if target["legend_type"] == "discrete":
         score["ranges_correct"] = pred.get("ranges") == target["ranges"]
-        score["state_accuracy"] = sum(c in values and values[c] == target["values"][c] for c in codes) / len(codes)
+        right = {c: bool(c in values and values[c] == target["values"][c]) for c in codes}
+        score["state_accuracy"] = sum(right.values()) / len(codes)
+        score["per_state"] = right
     else:
         truth = {c: v for c, v in record["true_values"].items() if v is not None}
         span = (max(truth.values()) - min(truth.values())) or 1.0
-        errors = [min(1.0, abs(values[c] - v) / span) if _is_number(values.get(c)) else 1.0 for c, v in truth.items()]
+        per_state = {c: min(1.0, abs(values[c] - v) / span) if _is_number(values.get(c)) else 1.0
+                     for c, v in truth.items()}
+        errors = list(per_state.values())
         score["nmae"] = sum(errors) / len(errors)
         score["nrmse"] = math.sqrt(sum(e * e for e in errors) / len(errors))
         score["within_5pct"] = sum(e <= 0.05 for e in errors) / len(errors)
+        score["per_state"] = per_state
     return score
 
 
@@ -285,8 +294,28 @@ def summarize(scores):
             result.update(ranges_correct=mean("ranges_correct", 0), state_accuracy=mean("state_accuracy", 0))
         else:
             result.update(nmae=mean("nmae", 1), nrmse=mean("nrmse", 1), within_5pct=mean("within_5pct", 0))
+        result["per_state"] = per_state_summary(group, unparsed=0.0 if kind == "discrete" else 1.0)
         summary[kind] = result
     return summary
+
+
+def per_state_summary(group, unparsed):
+    """Per-state accuracy (discrete) or mean error (continuous), worst state first.
+
+    Small states are the known weak point, so the run has to report them separately rather than
+    leaving them averaged into the 50.
+    """
+    every_code = {code for score in group for code in score.get("per_state", {})}
+    totals = {}
+    for score in group:
+        per_state = score.get("per_state") or {}
+        for code in every_code:
+            got = float(per_state[code]) if code in per_state else unparsed
+            hit, count = totals.get(code, (0.0, 0))
+            totals[code] = (hit + got, count + 1)
+    means = {code: round(total / count, 4) for code, (total, count) in totals.items()}
+    worst = sorted(means, key=lambda c: means[c], reverse=unparsed == 1.0)
+    return {code: means[code] for code in worst}
 
 
 def evaluate_and_save(records, predictions, out_dir, name):
