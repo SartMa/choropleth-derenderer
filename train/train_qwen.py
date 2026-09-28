@@ -43,8 +43,9 @@ PROMPT = (
 )
 CROP_NOTE = (" The second image is a magnified view of part of the same map; "
              "use it to read the small regions it contains.")
-TILES_NOTE = (" The extra images are magnified views of the most crowded parts of the same map; "
-              "use them to read the small regions they contain.")
+TILES_NOTE = (" The extra images are magnified views of the parts of the same map holding the smallest "
+              "regions; use them to read the regions they contain. Each one covers this part of the map, "
+              "as a fraction of its width and height:")
 
 
 def tile_images(image, count, zoom, rng=None, jitter=0):
@@ -53,7 +54,7 @@ def tile_images(image, count, zoom, rng=None, jitter=0):
     The boxes come from the picture alone (train/tiles.py), so nothing here knows which country it is
     looking at - the same rule finds the north-east of a US map and the small states of any other.
     """
-    views = []
+    views, boxes = [], []
     for left, top, right, bottom in busiest_tiles(image, tiles=count):
         if jitter and rng is not None:
             shift_x, shift_y = rng.randint(-jitter, jitter), rng.randint(-jitter, jitter)
@@ -62,7 +63,8 @@ def tile_images(image, count, zoom, rng=None, jitter=0):
         view = image.crop((left, top, right, bottom))
         views.append(view.resize((max(28, round(view.width * zoom)), max(28, round(view.height * zoom))),
                                  Image.BICUBIC))
-    return views
+        boxes.append((left / image.width, top / image.height, right / image.width, bottom / image.height))
+    return views, boxes
 # Matches the attention and MLP layers of the language model, and the MLP layers of the vision encoder.
 LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 # Adds the vision encoder's attention and its patch merger. Qwen2.5-VL fuses vision attention into "qkv"
@@ -195,9 +197,23 @@ def make_crop(image, rng, train):
     return crop.resize((max(28, round(crop.width * zoom)), max(28, round(crop.height * zoom))), Image.BICUBIC)
 
 
-def chat_text(processor, target=None, images=1):
+def tiles_note(boxes):
+    """Say where each tile was cut from, so the model can place what it reads back on the map.
+
+    Without this the extra images are just more pixels: the model can see that a region is dark but not
+    which region it is, and has to match the tile to the map by eye before it can use it.
+    """
+    places = [f" view {i} x {left:.2f}-{right:.2f}, y {top:.2f}-{bottom:.2f}."
+              for i, (left, top, right, bottom) in enumerate(boxes, start=2)]
+    return TILES_NOTE + "".join(places)
+
+
+def chat_text(processor, target=None, images=1, boxes=None):
     content = [{"type": "image"} for _ in range(images)]
-    note = "" if images == 1 else (CROP_NOTE if images == 2 else TILES_NOTE)
+    if boxes:
+        note = tiles_note(boxes)
+    else:
+        note = "" if images == 1 else (CROP_NOTE if images == 2 else TILES_NOTE)
     content.append({"type": "text", "text": PROMPT + note})
     messages = [{"role": "user", "content": content}]
     if target is not None:
@@ -222,13 +238,15 @@ class CropDataset(torch.utils.data.Dataset):
     def __getitem__(self, i):
         record = self.records[i]
         image = Image.open(record["image_path"]).convert("RGB")
+        boxes = []
         if random.random() < self.dropout:
             images = [image]                       # the map alone, so single-image use stays in distribution
         elif self.tiles:
-            images = [image] + tile_images(image, self.tiles, self.tile_zoom, random, jitter=8)
+            views, boxes = tile_images(image, self.tiles, self.tile_zoom, random, jitter=8)
+            images = [image] + views
         else:
             images = [image, make_crop(image, random, train=True)]
-        return images, record["target"]
+        return images, boxes, record["target"]
 
 
 class TrainCollate:
@@ -242,9 +260,9 @@ class TrainCollate:
 
     def __call__(self, batch):
         texts, images = [], []
-        for sample_images, target in batch:
+        for sample_images, boxes, target in batch:
             images.extend(sample_images)
-            texts.append(chat_text(self.processor, target, len(sample_images)))
+            texts.append(chat_text(self.processor, target, len(sample_images), boxes))
         fine = None
         if self.fine_processor is not None:
             images, fine_images = two_scale_images(self.processor, images, self.scale)
@@ -273,13 +291,13 @@ def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=N
             for record in batch:
                 image = Image.open(record["image_path"]).convert("RGB")
                 images.append(image)
-                extra = []
+                extra, boxes = [], []
                 if tiles:
-                    extra = tile_images(image, tiles, args.tile_zoom)
+                    extra, boxes = tile_images(image, tiles, args.tile_zoom)
                 elif crop:
                     extra = [make_crop(image, random, train=False)]
                 images.extend(extra)
-                texts.append(chat_text(processor, images=1 + len(extra)))
+                texts.append(chat_text(processor, images=1 + len(extra), boxes=boxes))
             fine = None
             if fine_processor is not None:
                 images, fine_images = two_scale_images(processor, images, args.s2_scale)
