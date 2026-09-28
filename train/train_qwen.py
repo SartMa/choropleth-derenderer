@@ -164,6 +164,110 @@ def attach_s2(model, scale, device):
             return wrapper
     raise SystemExit("could not find the vision tower to attach S2 to")
 
+def fusion_tiles(image, processor, count, cells, zoom):
+    """The busiest tiles, snapped to whole cells of the coarse token grid and cut out at `zoom` times size.
+
+    Each tile covers exactly cells x cells coarse tokens, so its zoom x zoom fine tokens per cell line up
+    with the coarse grid without any resampling: the tile's tokens can be added to the coarse tokens that
+    already sit at those map positions.
+    """
+    reader = processor.image_processor
+    factor = reader.patch_size * reader.merge_size
+    width, height = resized_size(image.width, image.height, factor, reader.min_pixels, reader.max_pixels)
+    columns, rows = width // factor, height // factor
+    scale_x, scale_y = width / image.width, height / image.height
+    placed = []
+    for left, top, right, bottom in busiest_tiles(image, tiles=count):
+        first_column = min(max(0, round((left + right) / 2 * scale_x / factor - cells / 2)), max(0, columns - cells))
+        first_row = min(max(0, round((top + bottom) / 2 * scale_y / factor - cells / 2)), max(0, rows - cells))
+        box = (first_column * factor / scale_x, first_row * factor / scale_y,
+               (first_column + cells) * factor / scale_x, (first_row + cells) * factor / scale_y)
+        side = cells * factor * zoom
+        placed.append((first_row, first_column, image.resize((side, side), Image.BICUBIC, box=box)))
+    return placed
+
+
+def fusion_inputs(processor, maps, count, cells, zoom):
+    """Pixels for every selected tile in a batch, and where each goes: (batch index, first row, first column)."""
+    tiles, where = [], []
+    for index, image in maps:
+        for row, column, tile in fusion_tiles(image, processor, count, cells, zoom):
+            tiles.append(tile)
+            where.append((index, row, column))
+    if not tiles:
+        return {}
+    seen = processor.image_processor(images=tiles, return_tensors="pt")
+    return {"fx_pixel_values": seen["pixel_values"], "fx_grid_thw": seen["image_grid_thw"],
+            "fx_where": torch.tensor(where)}
+
+
+class FusionVisual(torch.nn.Module):
+    """The vision tower, plus close-up detail added to the coarse tokens that sit on the busiest tiles.
+
+    A tile is cut from the map, enlarged `zoom` times and run through the same frozen tower. Its tokens
+    come back on a grid `zoom` times finer than the coarse one, so each coarse token has zoom x zoom fine
+    tokens over exactly the same piece of map. Those are not averaged (averaging is how a state covering
+    one fine token gets diluted to a ninth): each is shrunk, the block is laid side by side, and one
+    linear layer maps the block to a correction that is added to the coarse token.
+
+    Every other coarse token is untouched, and the language model still receives exactly the tokens it did
+    before. The output layer starts at zero, so an untrained fusion changes nothing.
+    """
+
+    def __init__(self, visual, cells, zoom, reduced=256):
+        super().__init__()
+        self.visual, self.cells, self.zoom = visual, cells, zoom
+        width = visual.config.out_hidden_size
+        self.reduce = torch.nn.Linear(width, reduced)
+        self.out = torch.nn.Linear(zoom * zoom * reduced, width, bias=False)
+        with torch.no_grad():
+            self.out.weight.zero_()
+        self.pending = None
+
+    def __getattr__(self, name):  # dtype, spatial_merge_size, config and friends come from the tower
+        try:
+            return super().__getattr__(name)
+        except AttributeError:
+            return getattr(self._modules["visual"], name)
+
+    def forward(self, hidden_states, grid_thw, **kwargs):
+        coarse = self.visual(hidden_states, grid_thw=grid_thw, **kwargs)
+        pending, self.pending = self.pending, None
+        if pending is None:
+            return coarse
+        pixels, tile_grid, where = pending
+        with torch.no_grad():  # the tower is frozen here; only the fusion learns
+            fine = self.visual(pixels.type(self.visual.dtype), grid_thw=tile_grid, **kwargs)
+        cells, zoom = self.cells, self.zoom
+        tiles = len(where)
+        shrunk = self.reduce(fine.float()).view(tiles, cells, zoom, cells, zoom, -1)
+        blocks = shrunk.permute(0, 1, 3, 2, 4, 5).reshape(tiles, cells * cells, -1)
+        added = self.out(blocks)                                       # (tiles, cells * cells, width)
+        merge = self.visual.spatial_merge_size
+        rows_columns = [(h // merge, w // merge) for _, h, w in grid_thw.tolist()]
+        offsets = [0]
+        for rows, columns in rows_columns:
+            offsets.append(offsets[-1] + rows * columns)
+        delta = torch.zeros(coarse.shape, dtype=added.dtype, device=coarse.device)
+        steps = torch.arange(cells, device=coarse.device)
+        for k, (image, row, column) in enumerate(where.tolist()):
+            index = offsets[image] + (row + steps)[:, None] * rows_columns[image][1] + (column + steps)[None, :]
+            delta = delta.index_add(0, index.reshape(-1), added[k])
+        return coarse + delta.to(coarse.dtype)
+
+
+def attach_fusion(model, cells, zoom, device):
+    """Replace the vision tower with the fusing version, wherever it sits in the wrapped model."""
+    for module in model.modules():
+        if "visual" in module._modules and not isinstance(module._modules["visual"], (S2Visual, FusionVisual)):
+            wrapper = FusionVisual(module._modules["visual"], cells, zoom)
+            wrapper.reduce.to(device=device, dtype=torch.float32).requires_grad_(True)
+            wrapper.out.to(device=device, dtype=torch.float32).requires_grad_(True)
+            module._modules["visual"] = wrapper
+            return wrapper
+    raise SystemExit("could not find the vision tower to attach the fusion to")
+
+
 # Boxes in MapQA's 700x500 albers-usa layout; scaled if a map is a different size. NE_BOX was measured
 # from the rendered maps: the small north-eastern fills span x 455-549, y 139-258 in every map.
 NE_BOX = (440, 138, 565, 263)    # the small north-eastern states: RI, DE, CT, NJ, MA, NH, VT, MD
@@ -228,9 +332,9 @@ class CropDataset(torch.utils.data.Dataset):
     distribution and lets the crop be ablated at scoring time instead of in a second training run.
     """
 
-    def __init__(self, records, dropout, tiles=0, tile_zoom=3.0):
+    def __init__(self, records, dropout, tiles=0, tile_zoom=3.0, fuse=False):
         self.records, self.dropout = records, dropout
-        self.tiles, self.tile_zoom = tiles, tile_zoom
+        self.tiles, self.tile_zoom, self.fuse = tiles, tile_zoom, fuse
 
     def __len__(self):
         return len(self.records)
@@ -238,29 +342,35 @@ class CropDataset(torch.utils.data.Dataset):
     def __getitem__(self, i):
         record = self.records[i]
         image = Image.open(record["image_path"]).convert("RGB")
-        boxes = []
+        boxes, fuse = [], False
         if random.random() < self.dropout:
             images = [image]                       # the map alone, so single-image use stays in distribution
+        elif self.tiles and self.fuse:
+            images, fuse = [image], True           # the tiles are added into the map's own tokens
         elif self.tiles:
             views, boxes = tile_images(image, self.tiles, self.tile_zoom, random, jitter=8)
             images = [image] + views
         else:
             images = [image, make_crop(image, random, train=True)]
-        return images, boxes, record["target"]
+        return images, boxes, record["target"], fuse
 
 
 class TrainCollate:
     """Image(s) + prompt + answer, with labels only on the answer tokens."""
 
-    def __init__(self, processor, fine_processor=None, scale=2):
+    def __init__(self, processor, fine_processor=None, scale=2, fusion=None):
         self.processor = processor
+        self.fusion = fusion  # (tiles, cells, zoom) when tiles are fused into the map's tokens
         self.fine_processor = fine_processor  # same processor, allowed more pixels, for the second scale
         self.scale = scale
         self.answer_start = processor.tokenizer.encode("<|im_start|>assistant\n", add_special_tokens=False)
 
     def __call__(self, batch):
         texts, images = [], []
-        for sample_images, boxes, target in batch:
+        fused = []
+        for index, (sample_images, boxes, target, fuse) in enumerate(batch):
+            if fuse:
+                fused.append((index, sample_images[0]))
             images.extend(sample_images)
             texts.append(chat_text(self.processor, target, len(sample_images), boxes))
         fine = None
@@ -270,6 +380,9 @@ class TrainCollate:
         enc = self.processor(text=texts, images=images, padding=True, return_tensors="pt")
         if fine is not None:
             enc["s2_pixel_values"], enc["s2_grid_thw"] = fine["pixel_values"], fine["image_grid_thw"]
+        if fused:
+            for key, value in fusion_inputs(self.processor, fused, *self.fusion).items():
+                enc[key] = value
         labels = enc["input_ids"].clone()
         labels[enc["attention_mask"] == 0] = -100
         marker = torch.tensor(self.answer_start)
@@ -281,18 +394,20 @@ class TrainCollate:
 
 
 def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=None, fine_processor=None,
-            tiles=0):
+            tiles=0, fusion=None):
     predictions = []
     began = time.time()
     with torch.no_grad():
         for start in range(0, len(records), args.eval_batch_size):
             batch = records[start : start + args.eval_batch_size]
-            texts, images = [], []
+            texts, images, fused = [], [], []
             for record in batch:
                 image = Image.open(record["image_path"]).convert("RGB")
                 images.append(image)
                 extra, boxes = [], []
-                if tiles:
+                if tiles and fusion is not None:
+                    fused.append((len(texts), image))
+                elif tiles:
                     extra, boxes = tile_images(image, tiles, args.tile_zoom)
                 elif crop:
                     extra = [make_crop(image, random, train=False)]
@@ -303,6 +418,10 @@ def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=N
                 images, fine_images = two_scale_images(processor, images, args.s2_scale)
                 fine = fine_processor.image_processor(images=fine_images, return_tensors="pt")
             enc = processor(text=texts, images=images, padding=True, return_tensors="pt").to(device)
+            if fused:
+                seen = fusion_inputs(processor, fused, tiles, args.fusion_cells, args.fusion_zoom)
+                fusion.pending = (seen["fx_pixel_values"].to(device), seen["fx_grid_thw"].to(device),
+                                  seen["fx_where"].to(device))
             if fine is not None:
                 s2.pending = (fine["pixel_values"].to(device), fine["image_grid_thw"].to(device))
             with autocast(device, amp_dtype):
@@ -363,6 +482,13 @@ def main():
                         help="magnify this many of the map's most crowded areas and pass them as extra "
                              "images; the areas are found from the picture, not from known geography")
     parser.add_argument("--tile-zoom", type=float, default=3.0, help="how much to magnify each tile")
+    parser.add_argument("--fusion", action="store_true",
+                        help="with --tiles: add each tile's close-up tokens into the map's own tokens instead of "
+                             "passing the tile as an extra image, so the token count does not grow")
+    parser.add_argument("--fusion-cells", type=int, default=3,
+                        help="a fused tile covers this many coarse tokens on each side")
+    parser.add_argument("--fusion-zoom", type=int, default=3,
+                        help="whole-number magnification of a fused tile (fine tokens per coarse token, per side)")
     parser.add_argument("--s2", action="store_true",
                         help="run the vision tower at two scales and fuse them, instead of cropping by hand")
     parser.add_argument("--s2-scale", type=int, default=2,
@@ -403,6 +529,15 @@ def main():
         if args.vision_lora and not vision_attention:
             raise SystemExit("--vision-lora matched no vision attention; check VISION_LORA_REGEX")
 
+    if args.fusion and (args.s2 or not args.tiles):
+        raise SystemExit("--fusion needs --tiles N and cannot be combined with --s2")
+    fusion = None
+    if args.fusion:
+        fusion = attach_fusion(model, args.fusion_cells, args.fusion_zoom, device)
+        added = sum(p.numel() for p in (*fusion.reduce.parameters(), *fusion.out.parameters()))
+        print(f"fusion: {args.tiles} tiles of {args.fusion_cells}x{args.fusion_cells} coarse tokens at "
+              f"{args.fusion_zoom}x, {added:,} trainable weights", flush=True)
+
     s2 = fine_processor = None
     if args.s2:
         s2 = attach_s2(model, args.s2_scale, device)
@@ -418,14 +553,20 @@ def main():
         model.enable_input_require_grads()
         train = training_records(args, root)
         dataset = CropDataset(train, args.crop_dropout if (args.crop or args.tiles) else 1.0,
-                              args.tiles, args.tile_zoom)
+                              args.tiles, args.tile_zoom, fuse=args.fusion)
+        collate = TrainCollate(processor, fine_processor, args.s2_scale,
+                               (args.tiles, args.fusion_cells, args.fusion_zoom) if args.fusion else None)
         loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers,
-                            collate_fn=TrainCollate(processor, fine_processor, args.s2_scale))
+                            collate_fn=collate)
 
         def forward(batch):
             batch = batch.to(device)
             if s2 is not None:
                 s2.pending = (batch.pop("s2_pixel_values"), batch.pop("s2_grid_thw"))
+            if fusion is not None:  # absent when every example in the batch kept the map alone
+                pixels = batch.pop("fx_pixel_values", None)
+                grid, where = batch.pop("fx_grid_thw", None), batch.pop("fx_where", None)
+                fusion.pending = None if pixels is None else (pixels, grid, where)
             return model(**batch).loss
 
         print(f"{len(loader)} batches per epoch", flush=True)
@@ -433,6 +574,9 @@ def main():
         model.save_pretrained(args.out / "adapter")
         if s2 is not None:  # the fusion is not part of the LoRA adapter, so it is saved beside it
             torch.save(s2.fuse.state_dict(), args.out / "s2_fuse.pt")
+        if fusion is not None:
+            torch.save({"reduce": fusion.reduce.state_dict(), "out": fusion.out.state_dict()},
+                       args.out / "fusion.pt")
 
     model.eval()
     if device.type == "cuda":
@@ -445,7 +589,7 @@ def main():
             print(f"scoring {len(records)} {name} test maps{' without the crop' if suffix else ''}", flush=True)
             predictions = predict(model, processor, records, args, device, amp_dtype, crop=use_crop,
                                   s2=s2, fine_processor=fine_processor,
-                                  tiles=args.tiles if use_crop else 0)
+                                  tiles=args.tiles if use_crop else 0, fusion=fusion)
             evaluate_and_save(records, predictions, args.out, name + suffix)
 
 
