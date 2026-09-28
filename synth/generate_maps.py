@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate synthetic US-state choropleth maps with the JSON the derenderer should output.
+"""Generate synthetic choropleth maps of US states or Indian states/UTs, with the JSON the derenderer should output.
 
 The target format is the same as mapqa/convert_mapqa.py, so MapQA and synthetic maps can be trained on together:
 
@@ -19,16 +19,25 @@ Rules (the same as for MapQA):
   percentage maps always show "%" there, so data_type is always visible
 - data_type: "percentage" when the unit is "%", otherwise "number"
 
+India (--country ind) differs in three ways:
+- values are keyed by the ISO 3166-2 suffix geoBoundaries gives (36 states and UTs, e.g. "MH", "DL", "LA")
+- Lakshadweep, Chandigarh, Puducherry and Dadra/Daman are drawn and coloured but left out of "values": at
+  about 5 km per pixel their largest pieces cover 0.3, 5, 6 and 20 pixels, the border lines eat what little
+  fill there is, and a label for them would teach guessing. That leaves 32 regions; the smallest listed are
+  Delhi (about 60 pixels, half of Rhode Island in the US maps) and Goa (about 150)
+- all regions are drawn in place (Andaman and Nicobar in the Bay of Bengal), as Indian maps usually show them
+
 Usage (run from the project root; each split has its own seed, so splits never share a map):
     python synth/generate_maps.py --split train --n 10000
     python synth/generate_maps.py --split dev --n 1000
     python synth/generate_maps.py --split test --n 1000
+    python synth/generate_maps.py --country ind --split test --n 1000     # writes data/synth_ind
 
-Output (default folder data/synth_usa):
-    images/<id>.png or .jpg
+Output (default folder data/synth_usa, or data/synth_ind):
+    images/<id>.png or .jpg  (ids start synth_ for the US and synthind_ for India, so the two never collide)
     <split>.jsonl            one line per map: id, image, target, legend_type, data_type, true_values, style
     <split>.rejected.jsonl   maps that failed the pixel or text check; not used for training
-Also writes <cache>/usa_states_adjacency.json: which states share a border, by state code.
+Also writes <cache>/usa_states_adjacency.json (or ind_states_adjacency.json): which regions share a border.
 """
 
 import argparse
@@ -98,6 +107,48 @@ TITLE_TEMPLATES = [
     "{topic} in the United States, {year}",
     "{topic} ({year})",
 ]
+INDIA_CRS = "+proj=aea +lat_1=12 +lat_2=28 +lat_0=20 +lon_0=80 +datum=WGS84 +units=m +no_defs"
+# (topic, unit, typical low, typical high) for state-level values in India
+INDIA_TOPICS = [
+    ("Literacy Rate", "%", 60, 95),
+    ("Sex Ratio", "females per 1,000 males", 850, 1080),
+    ("Per Capita Income", "thousand INR", 40, 400),
+    ("Population Density", "people per sq. km", 15, 1200),
+    ("Unemployment Rate", "%", 1, 12),
+    ("Infant Mortality Rate", "per 1,000 live births", 5, 45),
+    ("Forest Cover", "%", 5, 80),
+    ("Urban Population Share", "%", 10, 60),
+    ("Annual Rainfall", "mm", 300, 3000),
+    ("Households with Electricity", "%", 80, 100),
+    ("Institutional Births", "%", 60, 100),
+    ("Total Fertility Rate", "children per woman", 1.4, 3.0),
+    ("GSDP Growth Rate", "%", 3, 12),
+    ("Road Density", "km per 100 sq. km", 30, 300),
+    ("Poverty Headcount Ratio", "%", 1, 35),
+    ("Child Stunting", "%", 18, 45),
+    ("Internet Subscribers", "per 100 people", 35, 120),
+    ("Life Expectancy", "years", 64, 76),
+]
+INDIA_TITLE_TEMPLATES = [
+    "{topic}, {year}",
+    "{topic} by State, {year}",
+    "{topic} by State/UT ({year})",
+    "{year} {topic}",
+    "{topic} in India, {year}",
+    "{topic} ({year})",
+]
+
+COUNTRIES = {
+    "usa": {"iso": "USA", "regions": 50, "crs": CONUS_CRS, "adjacency_file": "usa_states_adjacency.json",
+            "no_label": SMALL_STATES, "unlisted": set(), "topics": TOPICS, "titles": TITLE_TEMPLATES,
+            "prefix": "synth", "out": "data/synth_usa", "width_in": (7.5, 10.5), "aspect": (0.68, 0.8)},
+    # India is about as tall as it is wide, so its figures are taller than the US ones
+    "ind": {"iso": "IND", "regions": 36, "crs": INDIA_CRS, "adjacency_file": "ind_states_adjacency.json",
+            "no_label": {"AN", "CH", "DH", "DL", "GA", "LD", "PY", "SK", "TR"}, "unlisted": {"CH", "DH", "LD", "PY"},
+            "topics": INDIA_TOPICS, "titles": INDIA_TITLE_TEMPLATES,
+            "prefix": "synthind", "out": "data/synth_ind", "width_in": (7.5, 9.5), "aspect": (0.9, 1.1)},
+}
+
 SEQUENTIAL = ["Blues", "Greens", "Oranges", "Purples", "Reds", "YlOrRd", "YlGnBu", "YlGn", "OrRd",
               "PuBu", "BuPu", "GnBu", "RdPu", "viridis", "plasma", "magma", "inferno"]
 DIVERGING = ["RdBu", "RdYlBu", "PiYG", "BrBG", "Spectral", "PuOr"]
@@ -110,15 +161,26 @@ OPEN_END_STYLES = [("< {}", "≥ {}"), ("Under {}", "{} or more"), ("Less than {
 
 # ---------------------------------------------------------------- geography
 
-def load_states(cache_dir):
-    """The 50 states from geoBoundaries, sorted by state code, in EPSG:4326. DC is merged into Maryland."""
-    path = cache_dir / "geoBoundaries-USA-ADM1_simplified.geojson"
+def load_states(cache_dir, country="usa"):
+    """The country's first-level regions from geoBoundaries, sorted by code, in EPSG:4326.
+
+    US: the 50 states, with DC merged into Maryland. India: the 36 states and union territories.
+    """
+    iso = COUNTRIES[country]["iso"]
+    path = cache_dir / f"geoBoundaries-{iso}-ADM1_simplified.geojson"
     if not path.exists():
         cache_dir.mkdir(parents=True, exist_ok=True)
-        with urllib.request.urlopen(API_URL) as response:
+        with urllib.request.urlopen(API_URL.replace("/USA/", f"/{iso}/")) as response:
             url = json.load(response)["simplifiedGeometryGeoJSON"]
         urllib.request.urlretrieve(url, path)
     gdf = gpd.read_file(path)
+    if country != "usa":
+        gdf["code"] = [code.split("-")[1] for code in gdf["shapeISO"]]
+        gdf = gdf.sort_values("code").reset_index(drop=True)
+        expected = COUNTRIES[country]["regions"]
+        if len(gdf) != expected or gdf["code"].duplicated().any():
+            raise ValueError(f"expected {expected} regions with distinct codes, got {len(gdf)}")
+        return gdf
     gdf = gdf[~gdf["shapeName"].isin(TERRITORIES)].copy()
     maryland = gdf.index[gdf["shapeName"] == "Maryland"][0]
     dc = gdf.index[gdf["shapeName"] == "District of Columbia"][0]
@@ -131,12 +193,12 @@ def load_states(cache_dir):
     return gdf
 
 
-def load_or_build_adjacency(gdf, cache_dir):
-    """Neighbor index lists. Two states are neighbors if their borders touch (2 km tolerance)."""
-    path = cache_dir / "usa_states_adjacency.json"
+def load_or_build_adjacency(gdf, cache_dir, country="usa"):
+    """Neighbor index lists. Two regions are neighbors if their borders touch (2 km tolerance)."""
+    path = cache_dir / COUNTRIES[country]["adjacency_file"]
     codes = list(gdf["code"])
     if not path.exists():
-        buffered = gdf.geometry.to_crs(CONUS_CRS).buffer(2000).values
+        buffered = gdf.geometry.to_crs(COUNTRIES[country]["crs"]).buffer(2000).values
         left, right = shapely.STRtree(buffered).query(buffered, predicate="intersects")
         neighbors = {code: [] for code in codes}
         for i, j in zip(left, right):
@@ -176,21 +238,27 @@ def layout_geometries(gdf):
     return [placed[n] if n in placed else conus.loc[i] for i, n in enumerate(names)]
 
 
-def prepare_geography(cache_dir):
-    gdf = load_states(cache_dir)
-    drawn = layout_geometries(gdf)
+def prepare_geography(cache_dir, country="usa"):
+    gdf = load_states(cache_dir, country)
+    if country == "usa":
+        drawn = layout_geometries(gdf)
+    else:  # everything in place, islands included
+        drawn = list(gdf.geometry.to_crs(COUNTRIES[country]["crs"]).simplify(1000))
     label_xy = []
     for geom in drawn:
         part = max(geom.geoms, key=lambda g: g.area) if geom.geom_type == "MultiPolygon" else geom
         point = part.representative_point()
         label_xy.append((point.x, point.y))
     reps = gdf.geometry.representative_point()
+    settings = COUNTRIES[country]
     return {
         "codes": list(gdf["code"]),
+        "listed": [code not in settings["unlisted"] for code in gdf["code"]],
         "drawn": drawn,
         "label_xy": label_xy,
         "lonlat": np.column_stack([reps.x, reps.y]),
-        "adjacency": load_or_build_adjacency(gdf, cache_dir),
+        "adjacency": load_or_build_adjacency(gdf, cache_dir, country),
+        "settings": settings,
     }
 
 
@@ -335,6 +403,8 @@ def pixel_check(buf, ax, geo, facecolors, rng):
     inset = 3 * 1000 / abs(x1 - x0)  # 3 pixels, in map units
     failed = []
     for i, code in enumerate(geo["codes"]):
+        if not geo["listed"][i]:  # too small to read, and not in the target
+            continue
         points = interior_points(geo["drawn"][i], inset, rng)
         px = ax.transData.transform(points)
         cols = np.floor(px[:, 0]).astype(int)
@@ -363,8 +433,9 @@ def draw_map(rng, geo, facecolors, title, legend_title, leg, cmap, bin_colors, n
     legend_pos = str(rng.choice(["right", "bottom"]))
     if leg["type"] == "binned" and len(leg["labels"]) + has_missing > 5:
         legend_pos = "right"  # one row at the bottom would get too wide
-    width_in = float(rng.uniform(7.5, 10.5))
-    height_in = width_in * (0.68 if legend_pos == "right" else 0.8)
+    settings = geo["settings"]
+    width_in = float(rng.uniform(*settings["width_in"]))
+    height_in = width_in * settings["aspect"][0 if legend_pos == "right" else 1]
     style = {
         "legend_pos": legend_pos,
         "background": str(rng.choice(BACKGROUNDS)),
@@ -385,7 +456,7 @@ def draw_map(rng, geo, facecolors, title, legend_title, leg, cmap, bin_colors, n
         if style["state_labels"]:
             size = float(rng.uniform(5.5, 8))
             for i, (x, y) in enumerate(geo["label_xy"]):
-                if geo["codes"][i] in SMALL_STATES:
+                if geo["codes"][i] in settings["no_label"]:
                     continue
                 r, g, b = facecolors[i][:3]
                 ax.text(x, y, geo["codes"][i], ha="center", va="center", fontsize=size,
@@ -446,27 +517,29 @@ def draw_map(rng, geo, facecolors, title, legend_title, leg, cmap, bin_colors, n
 _GEO = None
 
 
-def init_worker(cache_dir):
+def init_worker(cache_dir, country="usa"):
     global _GEO
-    _GEO = prepare_geography(cache_dir)
+    _GEO = prepare_geography(cache_dir, country)
 
 
 def make_sample(job):
     index, split, seed, out_dir, jpeg_prob = job
     geo = _GEO
-    codes = geo["codes"]
+    codes, listed, settings = geo["codes"], geo["listed"], geo["settings"]
     rng = np.random.default_rng([seed, index])
-    sample_id = f"synth_{split}_{index:06d}"
+    sample_id = f"{settings['prefix']}_{split}_{index:06d}"
 
-    topic, unit, low, high = TOPICS[int(rng.integers(len(TOPICS)))]
-    title = str(rng.choice(TITLE_TEMPLATES)).format(topic=topic, year=int(rng.integers(2005, 2025)))
+    topics = settings["topics"]
+    topic, unit, low, high = topics[int(rng.integers(len(topics)))]
+    title = str(rng.choice(settings["titles"])).format(topic=topic, year=int(rng.integers(2005, 2025)))
     data_type = "percentage" if unit == "%" else "number"
     # percentage maps always show "%" above the legend; otherwise nothing in the image would say so
     legend_title = unit if data_type == "percentage" or rng.random() < 0.85 else None
 
     values, pattern = make_values(rng, geo["adjacency"], geo["lonlat"], low, high)
     if rng.random() < 0.25:
-        values[rng.choice(len(codes), size=int(rng.integers(1, 4)), replace=False)] = np.nan
+        candidates = np.flatnonzero(listed)
+        values[rng.choice(candidates, size=int(rng.integers(1, 4)), replace=False)] = np.nan
     missing = np.isnan(values)
 
     palette, cmap, diverging = pick_palette(rng)
@@ -478,7 +551,7 @@ def make_sample(job):
         palette_rgbs = cmap(np.linspace(0, 1, 64))[:, :3]
         rounded = round_to_bar([None if m else v for v, m in zip(values, missing)], leg["vmin"], leg["vmax"])
         target = {"title": title, "legend_title": legend_title, "legend_type": "continuous", "data_type": data_type,
-                  "values": dict(zip(codes, rounded))}
+                  "values": {c: v for c, v, keep in zip(codes, rounded, listed) if keep}}
     else:
         leg = binned_legend(rng, values)
         start = 0.0 if diverging else float(rng.uniform(0.0, 0.3))
@@ -487,7 +560,8 @@ def make_sample(job):
         colors = [None if m else tuple(bin_colors[b]) for b, m in zip(bins, missing)]
         palette_rgbs = bin_colors[:, :3]
         target = {"title": title, "legend_title": legend_title, "legend_type": "discrete", "data_type": data_type,
-                  "ranges": leg["labels"], "values": {c: None if m else int(b) for c, b, m in zip(codes, bins, missing)}}
+                  "ranges": leg["labels"],
+                  "values": {c: None if m else int(b) for c, b, m, keep in zip(codes, bins, missing, listed) if keep}}
 
     no_data = pick_no_data_color(palette_rgbs)
     facecolors = [to_rgba(no_data) if c is None else tuple(c) for c in colors]
@@ -511,7 +585,8 @@ def make_sample(job):
         "target": json.dumps(target, ensure_ascii=False, separators=(",", ":")),
         "legend_type": target["legend_type"],
         "data_type": data_type,
-        "true_values": {c: None if m else round(float(v), 6) for c, v, m in zip(codes, values, missing)},
+        "true_values": {c: None if m else round(float(v), 6)
+                        for c, v, m, keep in zip(codes, values, missing, listed) if keep},
         "legend": leg,
         "value_pattern": pattern,
         "style": style,
@@ -522,9 +597,10 @@ def make_sample(job):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--country", choices=sorted(COUNTRIES), default="usa")
     parser.add_argument("--split", choices=sorted(SPLIT_SEEDS), default="train")
     parser.add_argument("--n", type=int, default=100, help="number of maps to generate")
-    parser.add_argument("--out", type=Path, default=Path("data/synth_usa"))
+    parser.add_argument("--out", type=Path, help="default: data/synth_usa or data/synth_ind")
     parser.add_argument("--cache", type=Path, default=Path("data/boundaries"),
                         help="where the geoBoundaries file and adjacency graph are stored")
     parser.add_argument("--seed", type=int, help="default: 0 for train, 1 for dev, 2 for test")
@@ -533,8 +609,10 @@ def main():
     parser.add_argument("--workers", type=int, default=os.cpu_count())
     args = parser.parse_args()
     seed = SPLIT_SEEDS[args.split] if args.seed is None else args.seed
+    args.out = args.out or Path(COUNTRIES[args.country]["out"])
 
-    load_or_build_adjacency(load_states(args.cache), args.cache)  # download and build once, before workers start
+    # download and build once, before workers start
+    load_or_build_adjacency(load_states(args.cache, args.country), args.cache, args.country)
     (args.out / "images").mkdir(parents=True, exist_ok=True)
     jobs = [(i, args.split, seed, args.out, args.jpeg_prob) for i in range(args.start, args.start + args.n)]
 
@@ -544,11 +622,11 @@ def main():
     with open(args.out / f"{args.split}.jsonl", mode, encoding="utf-8") as good, \
             open(args.out / f"{args.split}.rejected.jsonl", mode, encoding="utf-8") as bad:
         if args.workers <= 1:
-            init_worker(args.cache)
+            init_worker(args.cache, args.country)
             records = map(make_sample, jobs)
             pool = None
         else:
-            pool = Pool(args.workers, initializer=init_worker, initargs=(args.cache,))
+            pool = Pool(args.workers, initializer=init_worker, initargs=(args.cache, args.country))
             records = pool.imap(make_sample, jobs, chunksize=4)
         for done, rec in enumerate(records, 1):
             problems = rec["pixel_check_failed"] + [f"{name} cut off" for name in rec["text_clipped"]]
