@@ -55,7 +55,9 @@ def code_cell(source):
             "source": source}
 
 
-def build_notebook(model, train_args, synth=False, india=False):
+def build_notebook(model, train_args, synth=False, india=False, variants=()):
+    """variants: (name, extra args) pairs run one after another in the same notebook, each writing to
+    /kaggle/working/<model>/<name>; one variant failing does not stop the others."""
     script = SCRIPTS[model]
     cells = [code_cell(RUNNER), code_cell(f'run("nvidia-smi")\nrun("pip install -q {PACKAGES}")')]
     modules = [PROJECT / "mapqa" / "convert_mapqa.py", PROJECT / "train" / "common.py",
@@ -64,9 +66,16 @@ def build_notebook(model, train_args, synth=False, india=False):
         cells.append(code_cell(f"%%writefile {path.name}\n{path.read_text()}"))
     cells.append(code_cell('run("python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data")'))
     synth_args = (["--synth", "/kaggle/input"] if synth else []) + (["--india", "/kaggle/input"] if india else [])
-    command = shlex.join(["python", script.name, "--data", "/kaggle/working/data", "--mapqa", "/kaggle/input",
-                          "--out", f"/kaggle/working/{model}", *synth_args, *train_args])
-    cells.append(code_cell(f"run({command!r})"))
+
+    def command(out, extra=()):
+        return shlex.join(["python", script.name, "--data", "/kaggle/working/data", "--mapqa", "/kaggle/input",
+                           "--out", out, *synth_args, *train_args, *extra])
+
+    if not variants:
+        cells.append(code_cell(f"run({command(f'/kaggle/working/{model}')!r})"))
+    for name, extra in variants:
+        cells.append(code_cell(f"try:\n    run({command(f'/kaggle/working/{model}/{name}', extra)!r})\n"
+                               f"except RuntimeError as error:\n    print('variant {name} failed:', error)"))
     return {"cells": cells, "nbformat": 4, "nbformat_minor": 4,
             "metadata": {"kernelspec": {"name": "python3", "display_name": "Python 3", "language": "python"},
                          "language_info": {"name": "python"}}}
@@ -81,11 +90,11 @@ def kaggle(cli, *args, check=True):
 
 
 def push(cli, ref, slug, model, train_args, datasets, machine, timeout, kernel_sources=(), use_synth=False,
-         use_india=False):
+         use_india=False, variants=()):
     """datasets: the MapQA dataset first, then any others (synthetic maps, a saved model)."""
     folder = PROJECT / "kaggle" / "runs" / slug
     folder.mkdir(parents=True, exist_ok=True)
-    notebook = build_notebook(model, train_args, synth=use_synth, india=use_india)
+    notebook = build_notebook(model, train_args, synth=use_synth, india=use_india, variants=variants)
     (folder / "notebook.ipynb").write_text(json.dumps(notebook, indent=1))
     (folder / "kernel-metadata.json").write_text(json.dumps({
         "id": ref, "title": slug, "code_file": "notebook.ipynb", "language": "python", "kernel_type": "notebook",
@@ -149,6 +158,9 @@ def main():
     parser.add_argument("--india-dataset", default="none",
                         help="Kaggle dataset with the synthetic India maps (e.g. sartma/synth-india-choropleth); "
                              "a few are mixed into training and an India test set is scored")
+    parser.add_argument("--variant", action="append", default=[], metavar="NAME:ARGS",
+                        help="run several configurations in one notebook, one after another, e.g. "
+                             "--variant 't1:--tiles 1' --variant 't3:--tiles 3'; ARGS are added to those after --")
     parser.add_argument("--owner", help="Kaggle account that runs the notebook (default: the dataset's owner)")
     parser.add_argument("--from-run", action="append", default=[],
                         help="attach a previous run's output (e.g. mapqa-derender-deplot-1h); Kaggle only "
@@ -183,7 +195,8 @@ def main():
         sources = [s if "/" in s else f"{owner}/{s}" for s in args.from_run]
         push(args.kaggle, ref, slug, args.model, run_args, datasets, args.machine,
              SMOKE_TIMEOUT_SECONDS if args.smoke else None, sources, args.synth_dataset != "none",
-             args.india_dataset != "none")
+             args.india_dataset != "none",
+             [(v.split(":", 1)[0], shlex.split(v.split(":", 1)[1])) for v in args.variant])
         if args.no_wait:
             flags = ((" --smoke" if args.smoke else "") + (f" --tag {args.tag}" if args.tag else "")
                      + (f" --owner {args.owner}" if args.owner else ""))
