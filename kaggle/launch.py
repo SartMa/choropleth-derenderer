@@ -55,7 +55,9 @@ def code_cell(source):
 def build_notebook(model, train_args, synth=False):
     script = SCRIPTS[model]
     cells = [code_cell(RUNNER), code_cell(f'run("nvidia-smi")\nrun("pip install -q {PACKAGES}")')]
-    for path in (PROJECT / "mapqa" / "convert_mapqa.py", PROJECT / "train" / "common.py", script):
+    modules = [PROJECT / "mapqa" / "convert_mapqa.py", PROJECT / "train" / "common.py",
+               PROJECT / "train" / "tiles.py", script]
+    for path in modules:
         cells.append(code_cell(f"%%writefile {path.name}\n{path.read_text()}"))
     cells.append(code_cell('run("python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data")'))
     synth_args = ["--synth", "/kaggle/input"] if synth else []

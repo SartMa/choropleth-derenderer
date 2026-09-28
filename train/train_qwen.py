@@ -31,6 +31,7 @@ from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 from common import (add_common_args, autocast, evaluate_and_save, evaluation_sets, find_mapqa_root,
                     find_saved, set_seed, train_loop, training_records)
+from tiles import busiest_tiles
 
 PROMPT = (
     "Read this choropleth map and return only JSON with these keys: "
@@ -42,6 +43,26 @@ PROMPT = (
 )
 CROP_NOTE = (" The second image is a magnified view of part of the same map; "
              "use it to read the small regions it contains.")
+TILES_NOTE = (" The extra images are magnified views of the most crowded parts of the same map; "
+              "use them to read the small regions they contain.")
+
+
+def tile_images(image, count, zoom, rng=None, jitter=0):
+    """Magnified views of wherever this map's region boundaries are densest.
+
+    The boxes come from the picture alone (train/tiles.py), so nothing here knows which country it is
+    looking at - the same rule finds the north-east of a US map and the small states of any other.
+    """
+    views = []
+    for left, top, right, bottom in busiest_tiles(image, tiles=count):
+        if jitter and rng is not None:
+            shift_x, shift_y = rng.randint(-jitter, jitter), rng.randint(-jitter, jitter)
+            left, right = max(0, left + shift_x), min(image.width, right + shift_x)
+            top, bottom = max(0, top + shift_y), min(image.height, bottom + shift_y)
+        view = image.crop((left, top, right, bottom))
+        views.append(view.resize((max(28, round(view.width * zoom)), max(28, round(view.height * zoom))),
+                                 Image.BICUBIC))
+    return views
 # Matches the attention and MLP layers of the language model, and the MLP layers of the vision encoder.
 LORA_TARGETS = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 # Adds the vision encoder's attention and its patch merger. Qwen2.5-VL fuses vision attention into "qkv"
@@ -176,7 +197,8 @@ def make_crop(image, rng, train):
 
 def chat_text(processor, target=None, images=1):
     content = [{"type": "image"} for _ in range(images)]
-    content.append({"type": "text", "text": PROMPT + (CROP_NOTE if images > 1 else "")})
+    note = "" if images == 1 else (CROP_NOTE if images == 2 else TILES_NOTE)
+    content.append({"type": "text", "text": PROMPT + note})
     messages = [{"role": "user", "content": content}]
     if target is not None:
         messages.append({"role": "assistant", "content": [{"type": "text", "text": target}]})
@@ -190,8 +212,9 @@ class CropDataset(torch.utils.data.Dataset):
     distribution and lets the crop be ablated at scoring time instead of in a second training run.
     """
 
-    def __init__(self, records, dropout):
+    def __init__(self, records, dropout, tiles=0, tile_zoom=3.0):
         self.records, self.dropout = records, dropout
+        self.tiles, self.tile_zoom = tiles, tile_zoom
 
     def __len__(self):
         return len(self.records)
@@ -199,7 +222,12 @@ class CropDataset(torch.utils.data.Dataset):
     def __getitem__(self, i):
         record = self.records[i]
         image = Image.open(record["image_path"]).convert("RGB")
-        images = [image] if random.random() < self.dropout else [image, make_crop(image, random, train=True)]
+        if random.random() < self.dropout:
+            images = [image]                       # the map alone, so single-image use stays in distribution
+        elif self.tiles:
+            images = [image] + tile_images(image, self.tiles, self.tile_zoom, random, jitter=8)
+        else:
+            images = [image, make_crop(image, random, train=True)]
         return images, record["target"]
 
 
@@ -234,7 +262,8 @@ class TrainCollate:
         return enc
 
 
-def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=None, fine_processor=None):
+def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=None, fine_processor=None,
+            tiles=0):
     predictions = []
     began = time.time()
     with torch.no_grad():
@@ -244,9 +273,13 @@ def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=N
             for record in batch:
                 image = Image.open(record["image_path"]).convert("RGB")
                 images.append(image)
-                if crop:
-                    images.append(make_crop(image, random, train=False))
-                texts.append(chat_text(processor, images=2 if crop else 1))
+                extra = []
+                if tiles:
+                    extra = tile_images(image, tiles, args.tile_zoom)
+                elif crop:
+                    extra = [make_crop(image, random, train=False)]
+                images.extend(extra)
+                texts.append(chat_text(processor, images=1 + len(extra)))
             fine = None
             if fine_processor is not None:
                 images, fine_images = two_scale_images(processor, images, args.s2_scale)
@@ -308,6 +341,10 @@ def main():
                         help="share of training examples that keep the full map alone")
     parser.add_argument("--eval-both", action="store_true",
                         help="with --crop, also score without the crop, to separate its effect")
+    parser.add_argument("--tiles", type=int, default=0,
+                        help="magnify this many of the map's most crowded areas and pass them as extra "
+                             "images; the areas are found from the picture, not from known geography")
+    parser.add_argument("--tile-zoom", type=float, default=3.0, help="how much to magnify each tile")
     parser.add_argument("--s2", action="store_true",
                         help="run the vision tower at two scales and fuse them, instead of cropping by hand")
     parser.add_argument("--s2-scale", type=int, default=2,
@@ -362,7 +399,8 @@ def main():
         model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
         model.enable_input_require_grads()
         train = training_records(args, root)
-        dataset = CropDataset(train, args.crop_dropout if args.crop else 1.0)
+        dataset = CropDataset(train, args.crop_dropout if (args.crop or args.tiles) else 1.0,
+                              args.tiles, args.tile_zoom)
         loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers,
                             collate_fn=TrainCollate(processor, fine_processor, args.s2_scale))
 
@@ -381,14 +419,15 @@ def main():
     model.eval()
     if device.type == "cuda":
         torch.cuda.empty_cache()  # release memory held from training before generating
-    variants = [("", args.crop)]
-    if args.crop and args.eval_both:
-        variants.append(("_nocrop", False))  # same weights, crop withheld: the crop's effect on its own
+    variants = [("", args.crop or bool(args.tiles))]
+    if (args.crop or args.tiles) and args.eval_both:
+        variants.append(("_nocrop", False))  # same weights, extra views withheld: their effect on its own
     for name, records in evaluation_sets(args, root):
         for suffix, use_crop in variants:
             print(f"scoring {len(records)} {name} test maps{' without the crop' if suffix else ''}", flush=True)
             predictions = predict(model, processor, records, args, device, amp_dtype, crop=use_crop,
-                                  s2=s2, fine_processor=fine_processor)
+                                  s2=s2, fine_processor=fine_processor,
+                                  tiles=args.tiles if use_crop else 0)
             evaluate_and_save(records, predictions, args.out, name + suffix)
 
 
