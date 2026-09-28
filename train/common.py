@@ -38,6 +38,10 @@ def add_common_args(parser):
     parser.add_argument("--synth", type=Path, help="folder containing the synthetic maps (train.jsonl next to "
                                                    "images/synth_*, searched a few levels); adds them to training "
                                                    "and scoring")
+    parser.add_argument("--india", type=Path, help="folder containing the synthetic India maps (images/synthind_*); "
+                                                   "adds a few to training and scores an India test set")
+    parser.add_argument("--india-train-maps", type=int, default=1000, help="India maps mixed into training")
+    parser.add_argument("--india-eval-maps", type=int, default=100, help="India test maps to score")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--train-maps", type=int, help="train on a random subset of this many MapQA maps")
     parser.add_argument("--synth-train-maps", type=int, help="train on a random subset of this many synthetic maps")
@@ -123,16 +127,23 @@ def training_records(args, mapqa_root):
     if args.synth:
         folder = find_images_root(args.synth, "synth_*")
         synthetic = sample_records(read_split(folder, "train", folder), args.synth_train_maps, args.seed)
-    print(f"training maps: {len(records)} MapQA + {len(synthetic)} synthetic", flush=True)
-    return records + synthetic
+    india = []
+    if args.india:
+        folder = find_images_root(args.india, "synthind_*")
+        india = sample_records(read_split(folder, "train", folder), args.india_train_maps, args.seed)
+    print(f"training maps: {len(records)} MapQA + {len(synthetic)} synthetic + {len(india)} India", flush=True)
+    return records + synthetic + india
 
 
 def evaluation_sets(args, mapqa_root):
-    """(name, records) pairs: MapQA test maps, plus synthetic test maps when --synth is given."""
+    """(name, records) pairs: MapQA test maps, plus synthetic US / India test maps when those are given."""
     sets = [("mapqa", sample_records(read_split(args.data, "test", mapqa_root), args.eval_maps, seed=0))]
     if args.synth:
         folder = find_images_root(args.synth, "synth_*")
         sets.append(("synth", sample_records(read_split(folder, "test", folder), args.synth_eval_maps, seed=0)))
+    if args.india:
+        folder = find_images_root(args.india, "synthind_*")
+        sets.append(("india", sample_records(read_split(folder, "test", folder), args.india_eval_maps, seed=0)))
     if args.eval_limit:
         sets = [(name, records[: args.eval_limit]) for name, records in sets]
     return sets

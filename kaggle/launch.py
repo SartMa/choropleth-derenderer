@@ -14,6 +14,9 @@ Needs the Kaggle CLI (pip install kaggle) and a Kaggle API token in ~/.kaggle.
     python kaggle/launch.py qwen -- --hours 6           # arguments after -- go to the training script
     python kaggle/launch.py qwen --no-wait              # push and exit
     python kaggle/launch.py qwen --wait-only            # wait for the last pushed qwen run, then download
+
+To run on another Kaggle account, set KAGGLE_API_TOKEN to that account's token and pass --owner with its
+username; the datasets stay under their own owner and must be shared with (or public to) that account.
 """
 
 import argparse
@@ -52,7 +55,7 @@ def code_cell(source):
             "source": source}
 
 
-def build_notebook(model, train_args, synth=False):
+def build_notebook(model, train_args, synth=False, india=False):
     script = SCRIPTS[model]
     cells = [code_cell(RUNNER), code_cell(f'run("nvidia-smi")\nrun("pip install -q {PACKAGES}")')]
     modules = [PROJECT / "mapqa" / "convert_mapqa.py", PROJECT / "train" / "common.py",
@@ -60,7 +63,7 @@ def build_notebook(model, train_args, synth=False):
     for path in modules:
         cells.append(code_cell(f"%%writefile {path.name}\n{path.read_text()}"))
     cells.append(code_cell('run("python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data")'))
-    synth_args = ["--synth", "/kaggle/input"] if synth else []
+    synth_args = (["--synth", "/kaggle/input"] if synth else []) + (["--india", "/kaggle/input"] if india else [])
     command = shlex.join(["python", script.name, "--data", "/kaggle/working/data", "--mapqa", "/kaggle/input",
                           "--out", f"/kaggle/working/{model}", *synth_args, *train_args])
     cells.append(code_cell(f"run({command!r})"))
@@ -77,11 +80,12 @@ def kaggle(cli, *args, check=True):
     return output
 
 
-def push(cli, ref, slug, model, train_args, datasets, machine, timeout, kernel_sources=(), use_synth=False):
+def push(cli, ref, slug, model, train_args, datasets, machine, timeout, kernel_sources=(), use_synth=False,
+         use_india=False):
     """datasets: the MapQA dataset first, then any others (synthetic maps, a saved model)."""
     folder = PROJECT / "kaggle" / "runs" / slug
     folder.mkdir(parents=True, exist_ok=True)
-    notebook = build_notebook(model, train_args, synth=use_synth)
+    notebook = build_notebook(model, train_args, synth=use_synth, india=use_india)
     (folder / "notebook.ipynb").write_text(json.dumps(notebook, indent=1))
     (folder / "kernel-metadata.json").write_text(json.dumps({
         "id": ref, "title": slug, "code_file": "notebook.ipynb", "language": "python", "kernel_type": "notebook",
@@ -142,6 +146,10 @@ def main():
     parser.add_argument("--dataset", default="sartma/mapqa-s", help="Kaggle dataset with MapQA_S")
     parser.add_argument("--synth-dataset", default="sartma/synth-usa-choropleth",
                         help="Kaggle dataset with synth_usa/; 'none' trains on MapQA only")
+    parser.add_argument("--india-dataset", default="none",
+                        help="Kaggle dataset with the synthetic India maps (e.g. sartma/synth-india-choropleth); "
+                             "a few are mixed into training and an India test set is scored")
+    parser.add_argument("--owner", help="Kaggle account that runs the notebook (default: the dataset's owner)")
     parser.add_argument("--from-run", action="append", default=[],
                         help="attach a previous run's output (e.g. mapqa-derender-deplot-1h); Kaggle only "
                              "allows this for runs that finished successfully")
@@ -165,17 +173,20 @@ def main():
 
     tag = args.tag or ("smoke" if args.smoke else None)
     slug = f"mapqa-derender-{args.model}" + (f"-{tag}" if tag else "")
-    ref = f"{args.dataset.split('/')[0]}/{slug}"
+    ref = f"{args.owner or args.dataset.split('/')[0]}/{slug}"
     if not args.wait_only:
         run_args = (SMOKE_ARGS if args.smoke else []) + train_args
         owner = args.dataset.split("/")[0]
         datasets = [args.dataset] + ([] if args.synth_dataset == "none" else [args.synth_dataset])
+        datasets += [] if args.india_dataset == "none" else [args.india_dataset]
         datasets += [d if "/" in d else f"{owner}/{d}" for d in args.extra_dataset]
         sources = [s if "/" in s else f"{owner}/{s}" for s in args.from_run]
         push(args.kaggle, ref, slug, args.model, run_args, datasets, args.machine,
-             SMOKE_TIMEOUT_SECONDS if args.smoke else None, sources, args.synth_dataset != "none")
+             SMOKE_TIMEOUT_SECONDS if args.smoke else None, sources, args.synth_dataset != "none",
+             args.india_dataset != "none")
         if args.no_wait:
-            flags = (" --smoke" if args.smoke else "") + (f" --tag {args.tag}" if args.tag else "")
+            flags = ((" --smoke" if args.smoke else "") + (f" --tag {args.tag}" if args.tag else "")
+                     + (f" --owner {args.owner}" if args.owner else ""))
             print(f"pushed; later run: python kaggle/launch.py {args.model}{flags} --wait-only")
             return
         time.sleep(30)

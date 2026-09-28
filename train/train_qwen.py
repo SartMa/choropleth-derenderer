@@ -41,6 +41,17 @@ PROMPT = (
     '"values" (all 50 US states by state code: a number for a continuous legend, '
     "the index of the state's range for a discrete legend, null for no data)."
 )
+# India maps list 32 states and union territories; the four smallest UTs are drawn but not listed (see
+# synth/generate_maps.py). Everything else about the task is the same.
+INDIA_PROMPT = PROMPT.replace("all 50 US states by state code",
+                              "all 32 Indian states and union territories by state code")
+assert INDIA_PROMPT != PROMPT
+
+
+def prompt_for(record):
+    return INDIA_PROMPT if record.get("id", "").startswith("synthind_") else PROMPT
+
+
 CROP_NOTE = (" The second image is a magnified view of part of the same map; "
              "use it to read the small regions it contains.")
 TILES_NOTE = (" The extra images are magnified views of the parts of the same map holding the smallest "
@@ -312,13 +323,13 @@ def tiles_note(boxes):
     return TILES_NOTE + "".join(places)
 
 
-def chat_text(processor, target=None, images=1, boxes=None):
+def chat_text(processor, target=None, images=1, boxes=None, prompt=PROMPT):
     content = [{"type": "image"} for _ in range(images)]
     if boxes:
         note = tiles_note(boxes)
     else:
         note = "" if images == 1 else (CROP_NOTE if images == 2 else TILES_NOTE)
-    content.append({"type": "text", "text": PROMPT + note})
+    content.append({"type": "text", "text": prompt + note})
     messages = [{"role": "user", "content": content}]
     if target is not None:
         messages.append({"role": "assistant", "content": [{"type": "text", "text": target}]})
@@ -352,7 +363,7 @@ class CropDataset(torch.utils.data.Dataset):
             images = [image] + views
         else:
             images = [image, make_crop(image, random, train=True)]
-        return images, boxes, record["target"], fuse
+        return images, boxes, record["target"], fuse, prompt_for(record)
 
 
 class TrainCollate:
@@ -368,11 +379,11 @@ class TrainCollate:
     def __call__(self, batch):
         texts, images = [], []
         fused = []
-        for index, (sample_images, boxes, target, fuse) in enumerate(batch):
+        for index, (sample_images, boxes, target, fuse, prompt) in enumerate(batch):
             if fuse:
                 fused.append((index, sample_images[0]))
             images.extend(sample_images)
-            texts.append(chat_text(self.processor, target, len(sample_images), boxes))
+            texts.append(chat_text(self.processor, target, len(sample_images), boxes, prompt))
         fine = None
         if self.fine_processor is not None:
             images, fine_images = two_scale_images(self.processor, images, self.scale)
@@ -395,39 +406,54 @@ class TrainCollate:
 
 def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=None, fine_processor=None,
             tiles=0, fusion=None):
+    def generate(batch):
+        """Predictions for one batch; on running out of GPU memory, the batch is split in two and retried,
+        so a long run is not lost to one oversized batch at the very end."""
+        try:
+            return generate_batch(batch)
+        except torch.cuda.OutOfMemoryError:
+            if len(batch) == 1:
+                raise
+            torch.cuda.empty_cache()
+            half = len(batch) // 2
+            print(f"out of memory on a batch of {len(batch)}; retrying in halves", flush=True)
+            return generate(batch[:half]) + generate(batch[half:])
+
+    def generate_batch(batch):
+        texts, images, fused = [], [], []
+        for record in batch:
+            image = Image.open(record["image_path"]).convert("RGB")
+            images.append(image)
+            extra, boxes = [], []
+            if tiles and fusion is not None:
+                fused.append((len(texts), image))
+            elif tiles:
+                extra, boxes = tile_images(image, tiles, args.tile_zoom)
+            elif crop:
+                extra = [make_crop(image, random, train=False)]
+            images.extend(extra)
+            texts.append(chat_text(processor, images=1 + len(extra), boxes=boxes, prompt=prompt_for(record)))
+        fine = None
+        if fine_processor is not None:
+            images, fine_images = two_scale_images(processor, images, args.s2_scale)
+            fine = fine_processor.image_processor(images=fine_images, return_tensors="pt")
+        enc = processor(text=texts, images=images, padding=True, return_tensors="pt").to(device)
+        if fused:
+            seen = fusion_inputs(processor, fused, tiles, args.fusion_cells, args.fusion_zoom)
+            fusion.pending = (seen["fx_pixel_values"].to(device), seen["fx_grid_thw"].to(device),
+                              seen["fx_where"].to(device))
+        if fine is not None:
+            s2.pending = (fine["pixel_values"].to(device), fine["image_grid_thw"].to(device))
+        with autocast(device, amp_dtype):
+            ids = model.generate(**enc, max_new_tokens=args.max_new_tokens, do_sample=False,
+                                 repetition_penalty=1.0, use_cache=True)
+        return processor.batch_decode(ids[:, enc["input_ids"].shape[1]:], skip_special_tokens=True)
+
     predictions = []
     began = time.time()
     with torch.no_grad():
         for start in range(0, len(records), args.eval_batch_size):
-            batch = records[start : start + args.eval_batch_size]
-            texts, images, fused = [], [], []
-            for record in batch:
-                image = Image.open(record["image_path"]).convert("RGB")
-                images.append(image)
-                extra, boxes = [], []
-                if tiles and fusion is not None:
-                    fused.append((len(texts), image))
-                elif tiles:
-                    extra, boxes = tile_images(image, tiles, args.tile_zoom)
-                elif crop:
-                    extra = [make_crop(image, random, train=False)]
-                images.extend(extra)
-                texts.append(chat_text(processor, images=1 + len(extra), boxes=boxes))
-            fine = None
-            if fine_processor is not None:
-                images, fine_images = two_scale_images(processor, images, args.s2_scale)
-                fine = fine_processor.image_processor(images=fine_images, return_tensors="pt")
-            enc = processor(text=texts, images=images, padding=True, return_tensors="pt").to(device)
-            if fused:
-                seen = fusion_inputs(processor, fused, tiles, args.fusion_cells, args.fusion_zoom)
-                fusion.pending = (seen["fx_pixel_values"].to(device), seen["fx_grid_thw"].to(device),
-                                  seen["fx_where"].to(device))
-            if fine is not None:
-                s2.pending = (fine["pixel_values"].to(device), fine["image_grid_thw"].to(device))
-            with autocast(device, amp_dtype):
-                ids = model.generate(**enc, max_new_tokens=args.max_new_tokens, do_sample=False,
-                                     repetition_penalty=1.0, use_cache=True)
-            predictions += processor.batch_decode(ids[:, enc["input_ids"].shape[1]:], skip_special_tokens=True)
+            predictions += generate(records[start : start + args.eval_batch_size])
             print(f"predicted {len(predictions)}/{len(records)} ({(time.time() - began) / 60:.1f} min)", flush=True)
     return predictions
 
