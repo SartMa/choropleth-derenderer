@@ -120,9 +120,21 @@ the exception because it gets its own direct labels on every token.
 
 ## 7. Caveats
 
-- **The picker beating its teacher is not fully explained.** It was trained to copy the rule. A likely reason
-  is that it learned "small states are usually in the north-east" from US-only maps, which helps here but
-  may not carry to other countries. Untested.
+- **The picker did not memorise the north-east's position** (checked on 200 test maps, no retraining):
+
+  | Maps shown | Rule's 2 tiles hold | Picker's 2 tiles hold | Picker's first tile top-right |
+  |---|---|---|---|
+  | US, as drawn | 79% of small regions | 68% | 100% (the north-east is there) |
+  | US, mirrored left-right | 76% | 68% | 0.5% |
+  | US, flipped top-bottom | 71% | 61% | 2% |
+  | US, rotated 180 | 71% | 63% | 0% |
+  | India (never seen in picker training) | 64% | 53% | 99% (India's small north-east states are there) |
+
+  When the cluster moves, the picker's tiles move with it, and it keeps the same ~10-point gap to the rule
+  on every version and on India. What it has not been shown to rule out: that it learned the *look* of
+  small-state clusters rather than smallness in general (mirrored US shapes are still US shapes; India is
+  the partial answer). Why it beats the rule end to end while holding fewer small regions is still open:
+  its tiles hold fewer regions overall but land on Rhode Island more often.
 - **One geography.** Everything above is US maps. India maps exist (synthetic, 32 regions) but the rule
   misses Delhi and Goa there, and the picker has not been tried on them.
 - **400 test maps**, one random sample, the same for every row. Paired differences above are solid; the
