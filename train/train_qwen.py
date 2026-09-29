@@ -30,8 +30,13 @@ from torch.utils.data import DataLoader
 from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration
 
 from common import (add_common_args, autocast, evaluate_and_save, evaluation_sets, find_mapqa_root,
-                    find_saved, set_seed, train_loop, training_records)
-from tiles import busiest_tiles
+                    find_saved, read_split, sample_records, set_seed, train_loop, training_records)
+
+
+def training_records_mapqa(args, root):
+    """MapQA training maps only: what the picker is taught on (the rule's labels are tuned to these)."""
+    return read_split(args.data, "train", root)
+from tiles import boundary_mask, busiest_tiles, map_body, small_regions
 
 PROMPT = (
     "Read this choropleth map and return only JSON with these keys: "
@@ -59,14 +64,15 @@ TILES_NOTE = (" The extra images are magnified views of the parts of the same ma
               "as a fraction of its width and height:")
 
 
-def tile_images(image, count, zoom, rng=None, jitter=0):
+def tile_images(image, count, zoom, rng=None, jitter=0, boxes=None):
     """Magnified views of wherever this map's region boundaries are densest.
 
     The boxes come from the picture alone (train/tiles.py), so nothing here knows which country it is
     looking at - the same rule finds the north-east of a US map and the small states of any other.
     """
+    picked = busiest_tiles(image, tiles=count) if boxes is None else boxes
     views, boxes = [], []
-    for left, top, right, bottom in busiest_tiles(image, tiles=count):
+    for left, top, right, bottom in picked:
         if jitter and rng is not None:
             shift_x, shift_y = rng.randint(-jitter, jitter), rng.randint(-jitter, jitter)
             left, right = max(0, left + shift_x), min(image.width, right + shift_x)
@@ -225,14 +231,19 @@ class FusionVisual(torch.nn.Module):
     before. The output layer starts at zero, so an untrained fusion changes nothing.
     """
 
-    def __init__(self, visual, cells, zoom, reduced=256):
+    def __init__(self, visual, cells, zoom, reduced=256, init_std=0.0):
         super().__init__()
         self.visual, self.cells, self.zoom = visual, cells, zoom
         width = visual.config.out_hidden_size
         self.reduce = torch.nn.Linear(width, reduced)
         self.out = torch.nn.Linear(zoom * zoom * reduced, width, bias=False)
         with torch.no_grad():
-            self.out.weight.zero_()
+            # Exactly zero keeps an untrained fusion identical to the baseline, but it also starves the
+            # first layer: its gradient passes through this one. A small init_std lets both learn at once.
+            if init_std:
+                self.out.weight.normal_(0.0, init_std)
+            else:
+                self.out.weight.zero_()
         self.pending = None
 
     def __getattr__(self, name):  # dtype, spatial_merge_size, config and friends come from the tower
@@ -267,16 +278,153 @@ class FusionVisual(torch.nn.Module):
         return coarse + delta.to(coarse.dtype)
 
 
-def attach_fusion(model, cells, zoom, device):
+def attach_fusion(model, cells, zoom, device, init_std=0.0):
     """Replace the vision tower with the fusing version, wherever it sits in the wrapped model."""
     for module in model.modules():
         if "visual" in module._modules and not isinstance(module._modules["visual"], (S2Visual, FusionVisual)):
-            wrapper = FusionVisual(module._modules["visual"], cells, zoom)
+            wrapper = FusionVisual(module._modules["visual"], cells, zoom, init_std=init_std)
             wrapper.reduce.to(device=device, dtype=torch.float32).requires_grad_(True)
             wrapper.out.to(device=device, dtype=torch.float32).requires_grad_(True)
             module._modules["visual"] = wrapper
             return wrapper
     raise SystemExit("could not find the vision tower to attach the fusion to")
+
+
+class TokenPicker(torch.nn.Module):
+    """A small MLP that reads each of the map's vision tokens and scores "a region too small to read is here".
+
+    It is trained on labels from the rule in train/tiles.py, so at test time the model finds its own places
+    to magnify from the tokens it has already computed, with no image-processing code in the loop.
+    """
+
+    def __init__(self, width, hidden=256):
+        super().__init__()
+        self.net = torch.nn.Sequential(torch.nn.Linear(width, hidden), torch.nn.GELU(), torch.nn.Linear(hidden, 1))
+
+    def forward(self, tokens):
+        return self.net(tokens).squeeze(-1)
+
+
+PICKER_TILE_FRACTION = 0.12  # tile side as a share of image width: about the rule's tiles on MapQA maps
+
+
+def vision_tower(model):
+    for module in model.modules():
+        if "visual" in module._modules:
+            return module._modules["visual"]
+    raise SystemExit("could not find the vision tower")
+
+
+def map_tokens(model, processor, image, device, amp_dtype):
+    """The tower's tokens for one map, and the (rows, columns) of the token grid they lie on, row by row."""
+    tower = vision_tower(model)
+    seen = processor.image_processor(images=[image], return_tensors="pt")
+    _, height, width = seen["image_grid_thw"][0].tolist()
+    merge = processor.image_processor.merge_size
+    with torch.no_grad(), autocast(device, amp_dtype):
+        tokens = tower(seen["pixel_values"].to(device).type(tower.dtype), grid_thw=seen["image_grid_thw"].to(device))
+    return tokens.float(), (height // merge, width // merge)
+
+
+def token_labels(image, rows, columns):
+    """1 for each token whose square of the map holds the centre of a region smaller than one token."""
+    body = map_body(image)
+    centres, _ = small_regions(image, body, boundary_mask(image, body))
+    labels = torch.zeros(rows, columns)
+    for y, x in centres:
+        labels[min(rows - 1, int(y / image.height * rows)), min(columns - 1, int(x / image.width * columns))] = 1
+    return labels.flatten()
+
+
+def picker_boxes(scores, rows, columns, image, count):
+    """Tiles centred on the best-scoring 3x3 blocks of tokens, best first, not overlapping."""
+    grid = torch.sigmoid(scores).view(1, 1, rows, columns)
+    blocks = torch.nn.functional.avg_pool2d(grid, 3, stride=1, padding=1, count_include_pad=False)[0, 0].clone()
+    side = PICKER_TILE_FRACTION * image.width
+    boxes = []
+    for _ in range(count):
+        row, column = divmod(int(blocks.argmax()), columns)
+        centre_x, centre_y = (column + 0.5) / columns * image.width, (row + 0.5) / rows * image.height
+        left = int(min(max(0, centre_x - side / 2), image.width - side))
+        top = int(min(max(0, centre_y - side / 2), image.height - side))
+        boxes.append((left, top, int(left + side), int(top + side)))
+        reach_rows = max(1, round(side / image.height * rows))
+        reach_columns = max(1, round(side / image.width * columns))
+        blocks[max(0, row - reach_rows): row + reach_rows + 1, max(0, column - reach_columns): column + reach_columns + 1] = -1
+    return boxes
+
+
+def train_picker(model, processor, records, device, amp_dtype, out_dir, negatives=40, epochs=8, seed=0):
+    """Label tokens with the rule, train the picker on them, and report how well it agrees with the rule.
+
+    Every labelled token is kept, plus a sample of the unlabelled ones, so the stored features stay small.
+    The last tenth of the maps is held out: on those, the picker's first tile is compared with the rule's.
+    """
+    rng = random.Random(seed)
+    split = max(1, len(records) // 10)
+    held_out, training = records[:split], records[split:]
+    features, labels = [], []
+    began = time.time()
+    for n, record in enumerate(training, 1):
+        image = Image.open(record["image_path"]).convert("RGB")
+        tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
+        truth = token_labels(image, rows, columns)
+        positive = truth.nonzero().flatten().tolist()
+        negative = (truth == 0).nonzero().flatten().tolist()
+        keep = positive + rng.sample(negative, min(negatives, len(negative)))
+        features.append(tokens[keep].cpu())
+        labels.append(truth[keep])
+        if n % 500 == 0:
+            print(f"picker: labelled {n}/{len(training)} maps ({(time.time() - began) / 60:.1f} min)", flush=True)
+    features, labels = torch.cat(features), torch.cat(labels)
+    picker = TokenPicker(features.shape[1]).to(device)
+    optimizer = torch.optim.AdamW(picker.parameters(), lr=1e-3, weight_decay=0.01)
+    loss_fn = torch.nn.BCEWithLogitsLoss(pos_weight=((labels == 0).sum() / labels.sum().clamp(min=1)).to(device))
+    for epoch in range(epochs):
+        order = torch.randperm(len(labels))
+        total = 0.0
+        for start in range(0, len(order), 1024):
+            batch = order[start: start + 1024]
+            loss = loss_fn(picker(features[batch].to(device)), labels[batch].to(device))
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            total += loss.item() * len(batch)
+        print(f"picker epoch {epoch + 1}: loss {total / len(labels):.4f}", flush=True)
+    picker.eval()
+
+    agree, found, wanted = 0, 0, 0
+    for record in held_out:
+        image = Image.open(record["image_path"]).convert("RGB")
+        tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
+        with torch.no_grad():
+            scores = picker(tokens).cpu()
+        truth = token_labels(image, rows, columns)
+        top = scores.topk(int(truth.sum())).indices if truth.sum() else torch.tensor([], dtype=torch.long)
+        found += int(truth[top].sum())
+        wanted += int(truth.sum())
+        mine, rule = picker_boxes(scores, rows, columns, image, 1)[0], busiest_tiles(image, tiles=1)
+        if rule:
+            rule = rule[0]
+            agree += int(min(mine[2], rule[2]) > max(mine[0], rule[0]) and min(mine[3], rule[3]) > max(mine[1], rule[1]))
+    report = {"training_maps": len(training), "held_out_maps": len(held_out), "tokens": len(labels),
+              "positive_tokens": int(labels.sum()),
+              "held_out_small_region_tokens_found": found / max(1, wanted),
+              "held_out_first_tile_overlaps_rule": agree / len(held_out)}
+    print("picker:", json.dumps(report), flush=True)
+    (out_dir / "picker_report.json").write_text(json.dumps(report, indent=1))
+    torch.save(picker.state_dict(), out_dir / "picker.pt")
+    return picker
+
+
+def picker_tiles(model, processor, picker, device, amp_dtype):
+    """A box-picking function for tile_images that uses the learned picker instead of the rule."""
+    def pick(image, count):
+        tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
+        with torch.no_grad():
+            scores = picker(tokens).cpu()
+        return picker_boxes(scores, rows, columns, image, count)
+    return pick
 
 
 # Boxes in MapQA's 700x500 albers-usa layout; scaled if a map is a different size. NE_BOX was measured
@@ -405,7 +553,7 @@ class TrainCollate:
 
 
 def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=None, fine_processor=None,
-            tiles=0, fusion=None):
+            tiles=0, fusion=None, pick=None):
     def generate(batch):
         """Predictions for one batch; on running out of GPU memory, the batch is split in two and retried,
         so a long run is not lost to one oversized batch at the very end."""
@@ -428,7 +576,8 @@ def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=N
             if tiles and fusion is not None:
                 fused.append((len(texts), image))
             elif tiles:
-                extra, boxes = tile_images(image, tiles, args.tile_zoom)
+                chosen = pick(image, tiles) if pick else None
+                extra, boxes = tile_images(image, tiles, args.tile_zoom, boxes=chosen)
             elif crop:
                 extra = [make_crop(image, random, train=False)]
             images.extend(extra)
@@ -511,6 +660,14 @@ def main():
     parser.add_argument("--fusion", action="store_true",
                         help="with --tiles: add each tile's close-up tokens into the map's own tokens instead of "
                              "passing the tile as an extra image, so the token count does not grow")
+    parser.add_argument("--fusion-lr", type=float,
+                        help="learning rate for the fusion weights alone (default: --lr); they start from nothing")
+    parser.add_argument("--fusion-init-std", type=float, default=0.0,
+                        help="start the fusion output layer at this small spread instead of exactly zero")
+    parser.add_argument("--picker", choices=["rule", "mlp"], default="rule",
+                        help="mlp: train a small network on the vision tokens to pick the tiles, and score with "
+                             "both the rule's tiles and the network's, on the same weights")
+    parser.add_argument("--picker-maps", type=int, default=2000, help="training maps used to teach the picker")
     parser.add_argument("--fusion-cells", type=int, default=3,
                         help="a fused tile covers this many coarse tokens on each side")
     parser.add_argument("--fusion-zoom", type=int, default=3,
@@ -559,7 +716,7 @@ def main():
         raise SystemExit("--fusion needs --tiles N and cannot be combined with --s2")
     fusion = None
     if args.fusion:
-        fusion = attach_fusion(model, args.fusion_cells, args.fusion_zoom, device)
+        fusion = attach_fusion(model, args.fusion_cells, args.fusion_zoom, device, args.fusion_init_std)
         added = sum(p.numel() for p in (*fusion.reduce.parameters(), *fusion.out.parameters()))
         print(f"fusion: {args.tiles} tiles of {args.fusion_cells}x{args.fusion_cells} coarse tokens at "
               f"{args.fusion_zoom}x, {added:,} trainable weights", flush=True)
@@ -595,8 +752,15 @@ def main():
                 fusion.pending = None if pixels is None else (pixels, grid, where)
             return model(**batch).loss
 
+        groups = None
+        if fusion is not None and args.fusion_lr:
+            own = [*fusion.reduce.parameters(), *fusion.out.parameters()]
+            ids = {id(p) for p in own}
+            rest = [p for p in model.parameters() if p.requires_grad and id(p) not in ids]
+            groups = [{"params": rest}, {"params": own, "lr": args.fusion_lr}]
+            print(f"fusion weights learn at {args.fusion_lr}, the rest at {args.lr}", flush=True)
         print(f"{len(loader)} batches per epoch", flush=True)
-        train_loop(model, loader, args, forward, args.out, amp_dtype)
+        train_loop(model, loader, args, forward, args.out, amp_dtype, groups)
         model.save_pretrained(args.out / "adapter")
         if s2 is not None:  # the fusion is not part of the LoRA adapter, so it is saved beside it
             torch.save(s2.fuse.state_dict(), args.out / "s2_fuse.pt")
@@ -607,15 +771,22 @@ def main():
     model.eval()
     if device.type == "cuda":
         torch.cuda.empty_cache()  # release memory held from training before generating
-    variants = [("", args.crop or bool(args.tiles))]
+    variants = [("", args.crop or bool(args.tiles), None)]
+    if args.picker == "mlp":
+        if not args.tiles or fusion is not None:
+            raise SystemExit("--picker mlp picks tiles for --tiles N, passed as images")
+        teach = sample_records(training_records_mapqa(args, root), args.picker_maps, seed=args.seed + 1)
+        picker = train_picker(model, processor, teach, device, amp_dtype, args.out)
+        variants.append(("_mlp", True, picker_tiles(model, processor, picker, device, amp_dtype)))
     if (args.crop or args.tiles) and args.eval_both:
-        variants.append(("_nocrop", False))  # same weights, extra views withheld: their effect on its own
+        variants.append(("_nocrop", False, None))  # same weights, extra views withheld: their effect on its own
     for name, records in evaluation_sets(args, root):
-        for suffix, use_crop in variants:
-            print(f"scoring {len(records)} {name} test maps{' without the crop' if suffix else ''}", flush=True)
+        for suffix, use_crop, pick in variants:
+            print(f"scoring {len(records)} {name} test maps{' without the crop' if suffix == '_nocrop' else ''}"
+                  f"{' with the learned picker' if pick else ''}", flush=True)
             predictions = predict(model, processor, records, args, device, amp_dtype, crop=use_crop,
                                   s2=s2, fine_processor=fine_processor,
-                                  tiles=args.tiles if use_crop else 0, fusion=fusion)
+                                  tiles=args.tiles if use_crop else 0, fusion=fusion, pick=pick)
             evaluate_and_save(records, predictions, args.out, name + suffix)
 
 

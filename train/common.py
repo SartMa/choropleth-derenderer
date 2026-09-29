@@ -169,14 +169,15 @@ def autocast(device, amp_dtype):
     return torch.autocast(device.type, dtype=amp_dtype) if amp_dtype else contextlib.nullcontext()
 
 
-def train_loop(model, loader, args, forward, out_dir, amp_dtype=None):
+def train_loop(model, loader, args, forward, out_dir, amp_dtype=None, groups=None):
     """AdamW with warmup + cosine decay. Stops after --epochs or --hours, whichever comes first.
 
     forward(batch) returns the loss. After 20 updates the schedule is shortened, if needed, so the
-    learning rate still decays to zero within the time budget.
+    learning rate still decays to zero within the time budget. groups: optional AdamW parameter groups,
+    for weights that need their own learning rate; the warmup and decay apply to every group alike.
     """
     params = [p for p in model.parameters() if p.requires_grad]
-    optimizer = torch.optim.AdamW(params, lr=args.lr, weight_decay=args.weight_decay)
+    optimizer = torch.optim.AdamW(groups or params, lr=args.lr, weight_decay=args.weight_decay)
     schedule = {"total": max(1, args.epochs * math.ceil(len(loader) / args.grad_accum))}
 
     def lr_factor(update):
