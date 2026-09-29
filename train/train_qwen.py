@@ -434,6 +434,50 @@ def train_picker(model, processor, records, device, amp_dtype, out_dir, epochs=8
     return picker
 
 
+def probe_picker(model, processor, picker, sets, device, amp_dtype, out_dir):
+    """Does the picker follow small regions, or remember where they usually are?
+
+    Every MapQA map is also shown mirrored and flipped, which moves the north-east cluster to another
+    corner. The rule reads only pixels, so it follows the regions wherever they go and is the reference.
+    For each version: the share of the map's small regions inside the picker's two tiles against the rule's
+    two tiles, and how often the picker's first tile still sits in the top-right quarter, where the
+    north-east is on a normally drawn US map. India maps (as drawn) are a geography it never saw.
+    """
+    flips = {"as drawn": lambda image: image,
+             "mirrored left-right": lambda image: image.transpose(Image.FLIP_LEFT_RIGHT),
+             "flipped top-bottom": lambda image: image.transpose(Image.FLIP_TOP_BOTTOM),
+             "rotated 180": lambda image: image.transpose(Image.ROTATE_180)}
+    report = {}
+    for name, records in sets:
+        conditions = flips if name != "india" else {"as drawn": flips["as drawn"]}
+        for label, flip in conditions.items():
+            rule_share, picker_share, top_right = [], [], 0
+            for record in records:
+                image = flip(Image.open(record["image_path"]).convert("RGB"))
+                body = map_body(image)
+                centres, _ = small_regions(image, body, boundary_mask(image, body))
+                if not len(centres):
+                    continue
+                tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
+                with torch.no_grad():
+                    counts = picker(tokens).exp().cpu()
+                mine = picker_boxes(counts, rows, columns, image, 2)
+                rule = busiest_tiles(image, tiles=2)
+                rule_share.append(len(set().union(*[covered(b, centres) for b in rule])) / len(centres))
+                picker_share.append(len(set().union(*[covered(b, centres) for b in mine])) / len(centres))
+                x = (mine[0][0] + mine[0][2]) / 2 / image.width
+                y = (mine[0][1] + mine[0][3]) / 2 / image.height
+                top_right += int(x > 0.5 and y < 0.5)
+            maps = max(1, len(rule_share))
+            report[f"{name}, {label}"] = {
+                "maps": len(rule_share),
+                "rule_tiles_hold": sum(rule_share) / maps,
+                "picker_tiles_hold": sum(picker_share) / maps,
+                "picker_first_tile_in_top_right_quarter": top_right / maps}
+            print(f"probe {name}, {label}: {json.dumps(report[f'{name}, {label}'])}", flush=True)
+    (out_dir / "picker_probe.json").write_text(json.dumps(report, indent=1))
+
+
 def picker_tiles(model, processor, picker, device, amp_dtype):
     """A box-picking function for tile_images that uses the learned picker instead of the rule."""
     def pick(image, count):
@@ -685,6 +729,9 @@ def main():
                         help="mlp: train a small network on the vision tokens to pick the tiles, and score with "
                              "both the rule's tiles and the network's, on the same weights")
     parser.add_argument("--picker-maps", type=int, default=2000, help="training maps used to teach the picker")
+    parser.add_argument("--probe-picker", type=Path,
+                        help="a folder holding a trained picker.pt: check where it puts tiles on mirrored and "
+                             "flipped maps (and India maps with --india), then stop; nothing is generated")
     parser.add_argument("--fusion-cells", type=int, default=3,
                         help="a fused tile covers this many coarse tokens on each side")
     parser.add_argument("--fusion-zoom", type=int, default=3,
@@ -788,6 +835,14 @@ def main():
     model.eval()
     if device.type == "cuda":
         torch.cuda.empty_cache()  # release memory held from training before generating
+    if args.probe_picker:
+        picker = TokenPicker(vision_tower(model).config.out_hidden_size).to(device)
+        weights = Path(find_saved(args.probe_picker, "picker.pt")) / "picker.pt"
+        picker.load_state_dict(torch.load(weights, map_location=device))
+        picker.eval()
+        probe_picker(model, processor, picker, evaluation_sets(args, root), device, amp_dtype, args.out)
+        return
+
     variants = [("", args.crop or bool(args.tiles), None)]
     if args.picker == "mlp":
         if not args.tiles or fusion is not None:
