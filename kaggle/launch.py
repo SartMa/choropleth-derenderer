@@ -103,7 +103,10 @@ def push(cli, ref, slug, model, train_args, datasets, machine, timeout, kernel_s
         "kernel_sources": list(kernel_sources),
         "model_sources": []}, indent=1))
     extra = ["-t", str(timeout)] if timeout else []
-    print(kaggle(cli, "kernels", "push", "-p", str(folder), *extra))
+    output = kaggle(cli, "kernels", "push", "-p", str(folder), *extra)
+    print(output)
+    if "error" in output.lower():  # the CLI can report a refused push and still exit 0
+        sys.exit("push refused; nothing is running")
 
 
 def wait(cli, ref, every_minutes, just_pushed=False):

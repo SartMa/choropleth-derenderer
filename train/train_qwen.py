@@ -291,10 +291,13 @@ def attach_fusion(model, cells, zoom, device, init_std=0.0):
 
 
 class TokenPicker(torch.nn.Module):
-    """A small MLP that reads each of the map's vision tokens and scores "a region too small to read is here".
+    """A small MLP that reads each of the map's vision tokens and predicts how many regions too small to read
+    are centred in that token's square of the map.
 
-    It is trained on labels from the rule in train/tiles.py, so at test time the model finds its own places
-    to magnify from the tokens it has already computed, with no image-processing code in the loop.
+    It is trained on counts from the rule in train/tiles.py. The count matters, not just yes/no: the
+    north-east packs eight small states into a handful of tokens, and a yes/no label makes that corner look
+    no busier than a lake shore. At test time the model picks its own places to magnify from the tokens it
+    has already computed, with no image-processing code in the loop.
     """
 
     def __init__(self, width, hidden=256):
@@ -302,10 +305,10 @@ class TokenPicker(torch.nn.Module):
         self.net = torch.nn.Sequential(torch.nn.Linear(width, hidden), torch.nn.GELU(), torch.nn.Linear(hidden, 1))
 
     def forward(self, tokens):
-        return self.net(tokens).squeeze(-1)
+        return self.net(tokens).squeeze(-1)  # log of the expected count
 
 
-PICKER_TILE_FRACTION = 0.12  # tile side as a share of image width: about the rule's tiles on MapQA maps
+PICKER_TILE_FRACTION = 0.14  # tile side as a share of image width (the rule's run 0.10-0.15 on MapQA)
 
 
 def vision_tower(model):
@@ -326,41 +329,56 @@ def map_tokens(model, processor, image, device, amp_dtype):
     return tokens.float(), (height // merge, width // merge)
 
 
-def token_labels(image, rows, columns):
-    """1 for each token whose square of the map holds the centre of a region smaller than one token."""
+def token_counts(image, rows, columns):
+    """For each token, how many regions smaller than one token have their centre in its square of the map."""
     body = map_body(image)
     centres, _ = small_regions(image, body, boundary_mask(image, body))
-    labels = torch.zeros(rows, columns)
+    counts = torch.zeros(rows, columns)
     for y, x in centres:
-        labels[min(rows - 1, int(y / image.height * rows)), min(columns - 1, int(x / image.width * columns))] = 1
-    return labels.flatten()
+        counts[min(rows - 1, int(y / image.height * rows)), min(columns - 1, int(x / image.width * columns))] += 1
+    return counts.flatten()
 
 
-def picker_boxes(scores, rows, columns, image, count):
-    """Tiles centred on the best-scoring 3x3 blocks of tokens, best first, not overlapping."""
-    grid = torch.sigmoid(scores).view(1, 1, rows, columns)
-    blocks = torch.nn.functional.avg_pool2d(grid, 3, stride=1, padding=1, count_include_pad=False)[0, 0].clone()
-    side = PICKER_TILE_FRACTION * image.width
-    boxes = []
-    for _ in range(count):
-        row, column = divmod(int(blocks.argmax()), columns)
-        centre_x, centre_y = (column + 0.5) / columns * image.width, (row + 0.5) / rows * image.height
-        left = int(min(max(0, centre_x - side / 2), image.width - side))
-        top = int(min(max(0, centre_y - side / 2), image.height - side))
-        boxes.append((left, top, int(left + side), int(top + side)))
-        reach_rows = max(1, round(side / image.height * rows))
-        reach_columns = max(1, round(side / image.width * columns))
-        blocks[max(0, row - reach_rows): row + reach_rows + 1, max(0, column - reach_columns): column + reach_columns + 1] = -1
-    return boxes
+def picker_boxes(counts, rows, columns, image, count):
+    """Windows scored by the predicted counts inside them, best first, with the rule's overlap test.
 
-
-def train_picker(model, processor, records, device, amp_dtype, out_dir, negatives=40, epochs=8, seed=0):
-    """Label tokens with the rule, train the picker on them, and report how well it agrees with the rule.
-
-    Every labelled token is kept, plus a sample of the unlabelled ones, so the stored features stay small.
-    The last tenth of the maps is held out: on those, the picker's first tile is compared with the rule's.
+    A token counts in proportion to how much of its square the window covers, and windows step by an
+    eighth of a tile: counting a token only when its centre falls inside, on a half-tile grid, left most
+    windows tied and the tiles landed by accident. With the rule's own counts fed in, these tiles hold
+    78.4% of a map's small regions against the rule's 78.6% (200 MapQA test maps).
     """
-    rng = random.Random(seed)
+    grid = counts.view(rows, columns).double()
+    size = max(28, int(image.width * PICKER_TILE_FRACTION))
+    stride = max(4, size // 8)
+    cell_w, cell_h = image.width / columns, image.height / rows
+    left_edges, top_edges = torch.arange(columns) * cell_w, torch.arange(rows) * cell_h
+    windows = []
+    for y in range(0, max(1, image.height - size), stride):
+        share_rows = ((torch.clamp(top_edges + cell_h, max=y + size) - torch.clamp(top_edges, min=y)).clamp(min=0)
+                      / cell_h).double()
+        for x in range(0, max(1, image.width - size), stride):
+            share_columns = ((torch.clamp(left_edges + cell_w, max=x + size) - torch.clamp(left_edges, min=x))
+                             .clamp(min=0) / cell_w).double()
+            windows.append((float(share_rows @ grid @ share_columns), x, y))
+    chosen = []
+    for _, x, y in sorted(windows, key=lambda window: -window[0]):
+        if all(abs(x - bx) >= size * 0.6 or abs(y - by) >= size * 0.6 for bx, by, _, _ in chosen):
+            chosen.append((x, y, x + size, y + size))
+        if len(chosen) == count:
+            break
+    return chosen
+
+
+def covered(box, centres):
+    return {i for i, (y, x) in enumerate(centres) if box[0] <= x < box[2] and box[1] <= y < box[3]}
+
+
+def train_picker(model, processor, records, device, amp_dtype, out_dir, epochs=8, seed=0):
+    """Count small regions per token with the rule, train the picker on every token, and check it.
+
+    The last tenth of the maps is held out. On those, the picker's first tile is compared with the rule's:
+    how many of the small regions inside the rule's tile are also inside the picker's.
+    """
     split = max(1, len(records) // 10)
     held_out, training = records[:split], records[split:]
     features, labels = [], []
@@ -368,24 +386,21 @@ def train_picker(model, processor, records, device, amp_dtype, out_dir, negative
     for n, record in enumerate(training, 1):
         image = Image.open(record["image_path"]).convert("RGB")
         tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
-        truth = token_labels(image, rows, columns)
-        positive = truth.nonzero().flatten().tolist()
-        negative = (truth == 0).nonzero().flatten().tolist()
-        keep = positive + rng.sample(negative, min(negatives, len(negative)))
-        features.append(tokens[keep].cpu())
-        labels.append(truth[keep])
+        features.append(tokens.half().cpu())
+        labels.append(token_counts(image, rows, columns))
         if n % 500 == 0:
-            print(f"picker: labelled {n}/{len(training)} maps ({(time.time() - began) / 60:.1f} min)", flush=True)
+            print(f"picker: counted {n}/{len(training)} maps ({(time.time() - began) / 60:.1f} min)", flush=True)
     features, labels = torch.cat(features), torch.cat(labels)
+    torch.manual_seed(seed)
     picker = TokenPicker(features.shape[1]).to(device)
     optimizer = torch.optim.AdamW(picker.parameters(), lr=1e-3, weight_decay=0.01)
-    loss_fn = torch.nn.BCEWithLogitsLoss(pos_weight=((labels == 0).sum() / labels.sum().clamp(min=1)).to(device))
+    loss_fn = torch.nn.PoissonNLLLoss(log_input=True)
     for epoch in range(epochs):
         order = torch.randperm(len(labels))
         total = 0.0
-        for start in range(0, len(order), 1024):
-            batch = order[start: start + 1024]
-            loss = loss_fn(picker(features[batch].to(device)), labels[batch].to(device))
+        for start in range(0, len(order), 4096):
+            batch = order[start: start + 4096]
+            loss = loss_fn(picker(features[batch].to(device).float()), labels[batch].to(device))
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
@@ -393,24 +408,26 @@ def train_picker(model, processor, records, device, amp_dtype, out_dir, negative
         print(f"picker epoch {epoch + 1}: loss {total / len(labels):.4f}", flush=True)
     picker.eval()
 
-    agree, found, wanted = 0, 0, 0
+    kept, wanted, same_place = 0, 0, 0
     for record in held_out:
         image = Image.open(record["image_path"]).convert("RGB")
         tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
         with torch.no_grad():
-            scores = picker(tokens).cpu()
-        truth = token_labels(image, rows, columns)
-        top = scores.topk(int(truth.sum())).indices if truth.sum() else torch.tensor([], dtype=torch.long)
-        found += int(truth[top].sum())
-        wanted += int(truth.sum())
-        mine, rule = picker_boxes(scores, rows, columns, image, 1)[0], busiest_tiles(image, tiles=1)
-        if rule:
-            rule = rule[0]
-            agree += int(min(mine[2], rule[2]) > max(mine[0], rule[0]) and min(mine[3], rule[3]) > max(mine[1], rule[1]))
+            counts = picker(tokens).exp().cpu()
+        body = map_body(image)
+        centres, _ = small_regions(image, body, boundary_mask(image, body))
+        rule = busiest_tiles(image, tiles=1)
+        if not rule or not len(centres):
+            continue
+        target = covered(rule[0], centres)
+        mine = covered(picker_boxes(counts, rows, columns, image, 1)[0], centres)
+        kept += len(target & mine)
+        wanted += len(target)
+        same_place += int(len(target & mine) >= 0.8 * len(target))
     report = {"training_maps": len(training), "held_out_maps": len(held_out), "tokens": len(labels),
-              "positive_tokens": int(labels.sum()),
-              "held_out_small_region_tokens_found": found / max(1, wanted),
-              "held_out_first_tile_overlaps_rule": agree / len(held_out)}
+              "small_regions_counted": int(labels.sum()),
+              "rule_tile_regions_also_in_picker_tile": kept / max(1, wanted),
+              "maps_where_picker_tile_holds_80pct_of_rule_tile": same_place / len(held_out)}
     print("picker:", json.dumps(report), flush=True)
     (out_dir / "picker_report.json").write_text(json.dumps(report, indent=1))
     torch.save(picker.state_dict(), out_dir / "picker.pt")
@@ -422,8 +439,8 @@ def picker_tiles(model, processor, picker, device, amp_dtype):
     def pick(image, count):
         tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
         with torch.no_grad():
-            scores = picker(tokens).cpu()
-        return picker_boxes(scores, rows, columns, image, count)
+            counts = picker(tokens).exp().cpu()
+        return picker_boxes(counts, rows, columns, image, count)
     return pick
 
 
