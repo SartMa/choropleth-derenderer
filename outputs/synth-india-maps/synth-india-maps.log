@@ -1,0 +1,250 @@
+[{"stream_name":"stderr","time":7.879294908,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.880216219,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.880224263,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.880228392,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.592412134,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.592470407,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.592476169,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.59248011,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.817874832,"data":"$ python -c 'import geopandas' || pip install -q geopandas\n"}
+,{"stream_name":"stdout","time":11.78370593,"data":"Writing generate_maps.py\n"}
+,{"stream_name":"stdout","time":11.797054781,"data":"$ python generate_maps.py --country ind --split train --n 10000 --out /kaggle/working/synth_ind --cache /kaggle/working/boundaries\n"}
+,{"stream_name":"stdout","time":154.876488175,"data":"  rejected synthind_train_000004: AN\n"}
+,{"stream_name":"stdout","time":154.877830966,"data":"  rejected synthind_train_000029: AN\n"}
+,{"stream_name":"stdout","time":154.883611632,"data":"  rejected synthind_train_000132: AN\n"}
+,{"stream_name":"stdout","time":154.884874052,"data":"  rejected synthind_train_000154: legend cut off\n"}
+,{"stream_name":"stdout","time":154.886016906,"data":"  rejected synthind_train_000196: AN\n"}
+,{"stream_name":"stdout","time":154.889331015,"data":"  rejected synthind_train_000297: legend cut off\n"}
+,{"stream_name":"stdout","time":154.890634043,"data":"  rejected synthind_train_000332: AN\n"}
+,{"stream_name":"stdout","time":154.8945837,"data":"  rejected synthind_train_000346: AN\n"}
+,{"stream_name":"stdout","time":154.895739767,"data":"  rejected synthind_train_000381: AN\n"}
+,{"stream_name":"stdout","time":154.899382247,"data":"  rejected synthind_train_000403: legend cut off\n"}
+,{"stream_name":"stdout","time":154.900528057,"data":"  rejected synthind_train_000444: AN\n"}
+,{"stream_name":"stdout","time":154.904408104,"data":"  500/10000\n"}
+,{"stream_name":"stdout","time":290.065986306,"data":"  rejected synthind_train_000516: AN\n"}
+,{"stream_name":"stdout","time":290.067565117,"data":"  rejected synthind_train_000606: legend cut off\n"}
+,{"stream_name":"stdout","time":290.071604935,"data":"  rejected synthind_train_000636: AN\n"}
+,{"stream_name":"stdout","time":290.072893078,"data":"  rejected synthind_train_000667: MN\n"}
+,{"stream_name":"stdout","time":290.076445415,"data":"  rejected synthind_train_000702: legend cut off\n"}
+,{"stream_name":"stdout","time":290.077769239,"data":"  rejected synthind_train_000837: AN\n"}
+,{"stream_name":"stdout","time":290.081413432,"data":"  1000/10000\n"}
+,{"stream_name":"stdout","time":425.295412269,"data":"  rejected synthind_train_001084: AN\n"}
+,{"stream_name":"stdout","time":425.297170183,"data":"  rejected synthind_train_001171: AN\n"}
+,{"stream_name":"stdout","time":425.301587904,"data":"  rejected synthind_train_001178: AN\n"}
+,{"stream_name":"stdout","time":425.303014472,"data":"  rejected synthind_train_001393: legend cut off\n"}
+,{"stream_name":"stdout","time":425.304222525,"data":"  rejected synthind_train_001492: AN\n"}
+,{"stream_name":"stdout","time":425.308657292,"data":"  1500/10000\n"}
+,{"stream_name":"stdout","time":561.522206297,"data":"  rejected synthind_train_001559: AN\n"}
+,{"stream_name":"stdout","time":561.523789286,"data":"  rejected synthind_train_001608: legend cut off\n"}
+,{"stream_name":"stdout","time":561.525033662,"data":"  rejected synthind_train_001628: AN\n"}
+,{"stream_name":"stdout","time":561.528507804,"data":"  rejected synthind_train_001747: legend cut off\n"}
+,{"stream_name":"stdout","time":561.52959652,"data":"  rejected synthind_train_001759: AN\n"}
+,{"stream_name":"stdout","time":561.533459015,"data":"  rejected synthind_train_001780: AN\n"}
+,{"stream_name":"stdout","time":561.534665239,"data":"  rejected synthind_train_001808: AN\n"}
+,{"stream_name":"stdout","time":561.538401476,"data":"  rejected synthind_train_001847: legend cut off\n"}
+,{"stream_name":"stdout","time":561.539546731,"data":"  rejected synthind_train_001939: AN\n"}
+,{"stream_name":"stdout","time":561.543353772,"data":"  rejected synthind_train_001959: AN\n"}
+,{"stream_name":"stdout","time":561.54445734,"data":"  2000/10000\n"}
+,{"stream_name":"stdout","time":699.462218862,"data":"  rejected synthind_train_002021: legend cut off\n"}
+,{"stream_name":"stdout","time":699.463641606,"data":"  rejected synthind_train_002091: AN\n"}
+,{"stream_name":"stdout","time":699.468011365,"data":"  rejected synthind_train_002145: legend cut off\n"}
+,{"stream_name":"stdout","time":699.469387175,"data":"  rejected synthind_train_002168: legend cut off\n"}
+,{"stream_name":"stdout","time":699.47367305,"data":"  rejected synthind_train_002170: AN\n"}
+,{"stream_name":"stdout","time":699.474956958,"data":"  rejected synthind_train_002211: AN\n"}
+,{"stream_name":"stdout","time":699.4760588,"data":"  2500/10000\n"}
+,{"stream_name":"stdout","time":835.299993452,"data":"  rejected synthind_train_002561: legend cut off\n"}
+,{"stream_name":"stdout","time":835.304578498,"data":"  rejected synthind_train_002564: AN\n"}
+,{"stream_name":"stdout","time":835.305903465,"data":"  rejected synthind_train_002573: AN\n"}
+,{"stream_name":"stdout","time":835.309484611,"data":"  rejected synthind_train_002592: AN\n"}
+,{"stream_name":"stdout","time":835.310888362,"data":"  rejected synthind_train_002651: AN\n"}
+,{"stream_name":"stdout","time":835.314379547,"data":"  rejected synthind_train_002702: AN\n"}
+,{"stream_name":"stdout","time":835.315685349,"data":"  rejected synthind_train_002773: legend cut off\n"}
+,{"stream_name":"stdout","time":835.319397227,"data":"  rejected synthind_train_002781: AN\n"}
+,{"stream_name":"stdout","time":835.320644199,"data":"  rejected synthind_train_002788: NL\n"}
+,{"stream_name":"stdout","time":835.321566318,"data":"  rejected synthind_train_002791: AN\n"}
+,{"stream_name":"stdout","time":835.325559621,"data":"  rejected synthind_train_002820: AN\n"}
+,{"stream_name":"stdout","time":835.326646616,"data":"  rejected synthind_train_002843: legend cut off\n"}
+,{"stream_name":"stdout","time":835.327610154,"data":"  rejected synthind_train_002895: AN\n"}
+,{"stream_name":"stdout","time":835.331722509,"data":"  rejected synthind_train_002908: AN\n"}
+,{"stream_name":"stdout","time":835.332761785,"data":"  3000/10000\n"}
+,{"stream_name":"stdout","time":969.37616262,"data":"  rejected synthind_train_003078: AN\n"}
+,{"stream_name":"stdout","time":969.380762457,"data":"  rejected synthind_train_003150: AN\n"}
+,{"stream_name":"stdout","time":969.382074247,"data":"  rejected synthind_train_003167: legend cut off\n"}
+,{"stream_name":"stdout","time":969.385479609,"data":"  rejected synthind_train_003333: AN\n"}
+,{"stream_name":"stdout","time":969.386617623,"data":"  rejected synthind_train_003400: AN\n"}
+,{"stream_name":"stdout","time":969.390385924,"data":"  rejected synthind_train_003479: legend cut off\n"}
+,{"stream_name":"stdout","time":969.391464757,"data":"  3500/10000\n"}
+,{"stream_name":"stdout","time":1103.959931393,"data":"  rejected synthind_train_003504: AN\n"}
+,{"stream_name":"stdout","time":1103.966766822,"data":"  rejected synthind_train_003569: AN\n"}
+,{"stream_name":"stdout","time":1103.968272272,"data":"  rejected synthind_train_003571: AN\n"}
+,{"stream_name":"stdout","time":1103.969519734,"data":"  rejected synthind_train_003581: NL\n"}
+,{"stream_name":"stdout","time":1103.970850646,"data":"  rejected synthind_train_003811: AN\n"}
+,{"stream_name":"stdout","time":1103.974253591,"data":"  4000/10000\n"}
+,{"stream_name":"stdout","time":1237.873137376,"data":"  rejected synthind_train_004017: legend cut off\n"}
+,{"stream_name":"stdout","time":1237.877667668,"data":"  rejected synthind_train_004050: AN\n"}
+,{"stream_name":"stdout","time":1237.881677618,"data":"  rejected synthind_train_004269: AN\n"}
+,{"stream_name":"stdout","time":1237.882913284,"data":"  rejected synthind_train_004324: AN\n"}
+,{"stream_name":"stdout","time":1237.886534394,"data":"  rejected synthind_train_004325: AN\n"}
+,{"stream_name":"stdout","time":1237.887758354,"data":"  rejected synthind_train_004331: AN\n"}
+,{"stream_name":"stdout","time":1237.89155053,"data":"  rejected synthind_train_004399: AN\n"}
+,{"stream_name":"stdout","time":1237.892805707,"data":"  rejected synthind_train_004403: legend cut off\n"}
+,{"stream_name":"stdout","time":1237.896479764,"data":"  rejected synthind_train_004408: AN\n"}
+,{"stream_name":"stdout","time":1237.897566769,"data":"  rejected synthind_train_004472: AN\n"}
+,{"stream_name":"stdout","time":1237.901349737,"data":"  4500/10000\n"}
+,{"stream_name":"stdout","time":1373.814649819,"data":"  rejected synthind_train_004526: AN\n"}
+,{"stream_name":"stdout","time":1373.818491818,"data":"  rejected synthind_train_004527: legend cut off\n"}
+,{"stream_name":"stdout","time":1373.819702957,"data":"  rejected synthind_train_004553: AN\n"}
+,{"stream_name":"stdout","time":1373.82334495,"data":"  rejected synthind_train_004555: AN\n"}
+,{"stream_name":"stdout","time":1373.824440026,"data":"  rejected synthind_train_004637: NL\n"}
+,{"stream_name":"stdout","time":1373.828070338,"data":"  rejected synthind_train_004673: AN\n"}
+,{"stream_name":"stdout","time":1373.829199993,"data":"  rejected synthind_train_004787: AN\n"}
+,{"stream_name":"stdout","time":1373.830384418,"data":"  rejected synthind_train_004794: AN\n"}
+,{"stream_name":"stdout","time":1373.83428102,"data":"  rejected synthind_train_004815: AN\n"}
+,{"stream_name":"stdout","time":1373.835438988,"data":"  rejected synthind_train_004835: AN\n"}
+,{"stream_name":"stdout","time":1373.83938474,"data":"  rejected synthind_train_004838: legend cut off\n"}
+,{"stream_name":"stdout","time":1373.840578585,"data":"  rejected synthind_train_004910: MN\n"}
+,{"stream_name":"stdout","time":1373.844408993,"data":"  5000/10000\n"}
+,{"stream_name":"stdout","time":1507.164210904,"data":"  rejected synthind_train_005089: AN, NL\n"}
+,{"stream_name":"stdout","time":1507.168683017,"data":"  rejected synthind_train_005112: AN\n"}
+,{"stream_name":"stdout","time":1507.170097199,"data":"  rejected synthind_train_005148: AN\n"}
+,{"stream_name":"stdout","time":1507.176488602,"data":"  rejected synthind_train_005181: AN\n"}
+,{"stream_name":"stdout","time":1507.177821532,"data":"  rejected synthind_train_005416: NL\n"}
+,{"stream_name":"stdout","time":1507.179043677,"data":"  rejected synthind_train_005428: legend cut off\n"}
+,{"stream_name":"stdout","time":1507.180218017,"data":"  rejected synthind_train_005442: NL\n"}
+,{"stream_name":"stdout","time":1507.184867214,"data":"  5500/10000\n"}
+,{"stream_name":"stdout","time":1641.21973602,"data":"  rejected synthind_train_005522: AN\n"}
+,{"stream_name":"stdout","time":1641.22487638,"data":"  rejected synthind_train_005626: AN\n"}
+,{"stream_name":"stdout","time":1641.226564587,"data":"  rejected synthind_train_005640: AN\n"}
+,{"stream_name":"stdout","time":1641.228076814,"data":"  rejected synthind_train_005724: legend cut off\n"}
+,{"stream_name":"stdout","time":1641.232784231,"data":"  rejected synthind_train_005735: legend cut off\n"}
+,{"stream_name":"stdout","time":1641.23929851,"data":"  rejected synthind_train_005754: AN\n"}
+,{"stream_name":"stdout","time":1641.239602543,"data":"  rejected synthind_train_005905: legend cut off\n"}
+,{"stream_name":"stdout","time":1641.241242159,"data":"  6000/10000\n"}
+,{"stream_name":"stdout","time":1779.585252163,"data":"  rejected synthind_train_006007: AN\n"}
+,{"stream_name":"stdout","time":1779.589012664,"data":"  rejected synthind_train_006032: AN\n"}
+,{"stream_name":"stdout","time":1779.590477538,"data":"  rejected synthind_train_006453: AN\n"}
+,{"stream_name":"stdout","time":1779.591861306,"data":"  rejected synthind_train_006478: AN\n"}
+,{"stream_name":"stdout","time":1779.595357587,"data":"  6500/10000\n"}
+,{"stream_name":"stdout","time":1918.742478257,"data":"  rejected synthind_train_006562: AN\n"}
+,{"stream_name":"stdout","time":1918.744263792,"data":"  rejected synthind_train_006600: legend cut off\n"}
+,{"stream_name":"stdout","time":1918.748665733,"data":"  rejected synthind_train_006695: legend cut off\n"}
+,{"stream_name":"stdout","time":1918.75030855,"data":"  rejected synthind_train_006842: AN\n"}
+,{"stream_name":"stdout","time":1918.754620343,"data":"  rejected synthind_train_006857: AN\n"}
+,{"stream_name":"stdout","time":1918.755880747,"data":"  7000/10000\n"}
+,{"stream_name":"stdout","time":2057.961937365,"data":"  rejected synthind_train_007044: AN\n"}
+,{"stream_name":"stdout","time":2057.963469216,"data":"  rejected synthind_train_007046: AN\n"}
+,{"stream_name":"stdout","time":2057.967909589,"data":"  rejected synthind_train_007048: AN\n"}
+,{"stream_name":"stdout","time":2057.972441831,"data":"  rejected synthind_train_007090: AN\n"}
+,{"stream_name":"stdout","time":2057.974000877,"data":"  rejected synthind_train_007098: AN\n"}
+,{"stream_name":"stdout","time":2057.978462318,"data":"  rejected synthind_train_007104: AN\n"}
+,{"stream_name":"stdout","time":2057.980013491,"data":"  rejected synthind_train_007262: AN\n"}
+,{"stream_name":"stdout","time":2057.984452706,"data":"  rejected synthind_train_007458: legend cut off\n"}
+,{"stream_name":"stdout","time":2057.985915184,"data":"  rejected synthind_train_007490: AN\n"}
+,{"stream_name":"stdout","time":2057.987195754,"data":"  7500/10000\n"}
+,{"stream_name":"stdout","time":2196.223840927,"data":"  rejected synthind_train_007644: AN\n"}
+,{"stream_name":"stdout","time":2196.228375908,"data":"  rejected synthind_train_007654: AN\n"}
+,{"stream_name":"stdout","time":2196.229780738,"data":"  rejected synthind_train_007667: AN\n"}
+,{"stream_name":"stdout","time":2196.231045504,"data":"  rejected synthind_train_007809: AN\n"}
+,{"stream_name":"stdout","time":2196.232264434,"data":"  rejected synthind_train_007898: legend cut off\n"}
+,{"stream_name":"stdout","time":2196.236524919,"data":"  8000/10000\n"}
+,{"stream_name":"stdout","time":2334.387712233,"data":"  rejected synthind_train_008009: AN\n"}
+,{"stream_name":"stdout","time":2334.389332756,"data":"  rejected synthind_train_008066: legend cut off\n"}
+,{"stream_name":"stdout","time":2334.393708816,"data":"  rejected synthind_train_008114: legend cut off\n"}
+,{"stream_name":"stdout","time":2334.395129072,"data":"  rejected synthind_train_008117: NL\n"}
+,{"stream_name":"stdout","time":2334.399589829,"data":"  rejected synthind_train_008134: AN\n"}
+,{"stream_name":"stdout","time":2334.400952987,"data":"  rejected synthind_train_008157: legend cut off\n"}
+,{"stream_name":"stdout","time":2334.404636537,"data":"  rejected synthind_train_008168: legend cut off\n"}
+,{"stream_name":"stdout","time":2334.406086266,"data":"  rejected synthind_train_008186: AN\n"}
+,{"stream_name":"stdout","time":2334.412637425,"data":"  rejected synthind_train_008251: AN\n"}
+,{"stream_name":"stdout","time":2334.41416171,"data":"  rejected synthind_train_008351: AN\n"}
+,{"stream_name":"stdout","time":2334.41550934,"data":"  rejected synthind_train_008420: NL\n"}
+,{"stream_name":"stdout","time":2334.419600529,"data":"  rejected synthind_train_008431: AN\n"}
+,{"stream_name":"stdout","time":2334.420920204,"data":"  8500/10000\n"}
+,{"stream_name":"stdout","time":2473.080939065,"data":"  rejected synthind_train_008534: AN\n"}
+,{"stream_name":"stdout","time":2473.082706947,"data":"  rejected synthind_train_008543: AN\n"}
+,{"stream_name":"stdout","time":2473.086659416,"data":"  rejected synthind_train_008581: AN\n"}
+,{"stream_name":"stdout","time":2473.090597013,"data":"  rejected synthind_train_008608: AN\n"}
+,{"stream_name":"stdout","time":2473.092238535,"data":"  rejected synthind_train_008655: AN\n"}
+,{"stream_name":"stdout","time":2473.095518261,"data":"  rejected synthind_train_008729: AN\n"}
+,{"stream_name":"stdout","time":2473.097192199,"data":"  rejected synthind_train_008840: legend cut off\n"}
+,{"stream_name":"stdout","time":2473.101517589,"data":"  9000/10000\n"}
+,{"stream_name":"stdout","time":2610.202599574,"data":"  rejected synthind_train_009075: legend cut off\n"}
+,{"stream_name":"stdout","time":2610.203951631,"data":"  rejected synthind_train_009272: AN\n"}
+,{"stream_name":"stdout","time":2610.205057303,"data":"  rejected synthind_train_009291: AN\n"}
+,{"stream_name":"stdout","time":2610.209597021,"data":"  rejected synthind_train_009367: NL\n"}
+,{"stream_name":"stdout","time":2610.21059777,"data":"  rejected synthind_train_009392: AN\n"}
+,{"stream_name":"stdout","time":2610.214917678,"data":"  rejected synthind_train_009430: AN\n"}
+,{"stream_name":"stdout","time":2610.216469579,"data":"  rejected synthind_train_009464: legend cut off\n"}
+,{"stream_name":"stdout","time":2610.220498846,"data":"  rejected synthind_train_009475: legend cut off\n"}
+,{"stream_name":"stdout","time":2610.221760243,"data":"  9500/10000\n"}
+,{"stream_name":"stdout","time":2747.666036245,"data":"  rejected synthind_train_009570: legend cut off\n"}
+,{"stream_name":"stdout","time":2747.667242231,"data":"  rejected synthind_train_009656: AN\n"}
+,{"stream_name":"stdout","time":2747.668222281,"data":"  rejected synthind_train_009693: AN\n"}
+,{"stream_name":"stdout","time":2747.669128364,"data":"  rejected synthind_train_009929: AN\n"}
+,{"stream_name":"stdout","time":2747.670021841,"data":"  rejected synthind_train_009975: legend cut off\n"}
+,{"stream_name":"stdout","time":2747.670960348,"data":"  rejected synthind_train_009976: AN\n"}
+,{"stream_name":"stdout","time":2747.671789704,"data":"  10000/10000\n"}
+,{"stream_name":"stdout","time":2747.672645904,"data":"train: kept 9845 maps in /kaggle/working/synth_ind/train.jsonl (4818 discrete, 5027 continuous); rejected 155.\n"}
+,{"stream_name":"stdout","time":2747.970512122,"data":"$ python generate_maps.py --country ind --split dev --n 1000 --out /kaggle/working/synth_ind --cache /kaggle/working/boundaries\n"}
+,{"stream_name":"stdout","time":2891.057944499,"data":"  rejected synthind_dev_000056: NL\n"}
+,{"stream_name":"stdout","time":2891.062241938,"data":"  rejected synthind_dev_000127: AN\n"}
+,{"stream_name":"stdout","time":2891.066179664,"data":"  rejected synthind_dev_000177: AN\n"}
+,{"stream_name":"stdout","time":2891.067756896,"data":"  rejected synthind_dev_000192: legend cut off\n"}
+,{"stream_name":"stdout","time":2891.068984528,"data":"  rejected synthind_dev_000229: AN\n"}
+,{"stream_name":"stdout","time":2891.073467413,"data":"  rejected synthind_dev_000249: AN\n"}
+,{"stream_name":"stdout","time":2891.074882355,"data":"  rejected synthind_dev_000278: AN\n"}
+,{"stream_name":"stdout","time":2891.076152536,"data":"  rejected synthind_dev_000284: AN\n"}
+,{"stream_name":"stdout","time":2891.080465189,"data":"  rejected synthind_dev_000315: legend cut off\n"}
+,{"stream_name":"stdout","time":2891.082255687,"data":"  rejected synthind_dev_000322: AN\n"}
+,{"stream_name":"stdout","time":2891.086267296,"data":"  rejected synthind_dev_000349: AN, NL\n"}
+,{"stream_name":"stdout","time":2891.087821853,"data":"  rejected synthind_dev_000359: AN\n"}
+,{"stream_name":"stdout","time":2891.091519292,"data":"  500/1000\n"}
+,{"stream_name":"stdout","time":3026.0012738,"data":"  rejected synthind_dev_000533: AN\n"}
+,{"stream_name":"stdout","time":3026.003066966,"data":"  rejected synthind_dev_000573: AN\n"}
+,{"stream_name":"stdout","time":3026.00423428,"data":"  rejected synthind_dev_000583: AN\n"}
+,{"stream_name":"stdout","time":3026.00507751,"data":"  rejected synthind_dev_000667: legend cut off\n"}
+,{"stream_name":"stdout","time":3026.00616013,"data":"  rejected synthind_dev_000673: AN\n"}
+,{"stream_name":"stdout","time":3026.007026713,"data":"  rejected synthind_dev_000946: NL\n"}
+,{"stream_name":"stdout","time":3026.00785307,"data":"  rejected synthind_dev_000995: AN\n"}
+,{"stream_name":"stdout","time":3026.008724823,"data":"  rejected synthind_dev_000997: AN\n"}
+,{"stream_name":"stdout","time":3026.009541114,"data":"  1000/1000\n"}
+,{"stream_name":"stdout","time":3026.010365422,"data":"dev: kept 980 maps in /kaggle/working/synth_ind/dev.jsonl (467 discrete, 513 continuous); rejected 20.\n"}
+,{"stream_name":"stdout","time":3026.309265702,"data":"$ python generate_maps.py --country ind --split test --n 1000 --out /kaggle/working/synth_ind --cache /kaggle/working/boundaries\n"}
+,{"stream_name":"stdout","time":3166.909233766,"data":"  rejected synthind_test_000044: legend cut off\n"}
+,{"stream_name":"stdout","time":3166.915893088,"data":"  rejected synthind_test_000070: AN\n"}
+,{"stream_name":"stdout","time":3166.917261493,"data":"  rejected synthind_test_000124: legend cut off\n"}
+,{"stream_name":"stdout","time":3166.921663996,"data":"  rejected synthind_test_000132: NL\n"}
+,{"stream_name":"stdout","time":3166.922974692,"data":"  rejected synthind_test_000169: AN\n"}
+,{"stream_name":"stdout","time":3166.924168681,"data":"  rejected synthind_test_000320: legend cut off\n"}
+,{"stream_name":"stdout","time":3166.925259056,"data":"  rejected synthind_test_000323: AN\n"}
+,{"stream_name":"stdout","time":3166.929578405,"data":"  rejected synthind_test_000355: AN\n"}
+,{"stream_name":"stdout","time":3166.930805836,"data":"  rejected synthind_test_000394: AN\n"}
+,{"stream_name":"stdout","time":3166.934563261,"data":"  rejected synthind_test_000415: AN\n"}
+,{"stream_name":"stdout","time":3166.93575073,"data":"  rejected synthind_test_000491: legend cut off\n"}
+,{"stream_name":"stdout","time":3166.939499292,"data":"  500/1000\n"}
+,{"stream_name":"stdout","time":3300.765786166,"data":"  rejected synthind_test_000634: AN\n"}
+,{"stream_name":"stdout","time":3300.767221705,"data":"  rejected synthind_test_000656: legend cut off\n"}
+,{"stream_name":"stdout","time":3300.768532834,"data":"  rejected synthind_test_000713: legend cut off\n"}
+,{"stream_name":"stdout","time":3300.769629416,"data":"  rejected synthind_test_000721: legend cut off\n"}
+,{"stream_name":"stdout","time":3300.77076838,"data":"  rejected synthind_test_000926: AN\n"}
+,{"stream_name":"stdout","time":3300.771760841,"data":"  rejected synthind_test_000938: AN\n"}
+,{"stream_name":"stdout","time":3300.772785235,"data":"  rejected synthind_test_000968: AN\n"}
+,{"stream_name":"stdout","time":3300.773808474,"data":"  rejected synthind_test_000989: AN\n"}
+,{"stream_name":"stdout","time":3300.774788848,"data":"  1000/1000\n"}
+,{"stream_name":"stdout","time":3300.775790699,"data":"test: kept 981 maps in /kaggle/working/synth_ind/test.jsonl (500 discrete, 481 continuous); rejected 19.\n"}
+,{"stream_name":"stdout","time":3335.74932733,"data":"$ ls -la /kaggle/working\n"}
+,{"stream_name":"stdout","time":3335.750388839,"data":"total 774572\n"}
+,{"stream_name":"stdout","time":3335.751755745,"data":"drwxr-xr-x 2 root root      4096 Sep 28 17:28 .\n"}
+,{"stream_name":"stdout","time":3335.752546269,"data":"drwxr-xr-x 8 root root      4096 Sep 28 16:33 ..\n"}
+,{"stream_name":"stdout","time":3335.753288256,"data":"-rw-r--r-- 1 root root     31134 Sep 28 16:33 generate_maps.py\n"}
+,{"stream_name":"stdout","time":3335.75405091,"data":"-rw-r--r-- 1 root root     75196 Sep 28 17:28 __notebook__.ipynb\n"}
+,{"stream_name":"stdout","time":3335.754762166,"data":"-rw-r--r-- 1 root root 793035312 Sep 28 17:28 synth_ind.zip\n"}
+,{"stream_name":"stderr","time":3339.102252407,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3339.102288372,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3339.353329608,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3339.353360043,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3340.054927946,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3340.465705105,"data":"[NbConvertApp] Writing 56996 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3343.441266824,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3344.550089905,"data":"[NbConvertApp] Writing 464997 bytes to __results__.html\n"}
+]

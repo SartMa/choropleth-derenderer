@@ -1,0 +1,475 @@
+[{"stream_name":"stderr","time":8.477890488,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.477937898,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.477942544,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.477945454,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.132309845,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.132341039,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.13234464,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.132347328,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.32858905,"data":"$ nvidia-smi\n"}
+,{"stream_name":"stdout","time":10.362116317,"data":"Mon Sep 28 08:24:50 2026       \n"}
+,{"stream_name":"stdout","time":10.363246019,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":10.364332207,"data":"| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":10.365167427,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":10.365959311,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":10.366837219,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":10.367600441,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":10.368386803,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":10.422346307,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":10.423419226,"data":"| N/A   43C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":10.424566733,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":10.425580527,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":10.426604926,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":10.427621318,"data":"| N/A   40C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":10.428545748,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":10.42955902,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":10.430650076,"data":"\n"}
+,{"stream_name":"stdout","time":10.431496675,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":10.432227506,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":10.432995451,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":10.433780996,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":10.434585268,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":10.435356217,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":10.436128725,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":10.761356403,"data":"$ pip install -q transformers==4.57.1 peft==0.17.1 accelerate\n"}
+,{"stream_name":"stdout","time":13.555137406,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.0/44.0 kB 1.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.59203713,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.0/12.0 MB 94.4 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.636351223,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 504.9/504.9 kB 19.5 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.679160594,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 kB 21.6 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":29.77768933,"data":"Writing convert_mapqa.py\n"}
+,{"stream_name":"stdout","time":29.798822214,"data":"Writing common.py\n"}
+,{"stream_name":"stdout","time":29.814992064,"data":"Writing tiles.py\n"}
+,{"stream_name":"stdout","time":29.838917889,"data":"Writing train_qwen.py\n"}
+,{"stream_name":"stdout","time":29.85227639,"data":"$ python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data\n"}
+,{"stream_name":"stdout","time":133.727682707,"data":"Read 20789 maps from /kaggle/input\n"}
+,{"stream_name":"stdout","time":133.728691339,"data":"  train  12470 maps (9421 discrete, 3049 continuous) -\u003e /kaggle/working/data/train.jsonl\n"}
+,{"stream_name":"stdout","time":133.729526413,"data":"  dev     4155 maps (3187 discrete, 968 continuous) -\u003e /kaggle/working/data/dev.jsonl\n"}
+,{"stream_name":"stdout","time":133.730277548,"data":"  test    4157 maps (3114 discrete, 1043 continuous) -\u003e /kaggle/working/data/test.jsonl\n"}
+,{"stream_name":"stdout","time":133.731009396,"data":"  skipped 7 map(s) that no question file uses: [135, 2139, 3711, 6802, 13284, 13932, 16473]\n"}
+,{"stream_name":"stdout","time":133.731802121,"data":"  target length in characters: min 488, median 546, max 784\n"}
+,{"stream_name":"stdout","time":133.755030631,"data":"$ python train_qwen.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/qwen --adapter /kaggle/input --tiles 2 --tile-zoom 3 --eval-both --crop-dropout 0.2 --hours 1.5 --eval-limit 120 --batch-size 1 --grad-accum 16 --eval-batch-size 2 --log-every 10\n"}
+,{"stream_name":"stdout","time":170.837514694,"data":"The image processor of type `Qwen2VLImageProcessor` is now loaded as a fast processor by default, even if the model checkpoint was saved with a slow processor. This is a breaking change and may produce slightly different outputs. To continue using the slow processor, instantiate this class with `use_fast=False`. Note that this behavior will be extended to all models in a future release.\n"}
+,{"stream_name":"stdout","time":172.72719267,"data":"`torch_dtype` is deprecated! Use `dtype` instead!\n"}
+,{"stream_name":"stdout","time":173.045122188,"data":"\n"}
+,{"stream_name":"stdout","time":202.847411298,"data":"Fetching 2 files:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":202.848760563,"data":"Fetching 2 files:  50%|█████     | 1/2 [00:29\u003c00:29, 29.79s/it]\n"}
+,{"stream_name":"stdout","time":202.850103946,"data":"Fetching 2 files: 100%|██████████| 2/2 [00:29\u003c00:00, 14.89s/it]\n"}
+,{"stream_name":"stdout","time":214.835585611,"data":"\n"}
+,{"stream_name":"stdout","time":217.465752291,"data":"Loading checkpoint shards:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":219.768896299,"data":"Loading checkpoint shards:  50%|█████     | 1/2 [00:02\u003c00:02,  2.63s/it]\n"}
+,{"stream_name":"stdout","time":219.76973365999999,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:04\u003c00:00,  2.44s/it]\n"}
+,{"stream_name":"stdout","time":219.77049718,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:04\u003c00:00,  2.47s/it]\n"}
+,{"stream_name":"stdout","time":224.660053865,"data":"LoRA modules: 348 total | vision attention 0 | vision MLP 96 | merger 0 | language 252\n"}
+,{"stream_name":"stdout","time":225.115322317,"data":"trainable params: 37,152,768 || all params: 3,791,775,744 || trainable%: 0.9798\n"}
+,{"stream_name":"stdout","time":225.116392451,"data":"training maps: 12470 MapQA + 0 synthetic\n"}
+,{"stream_name":"stdout","time":225.118608402,"data":"12470 batches per epoch\n"}
+,{"stream_name":"stdout","time":283.568401193,"data":"{\"epoch\": 0, \"update\": 1, \"of\": 780, \"loss\": 0.0187, \"lr\": 1.739130434782609e-05, \"minutes\": 1.0}\n"}
+,{"stream_name":"stdout","time":869.085438871,"data":"{\"epoch\": 0, \"update\": 10, \"of\": 780, \"loss\": 0.0587, \"lr\": 9.565217391304348e-05, \"minutes\": 10.7}\n"}
+,{"stream_name":"stdout","time":1497.639700173,"data":"{\"epoch\": 0, \"update\": 20, \"of\": 84, \"loss\": 0.049, \"lr\": 0.00018260869565217392, \"minutes\": 21.2}\n"}
+,{"stream_name":"stdout","time":2147.903493303,"data":"{\"epoch\": 0, \"update\": 30, \"of\": 84, \"loss\": 0.0619, \"lr\": 0.00015000000000000001, \"minutes\": 32.0}\n"}
+,{"stream_name":"stdout","time":2780.413206316,"data":"{\"epoch\": 0, \"update\": 40, \"of\": 84, \"loss\": 0.0523, \"lr\": 0.00011353312997501313, \"minutes\": 42.6}\n"}
+,{"stream_name":"stdout","time":3425.390354523,"data":"{\"epoch\": 0, \"update\": 50, \"of\": 84, \"loss\": 0.0468, \"lr\": 7.505588559420189e-05, \"minutes\": 53.3}\n"}
+,{"stream_name":"stdout","time":4070.145553018,"data":"{\"epoch\": 0, \"update\": 60, \"of\": 84, \"loss\": 0.0569, \"lr\": 4.028414082972141e-05, \"minutes\": 64.1}\n"}
+,{"stream_name":"stdout","time":4704.865457686,"data":"{\"epoch\": 0, \"update\": 70, \"of\": 84, \"loss\": 0.0541, \"lr\": 1.4383310046973365e-05, \"minutes\": 74.7}\n"}
+,{"stream_name":"stdout","time":5339.91387136,"data":"{\"epoch\": 0, \"update\": 80, \"of\": 84, \"loss\": 0.0429, \"lr\": 1.201015052319099e-06, \"minutes\": 85.2}\n"}
+,{"stream_name":"stdout","time":5598.081708554,"data":"stopping after 84 updates (1.49 h)\n"}
+,{"stream_name":"stdout","time":5599.066166449,"data":"scoring 120 mapqa test maps\n"}
+,{"stream_name":"stdout","time":5599.285960219,"data":"The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.\n"}
+,{"stream_name":"stdout","time":5634.686045866,"data":"predicted 2/120 (0.6 min)\n"}
+,{"stream_name":"stdout","time":5668.592902644,"data":"predicted 4/120 (1.2 min)\n"}
+,{"stream_name":"stdout","time":5701.607137236,"data":"predicted 6/120 (1.7 min)\n"}
+,{"stream_name":"stdout","time":5736.370323618,"data":"predicted 8/120 (2.3 min)\n"}
+,{"stream_name":"stdout","time":5771.737766667,"data":"predicted 10/120 (2.9 min)\n"}
+,{"stream_name":"stdout","time":5829.531570266,"data":"predicted 12/120 (3.8 min)\n"}
+,{"stream_name":"stdout","time":5864.381918498,"data":"predicted 14/120 (4.4 min)\n"}
+,{"stream_name":"stdout","time":5901.124422225,"data":"predicted 16/120 (5.0 min)\n"}
+,{"stream_name":"stdout","time":5947.512337393,"data":"predicted 18/120 (5.8 min)\n"}
+,{"stream_name":"stdout","time":5984.882190393,"data":"predicted 20/120 (6.4 min)\n"}
+,{"stream_name":"stdout","time":6049.114201199,"data":"predicted 22/120 (7.5 min)\n"}
+,{"stream_name":"stdout","time":6083.080329832,"data":"predicted 24/120 (8.1 min)\n"}
+,{"stream_name":"stdout","time":6140.297373666,"data":"predicted 26/120 (9.0 min)\n"}
+,{"stream_name":"stdout","time":6186.742841935,"data":"predicted 28/120 (9.8 min)\n"}
+,{"stream_name":"stdout","time":6220.073589012,"data":"predicted 30/120 (10.4 min)\n"}
+,{"stream_name":"stdout","time":6264.126509136,"data":"predicted 32/120 (11.1 min)\n"}
+,{"stream_name":"stdout","time":6296.70562026,"data":"predicted 34/120 (11.6 min)\n"}
+,{"stream_name":"stdout","time":6330.573976792,"data":"predicted 36/120 (12.2 min)\n"}
+,{"stream_name":"stdout","time":6364.296477769,"data":"predicted 38/120 (12.8 min)\n"}
+,{"stream_name":"stdout","time":6398.566014323,"data":"predicted 40/120 (13.3 min)\n"}
+,{"stream_name":"stdout","time":6431.662661394,"data":"predicted 42/120 (13.9 min)\n"}
+,{"stream_name":"stdout","time":6466.277881726,"data":"predicted 44/120 (14.5 min)\n"}
+,{"stream_name":"stdout","time":6502.167999983,"data":"predicted 46/120 (15.1 min)\n"}
+,{"stream_name":"stdout","time":6555.401285949,"data":"predicted 48/120 (15.9 min)\n"}
+,{"stream_name":"stdout","time":6589.648506884,"data":"predicted 50/120 (16.5 min)\n"}
+,{"stream_name":"stdout","time":6624.520503785,"data":"predicted 52/120 (17.1 min)\n"}
+,{"stream_name":"stdout","time":6658.645534759,"data":"predicted 54/120 (17.7 min)\n"}
+,{"stream_name":"stdout","time":6690.33681617,"data":"predicted 56/120 (18.2 min)\n"}
+,{"stream_name":"stdout","time":6721.454807162,"data":"predicted 58/120 (18.7 min)\n"}
+,{"stream_name":"stdout","time":6755.78036978,"data":"predicted 60/120 (19.3 min)\n"}
+,{"stream_name":"stdout","time":6787.493753447,"data":"predicted 62/120 (19.8 min)\n"}
+,{"stream_name":"stdout","time":6820.366955189,"data":"predicted 64/120 (20.4 min)\n"}
+,{"stream_name":"stdout","time":6852.521115199,"data":"predicted 66/120 (20.9 min)\n"}
+,{"stream_name":"stdout","time":6886.276598172,"data":"predicted 68/120 (21.5 min)\n"}
+,{"stream_name":"stdout","time":6918.649693087,"data":"predicted 70/120 (22.0 min)\n"}
+,{"stream_name":"stdout","time":6952.749119949,"data":"predicted 72/120 (22.6 min)\n"}
+,{"stream_name":"stdout","time":6988.920922937,"data":"predicted 74/120 (23.2 min)\n"}
+,{"stream_name":"stdout","time":7025.535847072,"data":"predicted 76/120 (23.8 min)\n"}
+,{"stream_name":"stdout","time":7057.599103383,"data":"predicted 78/120 (24.3 min)\n"}
+,{"stream_name":"stdout","time":7091.061776953,"data":"predicted 80/120 (24.9 min)\n"}
+,{"stream_name":"stdout","time":7124.553669529,"data":"predicted 82/120 (25.4 min)\n"}
+,{"stream_name":"stdout","time":7176.243931312,"data":"predicted 84/120 (26.3 min)\n"}
+,{"stream_name":"stdout","time":7209.710578232,"data":"predicted 86/120 (26.8 min)\n"}
+,{"stream_name":"stdout","time":7255.563383965,"data":"predicted 88/120 (27.6 min)\n"}
+,{"stream_name":"stdout","time":7301.675173922,"data":"predicted 90/120 (28.4 min)\n"}
+,{"stream_name":"stdout","time":7346.866793338,"data":"predicted 92/120 (29.1 min)\n"}
+,{"stream_name":"stdout","time":7380.844114997,"data":"predicted 94/120 (29.7 min)\n"}
+,{"stream_name":"stdout","time":7414.798219336,"data":"predicted 96/120 (30.3 min)\n"}
+,{"stream_name":"stdout","time":7448.60621837,"data":"predicted 98/120 (30.8 min)\n"}
+,{"stream_name":"stdout","time":7483.125238918,"data":"predicted 100/120 (31.4 min)\n"}
+,{"stream_name":"stdout","time":7540.053325093,"data":"predicted 102/120 (32.3 min)\n"}
+,{"stream_name":"stdout","time":7573.832086085,"data":"predicted 104/120 (32.9 min)\n"}
+,{"stream_name":"stdout","time":7604.430846642,"data":"predicted 106/120 (33.4 min)\n"}
+,{"stream_name":"stdout","time":7639.529369789,"data":"predicted 108/120 (34.0 min)\n"}
+,{"stream_name":"stdout","time":7672.167068392,"data":"predicted 110/120 (34.6 min)\n"}
+,{"stream_name":"stdout","time":7735.770369469,"data":"predicted 112/120 (35.6 min)\n"}
+,{"stream_name":"stdout","time":7782.318935433,"data":"predicted 114/120 (36.4 min)\n"}
+,{"stream_name":"stdout","time":7828.39885692,"data":"predicted 116/120 (37.2 min)\n"}
+,{"stream_name":"stdout","time":7864.721989848,"data":"predicted 118/120 (37.8 min)\n"}
+,{"stream_name":"stdout","time":7910.352698898,"data":"predicted 120/120 (38.5 min)\n"}
+,{"stream_name":"stdout","time":7910.360994208,"data":"mapqa test maps:\n"}
+,{"stream_name":"stdout","time":7910.3620133,"data":"{\n"}
+,{"stream_name":"stdout","time":7910.362980703,"data":"  \"discrete\": {\n"}
+,{"stream_name":"stdout","time":7910.364574571,"data":"    \"maps\": 96,\n"}
+,{"stream_name":"stdout","time":7910.364917379,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.365824935,"data":"    \"exact_match\": 0.7708,\n"}
+,{"stream_name":"stdout","time":7910.366768734,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.367606094,"data":"    \"legend_title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.368541594,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.369485207,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.370316696,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.371309507,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":7910.372330119,"data":"    \"ranges_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.373365253,"data":"    \"state_accuracy\": 0.9931,\n"}
+,{"stream_name":"stdout","time":7910.374239823,"data":"    \"per_state\": {\n"}
+,{"stream_name":"stdout","time":7910.375138599,"data":"      \"RI\": 0.8229,\n"}
+,{"stream_name":"stdout","time":7910.375990488,"data":"      \"DE\": 0.9583,\n"}
+,{"stream_name":"stdout","time":7910.376952796,"data":"      \"NH\": 0.9688,\n"}
+,{"stream_name":"stdout","time":7910.377756653,"data":"      \"IL\": 0.9792,\n"}
+,{"stream_name":"stdout","time":7910.378885771,"data":"      \"CT\": 0.9792,\n"}
+,{"stream_name":"stdout","time":7910.379609136,"data":"      \"IN\": 0.9896,\n"}
+,{"stream_name":"stdout","time":7910.380857487,"data":"      \"HI\": 0.9896,\n"}
+,{"stream_name":"stdout","time":7910.381900423,"data":"      \"CO\": 0.9896,\n"}
+,{"stream_name":"stdout","time":7910.382769791,"data":"      \"MD\": 0.9896,\n"}
+,{"stream_name":"stdout","time":7910.383706806,"data":"      \"VT\": 0.9896,\n"}
+,{"stream_name":"stdout","time":7910.384726705,"data":"      \"AL\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.385678653,"data":"      \"AR\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.386734037,"data":"      \"OR\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.387827824,"data":"      \"ND\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.388865841,"data":"      \"ME\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.38995087,"data":"      \"MN\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.390987133,"data":"      \"WI\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.392311854,"data":"      \"KY\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.39378198,"data":"      \"NJ\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.395590162,"data":"      \"NM\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.396813955,"data":"      \"PA\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.39835711,"data":"      \"NC\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.398952958,"data":"      \"LA\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.399998881,"data":"      \"NE\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.401060631,"data":"      \"OH\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.402234956,"data":"      \"GA\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.40332256,"data":"      \"UT\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.40458217,"data":"      \"WV\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.406331774,"data":"      \"SD\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.407307987,"data":"      \"AK\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.408459641,"data":"      \"MO\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.409623415,"data":"      \"OK\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.410788269,"data":"      \"AZ\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.412359179,"data":"      \"NV\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.414042009,"data":"      \"MS\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.415548633,"data":"      \"TX\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.416739641,"data":"      \"IA\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.417981925,"data":"      \"ID\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.420216386,"data":"      \"FL\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.420374287,"data":"      \"TN\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.421600799,"data":"      \"VA\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.42283703,"data":"      \"WA\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.423992624,"data":"      \"CA\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.42516198,"data":"      \"WY\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.426318268,"data":"      \"SC\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.427467738,"data":"      \"MI\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.428540719,"data":"      \"NY\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.429697331,"data":"      \"MT\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.430796122,"data":"      \"KS\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.431936704,"data":"      \"MA\": 1.0\n"}
+,{"stream_name":"stdout","time":7910.433017054,"data":"    }\n"}
+,{"stream_name":"stdout","time":7910.434081179,"data":"  },\n"}
+,{"stream_name":"stdout","time":7910.435297969,"data":"  \"continuous\": {\n"}
+,{"stream_name":"stdout","time":7910.436394139,"data":"    \"maps\": 24,\n"}
+,{"stream_name":"stdout","time":7910.437637386,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.438831457,"data":"    \"exact_match\": 0.0,\n"}
+,{"stream_name":"stdout","time":7910.440002382,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.441265899,"data":"    \"legend_title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.442624771,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.443930417,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.445221531,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":7910.446784775,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":7910.447999241,"data":"    \"nmae\": 0.023,\n"}
+,{"stream_name":"stdout","time":7910.449416275,"data":"    \"nrmse\": 0.0327,\n"}
+,{"stream_name":"stdout","time":7910.450802786,"data":"    \"within_5pct\": 0.8683,\n"}
+,{"stream_name":"stdout","time":7910.452006058,"data":"    \"per_state\": {\n"}
+,{"stream_name":"stdout","time":7910.452949593,"data":"      \"DE\": 0.0498,\n"}
+,{"stream_name":"stdout","time":7910.453974052,"data":"      \"RI\": 0.0455,\n"}
+,{"stream_name":"stdout","time":7910.454865186,"data":"      \"MO\": 0.0401,\n"}
+,{"stream_name":"stdout","time":7910.455694571,"data":"      \"OR\": 0.03,\n"}
+,{"stream_name":"stdout","time":7910.456506998,"data":"      \"MI\": 0.028,\n"}
+,{"stream_name":"stdout","time":7910.457328998,"data":"      \"KS\": 0.028,\n"}
+,{"stream_name":"stdout","time":7910.458116519,"data":"      \"SD\": 0.0275,\n"}
+,{"stream_name":"stdout","time":7910.45898865,"data":"      \"NY\": 0.0259,\n"}
+,{"stream_name":"stdout","time":7910.459891285,"data":"      \"NJ\": 0.0258,\n"}
+,{"stream_name":"stdout","time":7910.460782866,"data":"      \"WY\": 0.0255,\n"}
+,{"stream_name":"stdout","time":7910.461868651,"data":"      \"VT\": 0.0254,\n"}
+,{"stream_name":"stdout","time":7910.462896276,"data":"      \"IN\": 0.0249,\n"}
+,{"stream_name":"stdout","time":7910.463925675,"data":"      \"AK\": 0.0248,\n"}
+,{"stream_name":"stdout","time":7910.464913306,"data":"      \"OH\": 0.0245,\n"}
+,{"stream_name":"stdout","time":7910.465803258,"data":"      \"MD\": 0.0242,\n"}
+,{"stream_name":"stdout","time":7910.46678532,"data":"      \"NM\": 0.0241,\n"}
+,{"stream_name":"stdout","time":7910.46775622,"data":"      \"KY\": 0.0238,\n"}
+,{"stream_name":"stdout","time":7910.468781808,"data":"      \"IA\": 0.0238,\n"}
+,{"stream_name":"stdout","time":7910.469641416,"data":"      \"UT\": 0.0237,\n"}
+,{"stream_name":"stdout","time":7910.47044821,"data":"      \"FL\": 0.0237,\n"}
+,{"stream_name":"stdout","time":7910.47129777,"data":"      \"CO\": 0.0233,\n"}
+,{"stream_name":"stdout","time":7910.472185471,"data":"      \"NE\": 0.0229,\n"}
+,{"stream_name":"stdout","time":7910.473034683,"data":"      \"NH\": 0.0223,\n"}
+,{"stream_name":"stdout","time":7910.473863567,"data":"      \"NV\": 0.0223,\n"}
+,{"stream_name":"stdout","time":7910.474790013,"data":"      \"NC\": 0.0219,\n"}
+,{"stream_name":"stdout","time":7910.475726067,"data":"      \"CT\": 0.0219,\n"}
+,{"stream_name":"stdout","time":7910.476568427,"data":"      \"TX\": 0.0218,\n"}
+,{"stream_name":"stdout","time":7910.477374684,"data":"      \"ME\": 0.0216,\n"}
+,{"stream_name":"stdout","time":7910.478174142,"data":"      \"OK\": 0.0214,\n"}
+,{"stream_name":"stdout","time":7910.479053862,"data":"      \"TN\": 0.0214,\n"}
+,{"stream_name":"stdout","time":7910.480057905,"data":"      \"WA\": 0.0212,\n"}
+,{"stream_name":"stdout","time":7910.481074864,"data":"      \"WI\": 0.0209,\n"}
+,{"stream_name":"stdout","time":7910.482110703,"data":"      \"GA\": 0.0201,\n"}
+,{"stream_name":"stdout","time":7910.483068403,"data":"      \"MA\": 0.0198,\n"}
+,{"stream_name":"stdout","time":7910.483992698,"data":"      \"WV\": 0.0196,\n"}
+,{"stream_name":"stdout","time":7910.485009955,"data":"      \"HI\": 0.0194,\n"}
+,{"stream_name":"stdout","time":7910.486019659,"data":"      \"MS\": 0.0192,\n"}
+,{"stream_name":"stdout","time":7910.48701463,"data":"      \"SC\": 0.0191,\n"}
+,{"stream_name":"stdout","time":7910.487879497,"data":"      \"AL\": 0.0189,\n"}
+,{"stream_name":"stdout","time":7910.488706416,"data":"      \"ND\": 0.0182,\n"}
+,{"stream_name":"stdout","time":7910.489511415,"data":"      \"MN\": 0.0182,\n"}
+,{"stream_name":"stdout","time":7910.490345316,"data":"      \"MT\": 0.0182,\n"}
+,{"stream_name":"stdout","time":7910.491112799,"data":"      \"VA\": 0.0174,\n"}
+,{"stream_name":"stdout","time":7910.491929597,"data":"      \"IL\": 0.0172,\n"}
+,{"stream_name":"stdout","time":7910.492836501,"data":"      \"AZ\": 0.0169,\n"}
+,{"stream_name":"stdout","time":7910.493682188,"data":"      \"AR\": 0.0167,\n"}
+,{"stream_name":"stdout","time":7910.494503707,"data":"      \"LA\": 0.0165,\n"}
+,{"stream_name":"stdout","time":7910.495355446,"data":"      \"PA\": 0.0163,\n"}
+,{"stream_name":"stdout","time":7910.496198599,"data":"      \"ID\": 0.0137,\n"}
+,{"stream_name":"stdout","time":7910.49699353,"data":"      \"CA\": 0.0132\n"}
+,{"stream_name":"stdout","time":7910.497861775,"data":"    }\n"}
+,{"stream_name":"stdout","time":7910.498902283,"data":"  }\n"}
+,{"stream_name":"stdout","time":7910.499791004,"data":"}\n"}
+,{"stream_name":"stdout","time":7910.500834797,"data":"scoring 120 mapqa test maps without the crop\n"}
+,{"stream_name":"stdout","time":7944.672312869,"data":"predicted 2/120 (0.6 min)\n"}
+,{"stream_name":"stdout","time":7977.097091746,"data":"predicted 4/120 (1.1 min)\n"}
+,{"stream_name":"stdout","time":8007.754449455,"data":"predicted 6/120 (1.6 min)\n"}
+,{"stream_name":"stdout","time":8040.471531854,"data":"predicted 8/120 (2.2 min)\n"}
+,{"stream_name":"stdout","time":8072.660199033,"data":"predicted 10/120 (2.7 min)\n"}
+,{"stream_name":"stdout","time":8127.606625438,"data":"predicted 12/120 (3.6 min)\n"}
+,{"stream_name":"stdout","time":8162.098849749,"data":"predicted 14/120 (4.2 min)\n"}
+,{"stream_name":"stdout","time":8197.417855074,"data":"predicted 16/120 (4.8 min)\n"}
+,{"stream_name":"stdout","time":8242.31921131,"data":"predicted 18/120 (5.5 min)\n"}
+,{"stream_name":"stdout","time":8277.308703091,"data":"predicted 20/120 (6.1 min)\n"}
+,{"stream_name":"stdout","time":8338.369597523,"data":"predicted 22/120 (7.1 min)\n"}
+,{"stream_name":"stdout","time":8370.820314986,"data":"predicted 24/120 (7.7 min)\n"}
+,{"stream_name":"stdout","time":8425.659044753,"data":"predicted 26/120 (8.6 min)\n"}
+,{"stream_name":"stdout","time":8470.167045909,"data":"predicted 28/120 (9.3 min)\n"}
+,{"stream_name":"stdout","time":8502.468691667,"data":"predicted 30/120 (9.9 min)\n"}
+,{"stream_name":"stdout","time":8544.589379278,"data":"predicted 32/120 (10.6 min)\n"}
+,{"stream_name":"stdout","time":8575.31896789,"data":"predicted 34/120 (11.1 min)\n"}
+,{"stream_name":"stdout","time":8608.015336158,"data":"predicted 36/120 (11.6 min)\n"}
+,{"stream_name":"stdout","time":8652.151494699,"data":"predicted 38/120 (12.4 min)\n"}
+,{"stream_name":"stdout","time":8684.93910307,"data":"predicted 40/120 (12.9 min)\n"}
+,{"stream_name":"stdout","time":8717.260606557,"data":"predicted 42/120 (13.4 min)\n"}
+,{"stream_name":"stdout","time":8750.136694692,"data":"predicted 44/120 (14.0 min)\n"}
+,{"stream_name":"stdout","time":8783.744693724,"data":"predicted 46/120 (14.6 min)\n"}
+,{"stream_name":"stdout","time":8833.799064826,"data":"predicted 48/120 (15.4 min)\n"}
+,{"stream_name":"stdout","time":8866.325696081,"data":"predicted 50/120 (15.9 min)\n"}
+,{"stream_name":"stdout","time":8899.082531596,"data":"predicted 52/120 (16.5 min)\n"}
+,{"stream_name":"stdout","time":8931.82100961,"data":"predicted 54/120 (17.0 min)\n"}
+,{"stream_name":"stdout","time":8961.741560089,"data":"predicted 56/120 (17.5 min)\n"}
+,{"stream_name":"stdout","time":8991.478031092,"data":"predicted 58/120 (18.0 min)\n"}
+,{"stream_name":"stdout","time":9023.752201846,"data":"predicted 60/120 (18.6 min)\n"}
+,{"stream_name":"stdout","time":9054.913833166,"data":"predicted 62/120 (19.1 min)\n"}
+,{"stream_name":"stdout","time":9087.533924157,"data":"predicted 64/120 (19.6 min)\n"}
+,{"stream_name":"stdout","time":9118.850139675,"data":"predicted 66/120 (20.1 min)\n"}
+,{"stream_name":"stdout","time":9151.631014981,"data":"predicted 68/120 (20.7 min)\n"}
+,{"stream_name":"stdout","time":9183.023004783,"data":"predicted 70/120 (21.2 min)\n"}
+,{"stream_name":"stdout","time":9215.627136175,"data":"predicted 72/120 (21.8 min)\n"}
+,{"stream_name":"stdout","time":9250.226925581,"data":"predicted 74/120 (22.3 min)\n"}
+,{"stream_name":"stdout","time":9285.039405794,"data":"predicted 76/120 (22.9 min)\n"}
+,{"stream_name":"stdout","time":9316.088217913,"data":"predicted 78/120 (23.4 min)\n"}
+,{"stream_name":"stdout","time":9348.112934344,"data":"predicted 80/120 (24.0 min)\n"}
+,{"stream_name":"stdout","time":9380.341789864,"data":"predicted 82/120 (24.5 min)\n"}
+,{"stream_name":"stdout","time":9429.665267244,"data":"predicted 84/120 (25.3 min)\n"}
+,{"stream_name":"stdout","time":9461.605367066,"data":"predicted 86/120 (25.9 min)\n"}
+,{"stream_name":"stdout","time":9506.037980902,"data":"predicted 88/120 (26.6 min)\n"}
+,{"stream_name":"stdout","time":9549.963035183,"data":"predicted 90/120 (27.3 min)\n"}
+,{"stream_name":"stdout","time":9593.936415121,"data":"predicted 92/120 (28.1 min)\n"}
+,{"stream_name":"stdout","time":9626.14415347,"data":"predicted 94/120 (28.6 min)\n"}
+,{"stream_name":"stdout","time":9658.630632825,"data":"predicted 96/120 (29.1 min)\n"}
+,{"stream_name":"stdout","time":9690.629753598,"data":"predicted 98/120 (29.7 min)\n"}
+,{"stream_name":"stdout","time":9723.884018903,"data":"predicted 100/120 (30.2 min)\n"}
+,{"stream_name":"stdout","time":9778.598022454,"data":"predicted 102/120 (31.1 min)\n"}
+,{"stream_name":"stdout","time":9810.469780528,"data":"predicted 104/120 (31.7 min)\n"}
+,{"stream_name":"stdout","time":9839.81810722,"data":"predicted 106/120 (32.2 min)\n"}
+,{"stream_name":"stdout","time":9872.467763302,"data":"predicted 108/120 (32.7 min)\n"}
+,{"stream_name":"stdout","time":9903.471543445,"data":"predicted 110/120 (33.2 min)\n"}
+,{"stream_name":"stdout","time":9964.344612049,"data":"predicted 112/120 (34.2 min)\n"}
+,{"stream_name":"stdout","time":10008.913457441,"data":"predicted 114/120 (35.0 min)\n"}
+,{"stream_name":"stdout","time":10053.20160341,"data":"predicted 116/120 (35.7 min)\n"}
+,{"stream_name":"stdout","time":10087.674175997,"data":"predicted 118/120 (36.3 min)\n"}
+,{"stream_name":"stdout","time":10131.685118865,"data":"predicted 120/120 (37.0 min)\n"}
+,{"stream_name":"stdout","time":10131.686254991,"data":"mapqa_nocrop test maps:\n"}
+,{"stream_name":"stdout","time":10131.687322483,"data":"{\n"}
+,{"stream_name":"stdout","time":10131.688387041,"data":"  \"discrete\": {\n"}
+,{"stream_name":"stdout","time":10131.689379312,"data":"    \"maps\": 96,\n"}
+,{"stream_name":"stdout","time":10131.690160541,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.691227842,"data":"    \"exact_match\": 0.375,\n"}
+,{"stream_name":"stdout","time":10131.692290591,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.693286371,"data":"    \"legend_title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.694429781,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.695243671,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.696235889,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.69732053,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":10131.698395764,"data":"    \"ranges_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.699331148,"data":"    \"state_accuracy\": 0.9817,\n"}
+,{"stream_name":"stdout","time":10131.700272774,"data":"    \"per_state\": {\n"}
+,{"stream_name":"stdout","time":10131.701316237,"data":"      \"RI\": 0.4271,\n"}
+,{"stream_name":"stdout","time":10131.702314952,"data":"      \"DE\": 0.8333,\n"}
+,{"stream_name":"stdout","time":10131.703443712,"data":"      \"NH\": 0.9375,\n"}
+,{"stream_name":"stdout","time":10131.704417137,"data":"      \"MD\": 0.9688,\n"}
+,{"stream_name":"stdout","time":10131.705408932,"data":"      \"VT\": 0.9688,\n"}
+,{"stream_name":"stdout","time":10131.706381305,"data":"      \"CT\": 0.9792,\n"}
+,{"stream_name":"stdout","time":10131.707355651,"data":"      \"IN\": 0.9896,\n"}
+,{"stream_name":"stdout","time":10131.708457756,"data":"      \"HI\": 0.9896,\n"}
+,{"stream_name":"stdout","time":10131.709457866,"data":"      \"CO\": 0.9896,\n"}
+,{"stream_name":"stdout","time":10131.710630596,"data":"      \"AL\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.711606039,"data":"      \"IL\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.712705952,"data":"      \"AR\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.713841261,"data":"      \"OR\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.71487206,"data":"      \"ND\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.715977537,"data":"      \"ME\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.717001564,"data":"      \"MN\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.717986087,"data":"      \"WI\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.719025868,"data":"      \"KY\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.719985941,"data":"      \"NJ\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.721138037,"data":"      \"NM\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.72211453,"data":"      \"PA\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.723065356,"data":"      \"NC\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.724004013,"data":"      \"LA\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.725014046,"data":"      \"NE\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.726131707,"data":"      \"OH\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.727049641,"data":"      \"GA\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.728122703,"data":"      \"UT\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.729147441,"data":"      \"WV\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.730075145,"data":"      \"SD\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.730992528,"data":"      \"AK\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.731976223,"data":"      \"MO\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.733120477,"data":"      \"OK\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.734128226,"data":"      \"AZ\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.735065614,"data":"      \"NV\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.736122989,"data":"      \"MS\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.736969687,"data":"      \"TX\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.737959611,"data":"      \"IA\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.738910392,"data":"      \"ID\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.7399356,"data":"      \"FL\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.741039338,"data":"      \"TN\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.742101009,"data":"      \"VA\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.743104202,"data":"      \"WA\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.743976215,"data":"      \"CA\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.744939068,"data":"      \"WY\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.745796321,"data":"      \"SC\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.746810659,"data":"      \"MI\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.74771347,"data":"      \"NY\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.748677764,"data":"      \"MT\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.749619862,"data":"      \"KS\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.750557463,"data":"      \"MA\": 1.0\n"}
+,{"stream_name":"stdout","time":10131.751605188,"data":"    }\n"}
+,{"stream_name":"stdout","time":10131.752613245,"data":"  },\n"}
+,{"stream_name":"stdout","time":10131.753624149,"data":"  \"continuous\": {\n"}
+,{"stream_name":"stdout","time":10131.754620773,"data":"    \"maps\": 24,\n"}
+,{"stream_name":"stdout","time":10131.755569464,"data":"    \"parsed\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.756548969,"data":"    \"exact_match\": 0.0,\n"}
+,{"stream_name":"stdout","time":10131.757461116,"data":"    \"title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.758462107,"data":"    \"legend_title_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.759433423,"data":"    \"legend_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.760499767,"data":"    \"data_type_correct\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.76146032,"data":"    \"coverage\": 1.0,\n"}
+,{"stream_name":"stdout","time":10131.76248503,"data":"    \"extra_keys\": 0.0,\n"}
+,{"stream_name":"stdout","time":10131.763564915,"data":"    \"nmae\": 0.0289,\n"}
+,{"stream_name":"stdout","time":10131.764709941,"data":"    \"nrmse\": 0.0613,\n"}
+,{"stream_name":"stdout","time":10131.765774583,"data":"    \"within_5pct\": 0.8767,\n"}
+,{"stream_name":"stdout","time":10131.766873656,"data":"    \"per_state\": {\n"}
+,{"stream_name":"stdout","time":10131.768364674,"data":"      \"RI\": 0.2308,\n"}
+,{"stream_name":"stdout","time":10131.768970848,"data":"      \"DE\": 0.1172,\n"}
+,{"stream_name":"stdout","time":10131.770614681,"data":"      \"NH\": 0.0607,\n"}
+,{"stream_name":"stdout","time":10131.771766106,"data":"      \"MO\": 0.0474,\n"}
+,{"stream_name":"stdout","time":10131.77272341,"data":"      \"NJ\": 0.0347,\n"}
+,{"stream_name":"stdout","time":10131.773880407,"data":"      \"MD\": 0.0311,\n"}
+,{"stream_name":"stdout","time":10131.775126878,"data":"      \"KS\": 0.0301,\n"}
+,{"stream_name":"stdout","time":10131.776377865,"data":"      \"NY\": 0.028,\n"}
+,{"stream_name":"stdout","time":10131.777194765,"data":"      \"SD\": 0.0276,\n"}
+,{"stream_name":"stdout","time":10131.778039946,"data":"      \"OR\": 0.0275,\n"}
+,{"stream_name":"stdout","time":10131.778947113,"data":"      \"CT\": 0.0264,\n"}
+,{"stream_name":"stdout","time":10131.779775221,"data":"      \"KY\": 0.0256,\n"}
+,{"stream_name":"stdout","time":10131.780596854,"data":"      \"MI\": 0.0253,\n"}
+,{"stream_name":"stdout","time":10131.781366389,"data":"      \"VT\": 0.0251,\n"}
+,{"stream_name":"stdout","time":10131.782175211,"data":"      \"AK\": 0.0245,\n"}
+,{"stream_name":"stdout","time":10131.782968873,"data":"      \"OH\": 0.0239,\n"}
+,{"stream_name":"stdout","time":10131.783802465,"data":"      \"NE\": 0.0238,\n"}
+,{"stream_name":"stdout","time":10131.784608434,"data":"      \"WY\": 0.0238,\n"}
+,{"stream_name":"stdout","time":10131.785424711,"data":"      \"NC\": 0.0229,\n"}
+,{"stream_name":"stdout","time":10131.786172437,"data":"      \"IA\": 0.0228,\n"}
+,{"stream_name":"stdout","time":10131.786945574,"data":"      \"IN\": 0.0226,\n"}
+,{"stream_name":"stdout","time":10131.787833825,"data":"      \"NM\": 0.0219,\n"}
+,{"stream_name":"stdout","time":10131.788731963,"data":"      \"CO\": 0.0218,\n"}
+,{"stream_name":"stdout","time":10131.789577164,"data":"      \"UT\": 0.0217,\n"}
+,{"stream_name":"stdout","time":10131.790300515,"data":"      \"FL\": 0.0215,\n"}
+,{"stream_name":"stdout","time":10131.791021758,"data":"      \"NV\": 0.0214,\n"}
+,{"stream_name":"stdout","time":10131.791828109,"data":"      \"TN\": 0.0212,\n"}
+,{"stream_name":"stdout","time":10131.792623655,"data":"      \"WI\": 0.0206,\n"}
+,{"stream_name":"stdout","time":10131.793347915,"data":"      \"MS\": 0.0202,\n"}
+,{"stream_name":"stdout","time":10131.794096371,"data":"      \"TX\": 0.0202,\n"}
+,{"stream_name":"stdout","time":10131.794965103,"data":"      \"MA\": 0.02,\n"}
+,{"stream_name":"stdout","time":10131.795805275,"data":"      \"ND\": 0.0197,\n"}
+,{"stream_name":"stdout","time":10131.796586769,"data":"      \"MT\": 0.0197,\n"}
+,{"stream_name":"stdout","time":10131.797305901,"data":"      \"ME\": 0.0194,\n"}
+,{"stream_name":"stdout","time":10131.798004061,"data":"      \"WV\": 0.0193,\n"}
+,{"stream_name":"stdout","time":10131.798785168,"data":"      \"AL\": 0.019,\n"}
+,{"stream_name":"stdout","time":10131.799559551,"data":"      \"HI\": 0.019,\n"}
+,{"stream_name":"stdout","time":10131.800271408,"data":"      \"LA\": 0.0188,\n"}
+,{"stream_name":"stdout","time":10131.800977615,"data":"      \"SC\": 0.0185,\n"}
+,{"stream_name":"stdout","time":10131.801802502,"data":"      \"GA\": 0.0184,\n"}
+,{"stream_name":"stdout","time":10131.802572791,"data":"      \"IL\": 0.0183,\n"}
+,{"stream_name":"stdout","time":10131.803277036,"data":"      \"OK\": 0.0183,\n"}
+,{"stream_name":"stdout","time":10131.803979572,"data":"      \"VA\": 0.0182,\n"}
+,{"stream_name":"stdout","time":10131.80474524,"data":"      \"AZ\": 0.0165,\n"}
+,{"stream_name":"stdout","time":10131.805486105,"data":"      \"ID\": 0.0165,\n"}
+,{"stream_name":"stdout","time":10131.806137623,"data":"      \"WA\": 0.0162,\n"}
+,{"stream_name":"stdout","time":10131.806877102,"data":"      \"PA\": 0.016,\n"}
+,{"stream_name":"stdout","time":10131.807603924,"data":"      \"MN\": 0.0153,\n"}
+,{"stream_name":"stdout","time":10131.808299397,"data":"      \"AR\": 0.0146,\n"}
+,{"stream_name":"stdout","time":10131.809061471,"data":"      \"CA\": 0.0128\n"}
+,{"stream_name":"stdout","time":10131.809810424,"data":"    }\n"}
+,{"stream_name":"stdout","time":10131.810597313,"data":"  }\n"}
+,{"stream_name":"stdout","time":10131.811480062,"data":"}\n"}
+,{"stream_name":"stderr","time":10139.255537688,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":10139.255576053,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":10139.432901934,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":10139.432930804,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":10140.106136053,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":10140.477624303,"data":"[NbConvertApp] Writing 92550 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":10143.170757994,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":10144.238153253,"data":"[NbConvertApp] Writing 558831 bytes to __results__.html\n"}
+]

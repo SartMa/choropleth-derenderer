@@ -1,0 +1,8 @@
+{
+ "training_maps": 1800,
+ "held_out_maps": 200,
+ "tokens": 90241,
+ "positive_tokens": 18241,
+ "held_out_small_region_tokens_found": 0.8505102040816327,
+ "held_out_first_tile_overlaps_rule": 0.96
+}

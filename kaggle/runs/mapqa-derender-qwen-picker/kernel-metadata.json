@@ -1,0 +1,20 @@
+{
+ "id": "sartma/mapqa-derender-qwen-picker",
+ "title": "mapqa-derender-qwen-picker",
+ "code_file": "notebook.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "machine_shape": "NvidiaTeslaT4",
+ "dataset_sources": [
+  "sartma/mapqa-s"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [
+  "sartma/mapqa-derender-qwen-tiles2"
+ ],
+ "model_sources": []
+}

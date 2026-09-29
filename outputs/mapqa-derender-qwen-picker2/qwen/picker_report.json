@@ -1,0 +1,8 @@
+{
+ "training_maps": 1800,
+ "held_out_maps": 200,
+ "tokens": 810000,
+ "small_regions_counted": 23445,
+ "rule_tile_regions_also_in_picker_tile": 0.8924646781789639,
+ "maps_where_picker_tile_holds_80pct_of_rule_tile": 0.855
+}

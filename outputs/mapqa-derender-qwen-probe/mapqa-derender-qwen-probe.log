@@ -1,0 +1,76 @@
+[{"stream_name":"stderr","time":7.975233585,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.975309594,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.975314509,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.975317557,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.641441,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.641505666,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.641512793,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.641517538,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.794982988,"data":"$ nvidia-smi\n"}
+,{"stream_name":"stdout","time":9.828707479,"data":"Tue Sep 29 11:46:47 2026       \n"}
+,{"stream_name":"stdout","time":9.829831047,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.830880054,"data":"| NVIDIA-SMI 580.159.04             Driver Version: 580.159.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":9.831910177,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.832923032,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":9.833799926,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":9.83470594,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":9.835657494,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":9.885075372,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.885833083,"data":"| N/A   53C    P8             12W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.886846877,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.887600311,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.88860155,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.889387448,"data":"| N/A   50C    P8             11W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.890328782,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.891226605,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.892109473,"data":"\n"}
+,{"stream_name":"stdout","time":9.892926909,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.894530009,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":9.895003414,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":9.895882627,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":9.896708759,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":9.897514823,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":9.898205092,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":10.218657647,"data":"$ pip install -q transformers==4.57.1 peft==0.17.1 accelerate\n"}
+,{"stream_name":"stdout","time":13.019759849,"data":"     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 44.0/44.0 kB 1.2 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.062868418,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 12.0/12.0 MB 83.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.108261463,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 504.9/504.9 kB 20.0 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":14.152399646,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 566.4/566.4 kB 21.9 MB/s eta 0:00:00\n"}
+,{"stream_name":"stdout","time":29.03192764,"data":"Writing convert_mapqa.py\n"}
+,{"stream_name":"stdout","time":29.053765116,"data":"Writing common.py\n"}
+,{"stream_name":"stdout","time":29.070819852,"data":"Writing tiles.py\n"}
+,{"stream_name":"stdout","time":29.105814018,"data":"Writing train_qwen.py\n"}
+,{"stream_name":"stdout","time":29.120544005,"data":"$ python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data\n"}
+,{"stream_name":"stdout","time":865.051842618,"data":"Read 20789 maps from /kaggle/input\n"}
+,{"stream_name":"stdout","time":865.052870963,"data":"  train  12470 maps (9421 discrete, 3049 continuous) -\u003e /kaggle/working/data/train.jsonl\n"}
+,{"stream_name":"stdout","time":865.053970927,"data":"  dev     4155 maps (3187 discrete, 968 continuous) -\u003e /kaggle/working/data/dev.jsonl\n"}
+,{"stream_name":"stdout","time":865.054943218,"data":"  test    4157 maps (3114 discrete, 1043 continuous) -\u003e /kaggle/working/data/test.jsonl\n"}
+,{"stream_name":"stdout","time":865.055756418,"data":"  skipped 7 map(s) that no question file uses: [135, 2139, 3711, 6802, 13284, 13932, 16473]\n"}
+,{"stream_name":"stdout","time":865.056602078,"data":"  target length in characters: min 488, median 546, max 784\n"}
+,{"stream_name":"stdout","time":865.078826325,"data":"$ python train_qwen.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/qwen --india /kaggle/input --adapter /kaggle/input --skip-train --tiles 2 --probe-picker /kaggle/input --eval-maps 400 --eval-limit 200 --india-eval-maps 200\n"}
+,{"stream_name":"stdout","time":904.108474666,"data":"The image processor of type `Qwen2VLImageProcessor` is now loaded as a fast processor by default, even if the model checkpoint was saved with a slow processor. This is a breaking change and may produce slightly different outputs. To continue using the slow processor, instantiate this class with `use_fast=False`. Note that this behavior will be extended to all models in a future release.\n"}
+,{"stream_name":"stdout","time":906.181716558,"data":"`torch_dtype` is deprecated! Use `dtype` instead!\n"}
+,{"stream_name":"stdout","time":906.584662336,"data":"\n"}
+,{"stream_name":"stdout","time":982.62086257,"data":"Fetching 2 files:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":982.621990947,"data":"Fetching 2 files:  50%|█████     | 1/2 [01:16\u003c01:16, 76.03s/it]\n"}
+,{"stream_name":"stdout","time":982.622930961,"data":"Fetching 2 files: 100%|██████████| 2/2 [01:16\u003c00:00, 38.01s/it]\n"}
+,{"stream_name":"stdout","time":983.758579416,"data":"\n"}
+,{"stream_name":"stdout","time":986.537462622,"data":"Loading checkpoint shards:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":988.959386417,"data":"Loading checkpoint shards:  50%|█████     | 1/2 [00:02\u003c00:02,  2.78s/it]\n"}
+,{"stream_name":"stdout","time":988.96025459,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:05\u003c00:00,  2.57s/it]\n"}
+,{"stream_name":"stdout","time":988.961071151,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:05\u003c00:00,  2.60s/it]\n"}
+,{"stream_name":"stdout","time":994.801754705,"data":"LoRA modules: 348 total | vision attention 0 | vision MLP 96 | merger 0 | language 252\n"}
+,{"stream_name":"stdout","time":1101.286200395,"data":"probe mapqa, as drawn: {\"maps\": 200, \"rule_tiles_hold\": 0.7863459029145949, \"picker_tiles_hold\": 0.6833904636814853, \"picker_first_tile_in_top_right_quarter\": 1.0}\n"}
+,{"stream_name":"stdout","time":1204.193591285,"data":"probe mapqa, mirrored left-right: {\"maps\": 200, \"rule_tiles_hold\": 0.7626750202197183, \"picker_tiles_hold\": 0.6814534736419411, \"picker_first_tile_in_top_right_quarter\": 0.005}\n"}
+,{"stream_name":"stdout","time":1307.063953849,"data":"probe mapqa, flipped top-bottom: {\"maps\": 200, \"rule_tiles_hold\": 0.7050922535067272, \"picker_tiles_hold\": 0.6106705447760015, \"picker_first_tile_in_top_right_quarter\": 0.02}\n"}
+,{"stream_name":"stdout","time":1410.105544756,"data":"probe mapqa, rotated 180: {\"maps\": 200, \"rule_tiles_hold\": 0.7086816560202783, \"picker_tiles_hold\": 0.628592235744132, \"picker_first_tile_in_top_right_quarter\": 0.0}\n"}
+,{"stream_name":"stdout","time":1595.531742284,"data":"probe india, as drawn: {\"maps\": 196, \"rule_tiles_hold\": 0.6384456505318008, \"picker_tiles_hold\": 0.5321798555288004, \"picker_first_tile_in_top_right_quarter\": 0.9897959183673469}\n"}
+,{"stream_name":"stderr","time":1602.745109312,"data":"/usr/local/lib/python3.12/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":1602.745149767,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":1602.938137254,"data":"/usr/local/lib/python3.12/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":1602.938165445,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":1603.645730932,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":1603.999782036,"data":"[NbConvertApp] Writing 106999 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":1606.588874456,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":1607.627317108,"data":"[NbConvertApp] Writing 667055 bytes to __results__.html\n"}
+]

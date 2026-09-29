@@ -1,0 +1,22 @@
+{
+ "id": "skini501/mapqa-derender-qwen-probe",
+ "title": "mapqa-derender-qwen-probe",
+ "code_file": "notebook.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "machine_shape": "NvidiaTeslaT4",
+ "dataset_sources": [
+  "sartma/mapqa-s",
+  "sartma/synth-india-choropleth"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [
+  "skini501/mapqa-derender-qwen-full",
+  "skini501/mapqa-derender-qwen-picker2"
+ ],
+ "model_sources": []
+}
