@@ -1,0 +1,202 @@
+{
+ "AK": {
+  "division": "Pacific",
+  "region": "West"
+ },
+ "AL": {
+  "division": "East South Central",
+  "region": "South"
+ },
+ "AR": {
+  "division": "West South Central",
+  "region": "South"
+ },
+ "AZ": {
+  "division": "Mountain",
+  "region": "West"
+ },
+ "CA": {
+  "division": "Pacific",
+  "region": "West"
+ },
+ "CO": {
+  "division": "Mountain",
+  "region": "West"
+ },
+ "CT": {
+  "division": "New England",
+  "region": "Northeast"
+ },
+ "DE": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "FL": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "GA": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "HI": {
+  "division": "Pacific",
+  "region": "West"
+ },
+ "IA": {
+  "division": "West North Central",
+  "region": "Midwest"
+ },
+ "ID": {
+  "division": "Mountain",
+  "region": "West"
+ },
+ "IL": {
+  "division": "East North Central",
+  "region": "Midwest"
+ },
+ "IN": {
+  "division": "East North Central",
+  "region": "Midwest"
+ },
+ "KS": {
+  "division": "West North Central",
+  "region": "Midwest"
+ },
+ "KY": {
+  "division": "East South Central",
+  "region": "South"
+ },
+ "LA": {
+  "division": "West South Central",
+  "region": "South"
+ },
+ "MA": {
+  "division": "New England",
+  "region": "Northeast"
+ },
+ "MD": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "ME": {
+  "division": "New England",
+  "region": "Northeast"
+ },
+ "MI": {
+  "division": "East North Central",
+  "region": "Midwest"
+ },
+ "MN": {
+  "division": "West North Central",
+  "region": "Midwest"
+ },
+ "MO": {
+  "division": "West North Central",
+  "region": "Midwest"
+ },
+ "MS": {
+  "division": "East South Central",
+  "region": "South"
+ },
+ "MT": {
+  "division": "Mountain",
+  "region": "West"
+ },
+ "NC": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "ND": {
+  "division": "West North Central",
+  "region": "Midwest"
+ },
+ "NE": {
+  "division": "West North Central",
+  "region": "Midwest"
+ },
+ "NH": {
+  "division": "New England",
+  "region": "Northeast"
+ },
+ "NJ": {
+  "division": "Middle Atlantic",
+  "region": "Northeast"
+ },
+ "NM": {
+  "division": "Mountain",
+  "region": "West"
+ },
+ "NV": {
+  "division": "Mountain",
+  "region": "West"
+ },
+ "NY": {
+  "division": "Middle Atlantic",
+  "region": "Northeast"
+ },
+ "OH": {
+  "division": "East North Central",
+  "region": "Midwest"
+ },
+ "OK": {
+  "division": "West South Central",
+  "region": "South"
+ },
+ "OR": {
+  "division": "Pacific",
+  "region": "West"
+ },
+ "PA": {
+  "division": "Middle Atlantic",
+  "region": "Northeast"
+ },
+ "RI": {
+  "division": "New England",
+  "region": "Northeast"
+ },
+ "SC": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "SD": {
+  "division": "West North Central",
+  "region": "Midwest"
+ },
+ "TN": {
+  "division": "East South Central",
+  "region": "South"
+ },
+ "TX": {
+  "division": "West South Central",
+  "region": "South"
+ },
+ "UT": {
+  "division": "Mountain",
+  "region": "West"
+ },
+ "VA": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "VT": {
+  "division": "New England",
+  "region": "Northeast"
+ },
+ "WA": {
+  "division": "Pacific",
+  "region": "West"
+ },
+ "WI": {
+  "division": "East North Central",
+  "region": "Midwest"
+ },
+ "WV": {
+  "division": "South Atlantic",
+  "region": "South"
+ },
+ "WY": {
+  "division": "Mountain",
+  "region": "West"
+ }
+}
