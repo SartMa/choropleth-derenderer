@@ -8,6 +8,11 @@ The derenderer reads a map image and writes the data behind it as JSON. Everythi
 (statistics, then prose) works from that JSON, so no stage after this one has to read pixels or do
 arithmetic in generated text.
 
+> **Current state (2026-11-05):** the derenderer is now the learned answer sheet with S2 + zoom
+> (`train/answer_v3.py`): one model for US and India, 92.1% of MapQA maps exactly right, real India big states
+> 91.5%. Read [docs/ANSWER_SHEET.md](docs/ANSWER_SHEET.md) for the method, results and next steps. The sections
+> below describe the earlier plain fine-tuning baseline.
+
 ## What the model outputs
 
 One line of compact JSON per map. Keys always appear in this order:
@@ -188,6 +193,8 @@ train/common.py           data loading, training loop, scoring
 train/train_deplot.py     fine-tune DePlot
 train/train_qwen.py       LoRA fine-tune Qwen2.5-VL
 kaggle/launch.py          push a run to Kaggle, wait, download results
+train/answer_*.py         the answer sheet (v1, zoom check, v2, v3) - see docs/ANSWER_SHEET.md
+lookup/                   shapefile fits, real India maps, scoring
 ```
 
 ## Known limits and next steps

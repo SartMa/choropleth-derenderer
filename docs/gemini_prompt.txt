@@ -1,0 +1,154 @@
+I am working on a research project and want your ideas, grounded in published work wherever possible. Please read the whole
+context first, then answer the questions at the end. Where you cite a paper, give its title, authors/venue/year and the
+specific idea we could borrow; say clearly when you are unsure a paper exists or what exactly it showed. Do not invent
+results.
+
+==================================================================
+1. THE PROJECT
+==================================================================
+
+Goal: turn a choropleth map image (a map whose regions are coloured by a value, with a legend) into accurate text.
+Three stages:
+  1. Derenderer (a vision-language model): map image -> JSON with title, legend title, legend type (discrete or
+     continuous), the legend ranges, and a value for every region (a class index for discrete legends, a number for
+     continuous ones, null for no data). Regions are named by short codes (US state codes, Indian state codes).
+  2. Code layer: deterministic spatial statistics on that JSON (Moran's I, LISA, Getis-Ord Gi*, trends).
+  3. Narrator: an LLM turns the computed facts into prose.
+This question is only about stage 1, the derenderer.
+
+The derenderer must work for any country we target (for now the USA and India; China later), on real-world map styles,
+as ONE model. The closest prior work is CMA (Butani, Sreevalsan-Nair, Kamat, IEEE GRSL 2024): a six-step pipeline
+(legend classification, connected components, OCR, legend analysis, Mask R-CNN region segmentation retrained per
+country, colour-to-data). Its own stated limitation is that it "could be replaced by a single model". We want that
+single model, and we do NOT want to rebuild CMA's pipeline around a VLM (no shapefile fitting, OCR or legend cropping
+at reading time).
+
+Compute: Kaggle T4 GPUs (16 GB), runs of up to ~12 h; a shared lab GPU may become available.
+
+==================================================================
+2. MODEL AND DATA
+==================================================================
+
+Base model: Qwen2.5-VL-3B-Instruct with LoRA. Its vision tower works on 14x14-pixel patches; every 2x2 patches are
+merged into one 28x28-pixel token for the language model. Images up to ~640k pixels (~3,300 patches).
+
+Data:
+- MapQA (Chang et al. 2022): ~20k US state choropleths, all in one Plotly style. We test on 400 test maps (302 discrete).
+- Our own synthetic generator for US and India maps (random palettes, legends, fonts, layouts) from geoBoundaries
+  shapefiles, so per-pixel region labels are free.
+- Real India maps: CMA's 164 India maps. 68 of them are matched to their source data tables (by title and legend
+  numbers), which gives true values for scoring.
+
+==================================================================
+3. WHAT WE TRIED AND WHAT WE MEASURED
+==================================================================
+
+(a) Plain fine-tuning (image -> JSON). On MapQA: 97.8% of states right, but whole map exactly right only 33%. The
+    misses are almost all tiny states (Rhode Island 47%, Delaware). On India it hardly works: on real India maps
+    big states are 62% right, no better than always guessing the most common class. Printing state codes on the map
+    took Indian big states from 64% to 97%, so the model does not know where Indian states are.
+
+(b) Tiles: a few zoomed crops (3x) of the map are passed as extra images, and a small learned picker chooses where.
+    On MapQA: Rhode Island 94%, whole map exact 89.7%, our best on the US. But it does not help India: US small states
+    sit in one north-east cluster that one tile covers, and the picker effectively learned that. Not a general method.
+
+(c) S2 ("scaling on scales", Shi et al. 2024), first attempt: the vision tower also ran on the map at 2x; those fine
+    features were averaged back onto the 1x token grid and fused through a new 8.4M-weight linear layer. Failed
+    (Rhode Island 42%): averaging back onto the coarse grid blends the tiny state with its neighbours again, and the
+    new weights barely moved in ~200 updates. Generally, new modules trained only through the language-model loss
+    did not learn in our budgets; things that reuse pretrained parts did.
+
+(d) Region sheet: code fits the country's shapefile onto the map, cuts every region out and lays them out as cells on
+    a separate image beside the legend; the VLM reads the cells. Trained on US only, it read synthetic India with
+    100% of big states and 94.8% of small ones; real India big states 91.4%. But it needs a shapefile fit at reading
+    time (CMA-like), and on MapQA it lost to tiles (74.8% vs 89.7% exact, mostly readings one shade off).
+
+(e) Learned answer sheet (our current direction): a small conv head (~2M weights) on the vision tower's 14-px patch
+    features predicts, for every patch, which region it belongs to, out of a fixed list of 87 classes (background,
+    50 US states, 36 Indian regions). Summing the head's belief by country gives the country (100% right on every
+    test set). Each region's patch features are averaged, weighted by the head's belief squared, and passed through
+    Qwen's own 2x2 merger into ONE token per region. The language model reads "code: [region token]" for every
+    region, plus the normal map tokens, and writes the JSON. Shapefiles are used only to make per-patch training
+    labels, never at reading time. Half the training maps use random made-up region codes and random region subsets,
+    so the reader copies colours rather than recalling names.
+    v1 results: real India big states 93.2% (best so far), small regions 72.3%; synthetic India big 99.9%;
+    MapQA exact 32.5%, Rhode Island 50.7%.
+
+(f) Diagnosis of small regions: it is resolution, not too little training. Delhi and Rhode Island cover about 0.2 of
+    one 14-px patch; even with perfect labels their pooled token can be at most 14-57% their own pixels; accuracy
+    follows region area almost exactly (Delhi 63%, Goa 88%, Sikkim 97%, Tripura 99%).
+
+(g) v2: zoom inside the answer sheet. For each region the head finds fewer than 3 patches of, crop around where the
+    head put it, enlarge 3x, run the tower and head on the crop, and pool that region's token from the zoomed view.
+    The head and the reader are both trained on zoomed views (zooming without training failed).
+    v2 vs v1:
+      MapQA whole map exact      32.5% -> 70.2%   (tiles: 89.7%)
+      MapQA Rhode Island         50.7% -> 73.8%   (tiles: 94.4%)
+      MapQA Delaware             73.5% -> 94.7%
+      Synthetic India small      89.2% -> 93.3%   (Delhi 68% -> 84%)
+      Real India small           72.3% -> 76.1%   (region sheet: 85.2%)
+      Real India big             93.2% -> 89.5%   (not significant: 8 maps better, 8 worse)
+      Real India continuous error, median 9.3% -> 4.5%, but two maps blew up
+    What v2's own logs show:
+      - Finding fails: the head decides where to zoom from the 1x grid, where Delhi is a fifth of a patch. Delhi was
+        never zoomed on 58 of 68 real maps (the head's peak belief was below 5% everywhere); Rhode Island was never
+        zoomed on 169 of 400 MapQA maps.
+      - 3x is not enough: after zooming, Rhode Island, Delhi and Andaman tokens are still only 56-69% their own pixels
+        (others 77-92%).
+      - It zooms regions that are not small: on real maps medium states get zoomed and their tokens get worse
+        (Himachal 74% -> 23% pure).
+      - On a few real maps the whole map shifts by one class or more (every lowest-class state read as class 4),
+        apparently when many region tokens are replaced by zoomed ones.
+
+(h) Running now (v3), two variants from v2's weights:
+      - S2 done per region: the map enlarged 2x, cut into 2x2 tiles of the original size, run through the tower, and
+        the patch grids stitched into one grid at twice the detail (Delhi ~0.8 patch). The head reads that grid and
+        every region token is pooled from it. No averaging back onto the coarse grid and no new layers before the LLM.
+      - The same, plus a zoom sized per region (2x-8x, so a region covers ~8 patches), with the zoomed token kept
+        only if the head's belief in the region rises.
+
+==================================================================
+4. CONSTRAINTS
+==================================================================
+
+- One model at reading time: no shapefile fitting, no OCR, no hand-written legend parsing at inference.
+- Shapefiles (and our synthetic generator) are fine for making training labels.
+- It must generalise across countries and map styles; the fixed 87-class head is a known limitation (a new country
+  means new head outputs and a short training round).
+- Fits a 3B VLM on a 16 GB GPU, training budgets of a few hours.
+- New modules that only get gradient through the language-model loss have not learned in our budgets; dense
+  per-patch supervision has worked well.
+
+==================================================================
+5. QUESTIONS
+==================================================================
+
+1. Small regions. What published methods address objects or regions far smaller than one ViT patch, in VLMs or in
+   segmentation/detection, that fit our setup? We already know: "MLLMs Know Where to Look" (crop by attention),
+   V* / SEAL guided visual search, ZoomEye, FeatUp (feature upsampling), S2 scaling, superpixel and sub-object
+   tokenisation (SPiT, subobject-level tokens), Osprey and Groma (region tokens). Which of these, or others, would you
+   use, and how exactly would you adapt them? Is there a better way to FIND a sub-patch region before zooming than
+   peak belief on a coarse grid (e.g. objectness, boundary/edge maps, coarse-to-fine search, using neighbouring
+   regions as anchors)?
+
+2. Class-agnostic regions. Our head is tied to a fixed list of regions. Are there published ways to make the
+   "which pixels belong to one region" step class-agnostic (e.g. instance grouping, contrastive pixel embeddings,
+   SAM-style prompting, slot attention), and attach names afterwards, so a new country needs little or no retraining?
+   What would you use to name the regions after grouping, without a shapefile at reading time?
+
+3. Colour-to-legend reading. Many remaining errors are "one shade off" and occasional whole-map shifts by one class.
+   Are there published ideas for reading a value from a colour against a legend reliably in VLMs (chart/plot
+   derendering such as DePlot, MatCha, ChartQA work, colour-bar reading, explicit legend-swatch tokens, ordinal or
+   relative comparison losses)? Would giving the legend swatches their own tokens, so each region token is compared
+   with swatch tokens, be supported by any prior work?
+
+4. The whole-map shifts. Why might replacing some region tokens with tokens made from zoomed views shift the class of
+   regions that were not zoomed? Is there known work on keeping token statistics consistent across scales (e.g.
+   scale-consistency losses, feature normalisation across resolutions)?
+
+5. Overall direction. Given everything above, which direction is most likely to give a strong, publishable single
+   model for choropleth derendering across countries? What is novel here relative to CMA, MapQA, MAPWise and general
+   chart-derendering work, and what ablations or baselines would a reviewer expect?
+
+Please be concrete: for each suggestion say what to change in our model, what labels or training it needs, roughly
+how expensive it is, and how we would know quickly (a cheap test) whether it works.

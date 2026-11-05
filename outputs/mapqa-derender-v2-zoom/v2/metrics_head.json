@@ -1,0 +1,78 @@
+{
+ "stage_a": {
+  "india_as_drawn": {
+   "maps": 150,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8806798644201012,
+   "big_purity_median": 0.871301919221878,
+   "small_purity_median": 0.2354392409324646,
+   "big_purity_over_0.8": 0.7237037037037037,
+   "small_purity_over_0.8": 0.064
+  },
+  "india_moved": {
+   "maps": 150,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8562205783456625,
+   "big_purity_median": 0.8173806667327881,
+   "small_purity_median": 0.16054560244083405,
+   "big_purity_over_0.8": 0.5634567901234568,
+   "small_purity_over_0.8": 0.008
+  },
+  "mapqa": {
+   "maps": 150,
+   "country_right": 1.0,
+   "patch_accuracy": 0.9133408515063196,
+   "big_purity_median": 0.8474982678890228,
+   "small_purity_median": 0.3923342227935791,
+   "big_purity_over_0.8": 0.7507317073170732,
+   "small_purity_over_0.8": 0.0
+  },
+  "real_india": {
+   "maps": 157,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8165767038288856,
+   "big_purity_median": 0.8114609718322754,
+   "small_purity_median": 0.18305744230747223,
+   "big_purity_over_0.8": 0.5355036565227648,
+   "small_purity_over_0.8": 0.003821656050955414
+  }
+ },
+ "stage_b": {
+  "india_as_drawn": {
+   "maps": 150,
+   "country_right": 1.0,
+   "patch_accuracy": 0.9110748145601022,
+   "big_purity_median": 0.8702140152454376,
+   "small_purity_median": 0.29479238390922546,
+   "big_purity_over_0.8": 0.7609876543209877,
+   "small_purity_over_0.8": 0.032
+  },
+  "india_moved": {
+   "maps": 150,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8829666634643097,
+   "big_purity_median": 0.8168777227401733,
+   "small_purity_median": 0.1756323203444481,
+   "big_purity_over_0.8": 0.5669135802469136,
+   "small_purity_over_0.8": 0.005333333333333333
+  },
+  "mapqa": {
+   "maps": 150,
+   "country_right": 1.0,
+   "patch_accuracy": 0.9180860879626239,
+   "big_purity_median": 0.8447854816913605,
+   "small_purity_median": 0.4143046736717224,
+   "big_purity_over_0.8": 0.7284552845528456,
+   "small_purity_over_0.8": 0.0
+  },
+  "real_india": {
+   "maps": 157,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8256234340580807,
+   "big_purity_median": 0.8097259998321533,
+   "small_purity_median": 0.19006292521953583,
+   "big_purity_over_0.8": 0.5343241330502477,
+   "small_purity_over_0.8": 0.0012738853503184713
+  }
+ }
+}

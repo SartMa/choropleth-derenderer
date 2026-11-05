@@ -1,5 +1,8 @@
 # Reading small regions: strategy comparison
 
+> Superseded on 2026-11-05: the answer sheet with S2 + zoom matches tiles on these maps (92.1% exact, Rhode Island
+> 97.4%) and also works on India. See [docs/ANSWER_SHEET.md](docs/ANSWER_SHEET.md).
+
 **Result:** a learned picker that chooses where to magnify, feeding magnified tiles to the model as extra
 images, reads Rhode Island correctly on **94.4%** of maps (baseline 47.0%) and gets the **whole map exactly
 right on 89.7%** (baseline 33.1%). Fusing the tiles into the model's own tokens did not work.

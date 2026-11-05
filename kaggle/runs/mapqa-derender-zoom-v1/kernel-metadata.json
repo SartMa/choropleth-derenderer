@@ -1,0 +1,24 @@
+{
+ "id": "sartma/mapqa-derender-zoom-v1",
+ "title": "mapqa-derender-zoom-v1",
+ "code_file": "notebook.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "machine_shape": "NvidiaTeslaT4",
+ "dataset_sources": [
+  "sartma/mapqa-s",
+  "sartma/synth-india-choropleth",
+  "sartma/region-probe",
+  "sartma/answer-labels",
+  "sartma/real-sheets"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [
+  "sartma/mapqa-derender-answer-v1"
+ ],
+ "model_sources": []
+}

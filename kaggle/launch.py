@@ -30,12 +30,18 @@ import time
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parent.parent
-SCRIPTS = {"deplot": PROJECT / "train" / "train_deplot.py", "qwen": PROJECT / "train" / "train_qwen.py"}
+SCRIPTS = {"deplot": PROJECT / "train" / "train_deplot.py", "qwen": PROJECT / "train" / "train_qwen.py",
+           "region": PROJECT / "train" / "region_head.py", "read": PROJECT / "train" / "region_read.py",
+           "real": PROJECT / "train" / "read_real.py",
+           "answer": PROJECT / "train" / "answer_sheet.py",
+           "zoom": PROJECT / "train" / "answer_zoom.py",
+           "v2": PROJECT / "train" / "answer_v2.py",
+           "v3": PROJECT / "train" / "answer_v3.py"}
 PACKAGES = "transformers==4.57.1 peft==0.17.1 accelerate"
 SMOKE_ARGS = ["--train-maps", "64", "--synth-train-maps", "32", "--eval-maps", "16", "--synth-eval-maps", "8",
               "--epochs", "1", "--hours", "0.25", "--log-every", "5"]
 SMOKE_TIMEOUT_SECONDS = 45 * 60
-RESULT_FILES = r".*(metrics.*\.json|predictions.*\.jsonl|train_log\.jsonl|args\.json|\.log)$"
+RESULT_FILES = r".*(raw_predictions.*\.jsonl|metrics.*\.json|picker_.*\.(json|pt)|region_head.*\.pt|countries_.*\.json|purity_.*\.json|predictions.*\.jsonl|train_log\.jsonl|args\.json|\.log)$"
 
 RUNNER = '''import subprocess
 
@@ -55,16 +61,22 @@ def code_cell(source):
             "source": source}
 
 
-def build_notebook(model, train_args, synth=False, india=False, variants=()):
+def build_notebook(model, train_args, synth=False, india=False, variants=(), convert=True):
     """variants: (name, extra args) pairs run one after another in the same notebook, each writing to
     /kaggle/working/<model>/<name>; one variant failing does not stop the others."""
     script = SCRIPTS[model]
     cells = [code_cell(RUNNER), code_cell(f'run("nvidia-smi")\nrun("pip install -q {PACKAGES}")')]
     modules = [PROJECT / "mapqa" / "convert_mapqa.py", PROJECT / "train" / "common.py",
-               PROJECT / "train" / "tiles.py", script]
+               PROJECT / "train" / "tiles.py", PROJECT / "train" / "sheet.py"]
+    modules += {"region": [SCRIPTS["qwen"]], "read": [SCRIPTS["qwen"], SCRIPTS["region"]],
+                "real": [SCRIPTS["qwen"]], "answer": [SCRIPTS["qwen"]],
+                "zoom": [SCRIPTS["qwen"], SCRIPTS["answer"]],
+                "v2": [SCRIPTS["qwen"], SCRIPTS["answer"]],
+                "v3": [SCRIPTS["qwen"], SCRIPTS["answer"], SCRIPTS["v2"]]}.get(model, []) + [script]
     for path in modules:
         cells.append(code_cell(f"%%writefile {path.name}\n{path.read_text()}"))
-    cells.append(code_cell('run("python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data")'))
+    if convert and model in ("deplot", "qwen", "answer", "zoom", "v2", "v3"):
+        cells.append(code_cell('run("python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data")'))
     synth_args = (["--synth", "/kaggle/input"] if synth else []) + (["--india", "/kaggle/input"] if india else [])
 
     def command(out, extra=()):
@@ -90,11 +102,11 @@ def kaggle(cli, *args, check=True):
 
 
 def push(cli, ref, slug, model, train_args, datasets, machine, timeout, kernel_sources=(), use_synth=False,
-         use_india=False, variants=()):
+         use_india=False, variants=(), convert=True):
     """datasets: the MapQA dataset first, then any others (synthetic maps, a saved model)."""
     folder = PROJECT / "kaggle" / "runs" / slug
     folder.mkdir(parents=True, exist_ok=True)
-    notebook = build_notebook(model, train_args, synth=use_synth, india=use_india, variants=variants)
+    notebook = build_notebook(model, train_args, synth=use_synth, india=use_india, variants=variants, convert=convert)
     (folder / "notebook.ipynb").write_text(json.dumps(notebook, indent=1))
     (folder / "kernel-metadata.json").write_text(json.dumps({
         "id": ref, "title": slug, "code_file": "notebook.ipynb", "language": "python", "kernel_type": "notebook",
@@ -173,6 +185,7 @@ def main():
                              "under /kaggle/input, so --model /kaggle/input finds it")
     parser.add_argument("--machine", default="NvidiaTeslaT4", help="Kaggle machine_shape: NvidiaTeslaT4 or NvidiaL4")
     parser.add_argument("--every", type=float, default=5, help="minutes between status checks")
+    parser.add_argument("--no-convert", action="store_true", help="skip converting MapQA; for runs that do not use it")
     parser.add_argument("--no-wait", action="store_true", help="push and exit")
     parser.add_argument("--wait-only", action="store_true", help="don't push; wait for the last run and download it")
     parser.add_argument("--download-all", action="store_true", help="also download the model weights")
@@ -199,7 +212,7 @@ def main():
         push(args.kaggle, ref, slug, args.model, run_args, datasets, args.machine,
              SMOKE_TIMEOUT_SECONDS if args.smoke else None, sources, args.synth_dataset != "none",
              args.india_dataset != "none",
-             [(v.split(":", 1)[0], shlex.split(v.split(":", 1)[1])) for v in args.variant])
+             [(v.split(":", 1)[0], shlex.split(v.split(":", 1)[1])) for v in args.variant], not args.no_convert)
         if args.no_wait:
             flags = ((" --smoke" if args.smoke else "") + (f" --tag {args.tag}" if args.tag else "")
                      + (f" --owner {args.owner}" if args.owner else ""))

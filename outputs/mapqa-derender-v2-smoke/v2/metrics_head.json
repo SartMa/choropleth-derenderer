@@ -1,0 +1,78 @@
+{
+ "stage_a": {
+  "india_as_drawn": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.6896855069276446,
+   "big_purity_median": 0.7690736353397369,
+   "small_purity_median": 0.06309116259217262,
+   "big_purity_over_0.8": 0.44907407407407407,
+   "small_purity_over_0.8": 0.0
+  },
+  "india_moved": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.6647747428166016,
+   "big_purity_median": 0.7239125072956085,
+   "small_purity_median": 0.04433070309460163,
+   "big_purity_over_0.8": 0.28703703703703703,
+   "small_purity_over_0.8": 0.0
+  },
+  "mapqa": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8196524865188736,
+   "big_purity_median": 0.8242292702198029,
+   "small_purity_median": 0.2985229194164276,
+   "big_purity_over_0.8": 0.6128048780487805,
+   "small_purity_over_0.8": 0.0
+  },
+  "real_india": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.5738498789346247,
+   "big_purity_median": 0.6396144926548004,
+   "small_purity_median": 0.03923080302774906,
+   "big_purity_over_0.8": 0.21296296296296297,
+   "small_purity_over_0.8": 0.0
+  }
+ },
+ "stage_b": {
+  "india_as_drawn": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.7237739168682648,
+   "big_purity_median": 0.7686213850975037,
+   "small_purity_median": 0.0916840024292469,
+   "big_purity_over_0.8": 0.4444444444444444,
+   "small_purity_over_0.8": 0.0
+  },
+  "india_moved": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.6935083362894644,
+   "big_purity_median": 0.7233012318611145,
+   "small_purity_median": 0.07492253929376602,
+   "big_purity_over_0.8": 0.2916666666666667,
+   "small_purity_over_0.8": 0.0
+  },
+  "mapqa": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8738765727980827,
+   "big_purity_median": 0.8086698353290558,
+   "small_purity_median": 0.3419061005115509,
+   "big_purity_over_0.8": 0.5365853658536586,
+   "small_purity_over_0.8": 0.0
+  },
+  "real_india": {
+   "maps": 8,
+   "country_right": 1.0,
+   "patch_accuracy": 0.5878934624697336,
+   "big_purity_median": 0.6002301573753357,
+   "small_purity_median": 0.07051717862486839,
+   "big_purity_over_0.8": 0.19444444444444445,
+   "small_purity_over_0.8": 0.0
+  }
+ }
+}

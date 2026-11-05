@@ -1,0 +1,87 @@
+{
+ "SK": {
+  "zoomed": 298,
+  "purity_before": 0.4622116982936859,
+  "purity_after": 0.8108409643173218
+ },
+ "TR": {
+  "zoomed": 298,
+  "purity_before": 0.7346639335155487,
+  "purity_after": 0.8235636651515961
+ },
+ "AN": {
+  "zoomed": 263,
+  "purity_before": 0.17340722680091858,
+  "purity_after": 0.6061828136444092
+ },
+ "NL": {
+  "zoomed": 223,
+  "purity_before": 0.6028785705566406,
+  "purity_after": 0.8482142686843872
+ },
+ "DL": {
+  "zoomed": 155,
+  "purity_before": 0.11920265853404999,
+  "purity_after": 0.6414474248886108
+ },
+ "MN": {
+  "zoomed": 120,
+  "purity_before": 0.780863493680954,
+  "purity_after": 0.8927567303180695
+ },
+ "GA": {
+  "zoomed": 79,
+  "purity_before": 0.16491888463497162,
+  "purity_after": 0.7392676472663879
+ },
+ "ML": {
+  "zoomed": 67,
+  "purity_before": 0.49366867542266846,
+  "purity_after": 0.8668181896209717
+ },
+ "KL": {
+  "zoomed": 59,
+  "purity_before": 0.5068390369415283,
+  "purity_after": 0.8770126104354858
+ },
+ "HR": {
+  "zoomed": 28,
+  "purity_before": 0.6192854046821594,
+  "purity_after": 0.8779755532741547
+ },
+ "UT": {
+  "zoomed": 26,
+  "purity_before": 0.8045587837696075,
+  "purity_after": 0.9260112643241882
+ },
+ "PB": {
+  "zoomed": 19,
+  "purity_before": 0.7544245719909668,
+  "purity_after": 0.9181866645812988
+ },
+ "MZ": {
+  "zoomed": 18,
+  "purity_before": 0.4797693192958832,
+  "purity_after": 0.8686352968215942
+ },
+ "OR": {
+  "zoomed": 2,
+  "purity_before": 0.6859975159168243,
+  "purity_after": 0.9574982523918152
+ },
+ "BR": {
+  "zoomed": 2,
+  "purity_before": 0.719354897737503,
+  "purity_after": 0.9386891424655914
+ },
+ "HP": {
+  "zoomed": 1,
+  "purity_before": 0.5631633996963501,
+  "purity_after": 0.9256558418273926
+ },
+ "CT": {
+  "zoomed": 1,
+  "purity_before": 0.5029046535491943,
+  "purity_after": 0.944703996181488
+ }
+}

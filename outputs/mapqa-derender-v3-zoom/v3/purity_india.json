@@ -1,0 +1,98 @@
+{
+ "DL": {
+  "small_on_map": 300,
+  "found": 300,
+  "kept_zoom": 279,
+  "zoom_median": 4.395,
+  "purity_s2": 0.04638427123427391,
+  "purity_zoom": 0.6072742342948914
+ },
+ "SK": {
+  "small_on_map": 300,
+  "found": 300,
+  "kept_zoom": 288,
+  "zoom_median": 2.6,
+  "purity_s2": 0.7387017607688904,
+  "purity_zoom": 0.8593772351741791
+ },
+ "GA": {
+  "small_on_map": 299,
+  "found": 299,
+  "kept_zoom": 291,
+  "zoom_median": 3.13,
+  "purity_s2": 0.47599461674690247,
+  "purity_zoom": 0.7267341613769531
+ },
+ "AN": {
+  "small_on_map": 295,
+  "found": 294,
+  "kept_zoom": 229,
+  "zoom_median": 2.045,
+  "purity_s2": 0.3485047519207001,
+  "purity_zoom": 0.49230457842350006
+ },
+ "TR": {
+  "small_on_map": 288,
+  "found": 288,
+  "kept_zoom": 167,
+  "zoom_median": 2.0,
+  "purity_s2": 0.7457593083381653,
+  "purity_zoom": 0.8039246499538422
+ },
+ "NL": {
+  "small_on_map": 89,
+  "found": 89,
+  "kept_zoom": 50,
+  "zoom_median": 2.0,
+  "purity_s2": 0.8131982684135437,
+  "purity_zoom": 0.848356306552887
+ },
+ "MZ": {
+  "small_on_map": 9,
+  "found": 9,
+  "kept_zoom": 4,
+  "zoom_median": 2.0,
+  "purity_s2": 0.8929909467697144,
+  "purity_zoom": 0.8807806968688965
+ },
+ "MN": {
+  "small_on_map": 5,
+  "found": 5,
+  "kept_zoom": 3,
+  "zoom_median": 2.0,
+  "purity_s2": 0.9216277599334717,
+  "purity_zoom": 0.9104083180427551
+ },
+ "KL": {
+  "small_on_map": 3,
+  "found": 3,
+  "kept_zoom": 1,
+  "zoom_median": 2.0,
+  "purity_s2": 0.7136107683181763,
+  "purity_zoom": 0.8680395483970642
+ },
+ "PB": {
+  "small_on_map": 1,
+  "found": 1,
+  "kept_zoom": 1,
+  "zoom_median": 2.0,
+  "purity_s2": 0.6731128096580505,
+  "purity_zoom": 0.6829894185066223
+ },
+ "UT": {
+  "small_on_map": 1,
+  "found": 1,
+  "kept_zoom": 1,
+  "zoom_median": 2.27,
+  "purity_s2": 0.132925346493721,
+  "purity_zoom": 0.011836941353976727
+ },
+ "ML": {
+  "small_on_map": 1,
+  "found": 1,
+  "kept_zoom": 1,
+  "zoom_median": 2.0,
+  "purity_s2": 0.9389675855636597,
+  "purity_zoom": 0.9600560665130615
+ }
+}

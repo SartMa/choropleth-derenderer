@@ -1,0 +1,374 @@
+{
+ "start": {
+  "india": {
+   "maps": 100,
+   "country_right": 1.0,
+   "patch_accuracy": 0.421729565852351,
+   "big_purity_median": 0.5996424853801727,
+   "small_purity_median": 0.43653684854507446,
+   "found": {
+    "AN": {
+     "maps": 100,
+     "found_1x": 97,
+     "found_s2": 100
+    },
+    "DL": {
+     "maps": 100,
+     "found_1x": 98,
+     "found_s2": 100
+    },
+    "GA": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "SK": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "TR": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    }
+   }
+  },
+  "mapqa": {
+   "maps": 100,
+   "country_right": 1.0,
+   "patch_accuracy": 0.5664400797411681,
+   "big_purity_median": 0.750984400510788,
+   "small_purity_median": 0.6423483490943909,
+   "found": {
+    "CT": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "DE": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "HI": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "MA": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "MD": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "NH": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "NJ": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "RI": {
+     "maps": 100,
+     "found_1x": 94,
+     "found_s2": 100
+    },
+    "VT": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    }
+   }
+  },
+  "real_india": {
+   "maps": 157,
+   "country_right": 1.0,
+   "patch_accuracy": 0.44233226170097284,
+   "big_purity_median": 0.5732347965240479,
+   "small_purity_median": 0.272534042596817,
+   "found": {
+    "AN": {
+     "maps": 157,
+     "found_1x": 150,
+     "found_s2": 157
+    },
+    "DL": {
+     "maps": 157,
+     "found_1x": 64,
+     "found_s2": 157
+    },
+    "GA": {
+     "maps": 157,
+     "found_1x": 128,
+     "found_s2": 157
+    },
+    "SK": {
+     "maps": 157,
+     "found_1x": 156,
+     "found_s2": 157
+    },
+    "TR": {
+     "maps": 157,
+     "found_1x": 157,
+     "found_s2": 157
+    }
+   }
+  }
+ },
+ "stage_a": {
+  "india": {
+   "maps": 100,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8161596835168086,
+   "big_purity_median": 0.8857730329036713,
+   "small_purity_median": 0.5447672307491302,
+   "found": {
+    "AN": {
+     "maps": 100,
+     "found_1x": 77,
+     "found_s2": 99
+    },
+    "DL": {
+     "maps": 100,
+     "found_1x": 77,
+     "found_s2": 100
+    },
+    "GA": {
+     "maps": 100,
+     "found_1x": 76,
+     "found_s2": 100
+    },
+    "SK": {
+     "maps": 100,
+     "found_1x": 85,
+     "found_s2": 100
+    },
+    "TR": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    }
+   }
+  },
+  "mapqa": {
+   "maps": 100,
+   "country_right": 1.0,
+   "patch_accuracy": 0.9024042180027669,
+   "big_purity_median": 0.8954276144504547,
+   "small_purity_median": 0.6783272624015808,
+   "found": {
+    "CT": {
+     "maps": 100,
+     "found_1x": 98,
+     "found_s2": 100
+    },
+    "DE": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "HI": {
+     "maps": 100,
+     "found_1x": 89,
+     "found_s2": 100
+    },
+    "MA": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "MD": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "NH": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "NJ": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "RI": {
+     "maps": 100,
+     "found_1x": 57,
+     "found_s2": 100
+    },
+    "VT": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    }
+   }
+  },
+  "real_india": {
+   "maps": 157,
+   "country_right": 1.0,
+   "patch_accuracy": 0.7480439230094776,
+   "big_purity_median": 0.8113270998001099,
+   "small_purity_median": 0.2878659963607788,
+   "found": {
+    "AN": {
+     "maps": 157,
+     "found_1x": 90,
+     "found_s2": 156
+    },
+    "DL": {
+     "maps": 157,
+     "found_1x": 64,
+     "found_s2": 157
+    },
+    "GA": {
+     "maps": 157,
+     "found_1x": 43,
+     "found_s2": 157
+    },
+    "SK": {
+     "maps": 157,
+     "found_1x": 149,
+     "found_s2": 157
+    },
+    "TR": {
+     "maps": 157,
+     "found_1x": 157,
+     "found_s2": 157
+    }
+   }
+  }
+ },
+ "stage_b": {
+  "india": {
+   "maps": 100,
+   "country_right": 1.0,
+   "patch_accuracy": 0.8446191387294457,
+   "big_purity_median": 0.8887328207492828,
+   "small_purity_median": 0.4871271103620529,
+   "found": {
+    "AN": {
+     "maps": 100,
+     "found_1x": 98,
+     "found_s2": 100
+    },
+    "DL": {
+     "maps": 100,
+     "found_1x": 53,
+     "found_s2": 100
+    },
+    "GA": {
+     "maps": 100,
+     "found_1x": 84,
+     "found_s2": 100
+    },
+    "SK": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "TR": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    }
+   }
+  },
+  "mapqa": {
+   "maps": 100,
+   "country_right": 1.0,
+   "patch_accuracy": 0.9104545900192816,
+   "big_purity_median": 0.9043444395065308,
+   "small_purity_median": 0.6906006634235382,
+   "found": {
+    "CT": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "DE": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "HI": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "MA": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "MD": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "NH": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "NJ": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    },
+    "RI": {
+     "maps": 100,
+     "found_1x": 86,
+     "found_s2": 100
+    },
+    "VT": {
+     "maps": 100,
+     "found_1x": 100,
+     "found_s2": 100
+    }
+   }
+  },
+  "real_india": {
+   "maps": 157,
+   "country_right": 1.0,
+   "patch_accuracy": 0.7831030019623397,
+   "big_purity_median": 0.8294346332550049,
+   "small_purity_median": 0.32845598459243774,
+   "found": {
+    "AN": {
+     "maps": 157,
+     "found_1x": 152,
+     "found_s2": 155
+    },
+    "DL": {
+     "maps": 157,
+     "found_1x": 23,
+     "found_s2": 157
+    },
+    "GA": {
+     "maps": 157,
+     "found_1x": 83,
+     "found_s2": 157
+    },
+    "SK": {
+     "maps": 157,
+     "found_1x": 147,
+     "found_s2": 157
+    },
+    "TR": {
+     "maps": 157,
+     "found_1x": 157,
+     "found_s2": 157
+    }
+   }
+  }
+ }
+}

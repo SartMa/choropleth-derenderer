@@ -1,0 +1,82 @@
+{
+ "CT": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 396,
+  "zoom_median": 3.12,
+  "purity_s2": 0.6971924602985382,
+  "purity_zoom": 0.8379301428794861
+ },
+ "DE": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 400,
+  "zoom_median": 4.86,
+  "purity_s2": 0.4837118685245514,
+  "purity_zoom": 0.7844961285591125
+ },
+ "MA": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 332,
+  "zoom_median": 2.43,
+  "purity_s2": 0.6954616904258728,
+  "purity_zoom": 0.7455391883850098
+ },
+ "MD": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 303,
+  "zoom_median": 2.04,
+  "purity_s2": 0.7364722788333893,
+  "purity_zoom": 0.7419566512107849
+ },
+ "NH": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 302,
+  "zoom_median": 2.39,
+  "purity_s2": 0.7612449824810028,
+  "purity_zoom": 0.8065392673015594
+ },
+ "NJ": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 376,
+  "zoom_median": 2.51,
+  "purity_s2": 0.7564730644226074,
+  "purity_zoom": 0.8718792498111725
+ },
+ "RI": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 400,
+  "zoom_median": 5.72,
+  "purity_s2": 0.45297040045261383,
+  "purity_zoom": 0.7899425029754639
+ },
+ "VT": {
+  "small_on_map": 400,
+  "found": 400,
+  "kept_zoom": 367,
+  "zoom_median": 2.53,
+  "purity_s2": 0.8243950009346008,
+  "purity_zoom": 0.8750151693820953
+ },
+ "HI": {
+  "small_on_map": 397,
+  "found": 397,
+  "kept_zoom": 330,
+  "zoom_median": 2.2,
+  "purity_s2": 0.5476254820823669,
+  "purity_zoom": 0.5961143970489502
+ },
+ "WV": {
+  "small_on_map": 88,
+  "found": 88,
+  "kept_zoom": 87,
+  "zoom_median": 2.0,
+  "purity_s2": 0.8388262689113617,
+  "purity_zoom": 0.8396211862564087
+ }
+}

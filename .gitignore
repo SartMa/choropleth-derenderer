@@ -4,3 +4,7 @@ __pycache__/
 
 # regenerated locally or fetched from Kaggle; see README
 data/
+
+# model weights live in Kaggle run outputs; see docs/ANSWER_SHEET.md
+*.pt
+adapter/

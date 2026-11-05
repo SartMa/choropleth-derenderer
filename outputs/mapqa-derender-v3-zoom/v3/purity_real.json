@@ -1,0 +1,106 @@
+{
+ "AN": {
+  "small_on_map": 68,
+  "found": 66,
+  "kept_zoom": 64,
+  "zoom_median": 2.38,
+  "purity_s2": 0.32413482666015625,
+  "purity_zoom": 0.5286798477172852
+ },
+ "DL": {
+  "small_on_map": 68,
+  "found": 68,
+  "kept_zoom": 65,
+  "zoom_median": 5.744999999999999,
+  "purity_s2": 0.03525906056165695,
+  "purity_zoom": 0.429834246635437
+ },
+ "GA": {
+  "small_on_map": 68,
+  "found": 68,
+  "kept_zoom": 63,
+  "zoom_median": 3.9000000000000004,
+  "purity_s2": 0.24441489577293396,
+  "purity_zoom": 0.6577068567276001
+ },
+ "SK": {
+  "small_on_map": 68,
+  "found": 68,
+  "kept_zoom": 48,
+  "zoom_median": 3.76,
+  "purity_s2": 0.7397440671920776,
+  "purity_zoom": 0.8377195000648499
+ },
+ "TR": {
+  "small_on_map": 68,
+  "found": 68,
+  "kept_zoom": 52,
+  "zoom_median": 2.475,
+  "purity_s2": 0.6472142338752747,
+  "purity_zoom": 0.8363549113273621
+ },
+ "NL": {
+  "small_on_map": 65,
+  "found": 65,
+  "kept_zoom": 31,
+  "zoom_median": 2.23,
+  "purity_s2": 0.7385849952697754,
+  "purity_zoom": 0.8854339122772217
+ },
+ "MN": {
+  "small_on_map": 45,
+  "found": 45,
+  "kept_zoom": 43,
+  "zoom_median": 2.0,
+  "purity_s2": 0.7760158777236938,
+  "purity_zoom": 0.8292426466941833
+ },
+ "MZ": {
+  "small_on_map": 44,
+  "found": 44,
+  "kept_zoom": 39,
+  "zoom_median": 2.04,
+  "purity_s2": 0.7566621005535126,
+  "purity_zoom": 0.8442608118057251
+ },
+ "ML": {
+  "small_on_map": 41,
+  "found": 41,
+  "kept_zoom": 41,
+  "zoom_median": 2.0,
+  "purity_s2": 0.7242004871368408,
+  "purity_zoom": 0.8414249420166016
+ },
+ "KL": {
+  "small_on_map": 28,
+  "found": 28,
+  "kept_zoom": 13,
+  "zoom_median": 2.0,
+  "purity_s2": 0.6773751676082611,
+  "purity_zoom": 0.8445931375026703
+ },
+ "PB": {
+  "small_on_map": 22,
+  "found": 22,
+  "kept_zoom": 14,
+  "zoom_median": 2.0,
+  "purity_s2": 0.587725818157196,
+  "purity_zoom": 0.3622913956642151
+ },
+ "JK": {
+  "small_on_map": 16,
+  "found": 16,
+  "kept_zoom": 1,
+  "zoom_median": 2.12,
+  "purity_s2": 0.6079901158809662,
+  "purity_zoom": 0.5400786399841309
+ },
+ "WB": {
+  "small_on_map": 1,
+  "found": 1,
+  "kept_zoom": 0,
+  "zoom_median": 2.0,
+  "purity_s2": 0.10478000342845917,
+  "purity_zoom": 0.12597252428531647
+ }
+}

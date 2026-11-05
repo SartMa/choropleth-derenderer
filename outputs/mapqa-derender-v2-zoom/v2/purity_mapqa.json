@@ -1,0 +1,62 @@
+{
+ "CT": {
+  "zoomed": 400,
+  "purity_before": 0.45857614278793335,
+  "purity_after": 0.842347651720047
+ },
+ "HI": {
+  "zoomed": 400,
+  "purity_before": 0.3484724909067154,
+  "purity_after": 0.7739436328411102
+ },
+ "MA": {
+  "zoomed": 400,
+  "purity_before": 0.5327363610267639,
+  "purity_after": 0.8152464628219604
+ },
+ "MD": {
+  "zoomed": 400,
+  "purity_before": 0.5312140882015228,
+  "purity_after": 0.8352427780628204
+ },
+ "NH": {
+  "zoomed": 400,
+  "purity_before": 0.5434441268444061,
+  "purity_after": 0.877646803855896
+ },
+ "NJ": {
+  "zoomed": 400,
+  "purity_before": 0.47321534156799316,
+  "purity_after": 0.8723539113998413
+ },
+ "VT": {
+  "zoomed": 400,
+  "purity_before": 0.5069449245929718,
+  "purity_after": 0.8654369413852692
+ },
+ "DE": {
+  "zoomed": 395,
+  "purity_before": 0.19906678795814514,
+  "purity_after": 0.7198154926300049
+ },
+ "RI": {
+  "zoomed": 231,
+  "purity_before": 0.11620040237903595,
+  "purity_after": 0.6931210160255432
+ },
+ "WV": {
+  "zoomed": 25,
+  "purity_before": 0.7767794728279114,
+  "purity_after": 0.8881238698959351
+ },
+ "SC": {
+  "zoomed": 8,
+  "purity_before": 0.785149484872818,
+  "purity_after": 0.7373793721199036
+ },
+ "ME": {
+  "zoomed": 5,
+  "purity_before": 0.8970001339912415,
+  "purity_after": 0.9449335336685181
+ }
+}
