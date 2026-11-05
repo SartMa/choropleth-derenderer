@@ -16,6 +16,31 @@ Status as of 2026-11-05. This is the current derenderer and everything that led 
 - **Main gap:** small regions on real India maps, mostly Delhi (45%; the region sheet gets 81%), and a few real
   continuous maps where the error blows up.
 
+## Decision: the design is frozen at v3 (2026-11-05)
+
+We keep v3 (S2 + zoom) as the derenderer's architecture. The remaining gaps (Delhi on real maps, the head being
+weaker on real map styles, a few real continuous maps that blow up) are training and reading-time fixes, not a new
+design. Work moves to the code layer and the narrator; derenderer work continues alongside.
+
+**Limitation: a fixed list of 87 regions.** S2 and zoom change how sharply the model sees, not how it names regions.
+The region head still chooses from background, 50 US states and 36 Indian regions, so it cannot output a region of
+a country it was not trained on (on a Chinese map it would mark provinces as background or as the nearest-looking
+known state). Adding a country means:
+- adding its regions to the head's outputs (China: about 34 more, ~121 in total), keeping all existing weights;
+- labels for its maps, which are free (its shapefile plus our synthetic generator; no hand labelling, unlike CMA's
+  per-country Mask R-CNN);
+- one training round like v3 (~7 h on a T4).
+
+A class-agnostic head (group pixels into regions first, then name them) would remove the per-country round; that is
+a research extension for later, not needed before China.
+
+**On S2 and tiles, for the record.** The September S2 run (`train_qwen.py --s2`, Rhode Island 41.7%) had a design
+flaw for our problem, not a bug: it averaged the 2x features back onto the 1x token grid (as in the original S2
+paper), which mixes a sub-token region with its neighbours again, and it relied on 8.4M new weights that barely
+trained. Pooling per region (v3) is what makes S2 work. S2 alone does not beat tiles on US maps (MapQA exact 71.5% vs
+89.7%; tiles alone right on 65 maps, S2 alone on 10); it beats them on India, where the tiles model does not work.
+Only S2 + zoom matches tiles on the US.
+
 ## How the model works
 
 Base: Qwen2.5-VL-3B with LoRA. Its vision tower cuts an image into 14x14-px patches; every 2x2 patches are merged
