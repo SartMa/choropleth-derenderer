@@ -1,0 +1,2701 @@
+[
+ {
+  "name": "11_1",
+  "title": "State/UT-wise Number of Incidence of Recidivism during 2022 Number of HabitualOffenders",
+  "numbers": [
+   106.0,
+   213.0,
+   319.0,
+   426.0,
+   532.0,
+   638.0,
+   745.0,
+   851.0
+  ]
+ },
+ {
+  "name": "11_2",
+  "title": "State/UT-wise Number of Incidence of Recidivism during 2022",
+  "numbers": [
+   800.0,
+   700.0,
+   600.0,
+   500.0,
+   400.0,
+   300.0,
+   200.0,
+   100.0
+  ]
+ },
+ {
+  "name": "12_1",
+  "title": "State/UT-wise Number of Undertrials Released / Transferred during 2022",
+  "numbers": [
+   35.0,
+   132939.0,
+   265.842
+  ]
+ },
+ {
+  "name": "12_2",
+  "title": "",
+  "numbers": [
+   250.0,
+   200.0,
+   150.0,
+   100.0,
+   50.0
+  ]
+ },
+ {
+  "name": "13_1",
+  "title": "State/UT-wise Number of Jails Renovated / Expanded Number of Jails Renovated",
+  "numbers": [
+   16.0,
+   33.0,
+   49.0,
+   66.0,
+   82.0,
+   98.0,
+   115.0,
+   131.0
+  ]
+ },
+ {
+  "name": "13_2",
+  "title": "State/UT-wise Number of Jails Renovated / Expanded",
+  "numbers": [
+   120.0,
+   100.0,
+   80.0,
+   60.0,
+   40.0,
+   20.0
+  ]
+ },
+ {
+  "name": "14_1",
+  "title": "State/UT-wise Number of Natural Deaths in Prisons during 2022 Total Natural Deaths",
+  "numbers": [
+   44.0,
+   88.0,
+   132.0,
+   176.0,
+   219.0,
+   263.0,
+   307.0,
+   351.0
+  ]
+ },
+ {
+  "name": "14_2",
+  "title": "State/UT-wise Number of Natural Deaths in Prisons during 2022",
+  "numbers": [
+   350.0,
+   300.0,
+   250.0,
+   200.0,
+   150.0,
+   100.0,
+   50.0
+  ]
+ },
+ {
+  "name": "15_1",
+  "title": "State/UT-wise Number of Educational Facilities(Computer Course) for Prisoners during 2022",
+  "numbers": [
+   149.0,
+   299.0,
+   448.0,
+   598.0,
+   747.0,
+   896.0,
+   1.046,
+   1.195
+  ]
+ },
+ {
+  "name": "15_2",
+  "title": "State/UT-wise Number of Educational Facilities for Prisoners during 2022",
+  "numbers": [
+   1000.0,
+   800.0,
+   600.0,
+   400.0,
+   200.0
+  ]
+ },
+ {
+  "name": "16_1",
+  "title": "State/UT-wise Number of Educational Facilities(Higher Education) for Prisoners during 2022",
+  "numbers": [
+   610.0,
+   1219.0,
+   1829.0,
+   2.438,
+   3048.0,
+   3.657,
+   4267.0,
+   4876.0
+  ]
+ },
+ {
+  "name": "16_2",
+  "title": "State/UT-wise Number of Educational Facilities(Higher Education) for Prisoners during 2022",
+  "numbers": [
+   4500.0,
+   4000.0,
+   3500.0,
+   3000.0,
+   2500.0,
+   2000.0,
+   1500.0,
+   1000.0,
+   500.0
+  ]
+ },
+ {
+  "name": "17_1",
+  "title": "State/UT-wise Number of Educational Facilities(Elementary Education) for Prisoners during 2022",
+  "numbers": [
+   19903.981,
+   5971.0,
+   7961.0,
+   9951.0,
+   11942.0,
+   13932.0,
+   15922.0
+  ]
+ },
+ {
+  "name": "17_2",
+  "title": "State/UT-wise Number of Educational Facilities(Elementary Education) for Prisoners during 2022",
+  "numbers": [
+   14.0,
+   12.0,
+   10.0,
+   8.0,
+   6.0,
+   4.0,
+   2.0
+  ]
+ },
+ {
+  "name": "18_1",
+  "title": "State/UT-wise Number of Mode of Suicide by Prison Inmates during 2022",
+  "numbers": [
+   13.0
+  ]
+ },
+ {
+  "name": "18_2",
+  "title": "State/UT-wise Number of Mode of Suicide by Prison Inmates during 2022",
+  "numbers": [
+   14.0,
+   12.0,
+   10.0
+  ]
+ },
+ {
+  "name": "19_1",
+  "title": "State/UT-wise Number of Un-Natural Deaths of prisoners in Prisons during 2022",
+  "numbers": [
+   12.0,
+   15.0,
+   18.0,
+   21.0
+  ]
+ },
+ {
+  "name": "19_2",
+  "title": "State/UT-wise Number of Un-Natural Deaths of prisoners in Prisons during 2022",
+  "numbers": [
+   20.0,
+   15.0,
+   10.0
+  ]
+ },
+ {
+  "name": "2",
+  "title": "State/UT-wise Cyber Crimes against Women during 2020 Total CyberCrime Against Women",
+  "numbers": [
+   2500.0,
+   2000.0,
+   1500.0,
+   1000.0,
+   500.0
+  ]
+ },
+ {
+  "name": "20_1",
+  "title": "State/UT-wise Number of Educational Facilities(Adult Education) for Prisoners during 2022",
+  "numbers": [
+   928.0,
+   1855.0,
+   2783.0,
+   3.711,
+   4.638,
+   5566.0,
+   6493.0,
+   7421.0
+  ]
+ },
+ {
+  "name": "3",
+  "title": "State/UT-wise Police Disposal of Offences against State during 2020",
+  "numbers": [
+   3000.0,
+   2500.0,
+   2000.0,
+   1500.0,
+   1000.0,
+   500.0
+  ]
+ },
+ {
+  "name": "4",
+  "title": "State/UT-wise Motives of Murder during 2020",
+  "numbers": [
+   3500.0,
+   3000.0,
+   2500.0,
+   2000.0,
+   1500.0,
+   1000.0,
+   500.0
+  ]
+ },
+ {
+  "name": "5",
+  "title": "State/UT-wise Crime by Foreigners during 2021",
+  "numbers": [
+   1200.0,
+   1000.0,
+   800.0,
+   600.0,
+   400.0,
+   200.0
+  ]
+ },
+ {
+  "name": "6",
+  "title": "State/UT-wise Inmates admitted during 2020",
+  "numbers": [
+   300.0,
+   250.0,
+   200.0,
+   150.0,
+   100.0,
+   50.0
+  ]
+ },
+ {
+  "name": "7",
+  "title": "State/UT-wise Motives of Murder during 2020",
+  "numbers": [
+   3500.0,
+   3000.0,
+   2500.0,
+   2000.0,
+   1500.0,
+   1000.0,
+   500.0
+  ]
+ },
+ {
+  "name": "8",
+  "title": "State/UT-wise Cyber Crime Motives during 2020",
+  "numbers": [
+   10.0,
+   8.0,
+   6.0,
+   4.0,
+   2.0
+  ]
+ },
+ {
+  "name": "9",
+  "title": "State/UT-wise Escape from Police Custody during 2021",
+  "numbers": [
+   100.0,
+   80.0,
+   60.0,
+   40.0,
+   20.0
+  ]
+ },
+ {
+  "name": "UDID",
+  "title": "",
+  "numbers": [
+   28.07,
+   2021.0,
+   1.0,
+   6.0,
+   8.0,
+   5.0,
+   6.0,
+   5.0,
+   4.0,
+   5.0,
+   2.0,
+   5.0
+  ]
+ },
+ {
+  "name": "map4",
+  "title": "State/UT-wise Number of Offences against State (IPC & SLL) during 2022",
+  "numbers": [
+   279.0,
+   558.0,
+   837.0,
+   1116.0,
+   1.394,
+   1673.0,
+   1952.0,
+   2231.0
+  ]
+ },
+ {
+  "name": "map5",
+  "title": "State/UT-wise Number of Economic Offences during 2022",
+  "numbers": [
+   3485.0,
+   6965.0,
+   1.044613926174072e+19,
+   24368.0,
+   27848.0
+  ]
+ },
+ {
+  "name": "map6",
+  "title": "State/UT-wise Number of Environment Related Offences during 2022",
+  "numbers": [
+   3859.0,
+   7718.0,
+   11.576,
+   15435.0,
+   19294.0,
+   23.153,
+   27011.0,
+   30870.0
+  ]
+ },
+ {
+  "name": "map7",
+  "title": "State/UT-wise Details of Purpose of Human Trafficking during 2022",
+  "numbers": [
+   1750.0,
+   1500.0,
+   1250.0,
+   1000.0,
+   750.0,
+   500.0,
+   250.0
+  ]
+ },
+ {
+  "name": "map8",
+  "title": "",
+  "numbers": [
+   100.0,
+   80.0,
+   60.0,
+   40.0,
+   20.0
+  ]
+ },
+ {
+  "name": "map9",
+  "title": "State/UT-wise Number of Cases Registered under Rape during 2022",
+  "numbers": [
+   5000.0,
+   4000.0,
+   3000.0,
+   2000.0,
+   1000.0
+  ]
+ },
+ {
+  "name": "missing_male",
+  "title": "State/UT-wise Total Missing Persons during the years before 2021 (Male)",
+  "numbers": [
+   17500.0,
+   15000.0,
+   12500.0,
+   10000.0,
+   7500.0,
+   5000.0,
+   2500.0
+  ]
+ },
+ {
+  "name": "missing_total_2021",
+  "title": "State-wise Total Unrecovered / Untraced Missing Persons (2021)",
+  "numbers": [
+   60000.0,
+   50000.0,
+   40000.0,
+   30000.0,
+   20000.0,
+   10000.0
+  ]
+ },
+ {
+  "name": "mobile_connectivity",
+  "title": "Number of Inhabited Villages with Mobile Connectivity as per 2020 Data",
+  "numbers": [
+   90.0,
+   80.0,
+   70.0,
+   60.0,
+   50.0,
+   40.0,
+   30.0,
+   20.0,
+   10.0
+  ]
+ },
+ {
+  "name": "offences_against_state",
+  "title": "Rate of Offences against State (2020)",
+  "numbers": []
+ },
+ {
+  "name": "pending_cases",
+  "title": "pending trial attheendof2020",
+  "numbers": [
+   4592.7,
+   9185.4,
+   13778.2,
+   18370.9,
+   22963.6,
+   27667.0
+  ]
+ },
+ {
+  "name": "pvt_teachers",
+  "title": "JT-wise Number of Teachers by Management (Private Unaided Recognized) during 2021-22",
+  "numbers": [
+   700000.0,
+   600000.0,
+   500000.0,
+   400000.0,
+   300.0,
+   200000.0,
+   100000.0
+  ]
+ },
+ {
+  "name": "railway_accidents",
+  "title": "",
+  "numbers": [
+   1800.0,
+   1600.0,
+   1400.0,
+   1200.0,
+   1000.0,
+   800.0,
+   600.0,
+   400.0,
+   200.0
+  ]
+ },
+ {
+  "name": "swatch_bharat",
+  "title": "State/UT-wise Details of Fund Claimed for Handling Solid Waste under Swachh Bharat Mission (SBM-U) 2.0 from 2021 to 2026",
+  "numbers": [
+   800.0,
+   700.0,
+   600.0,
+   500.0,
+   400.0,
+   300.0,
+   200.0,
+   100.0
+  ]
+ },
+ {
+  "name": "total_budget",
+  "title": "State/UT-wise Total Budget during 2020-2021",
+  "numbers": [
+   1000.0,
+   800.0,
+   600.0,
+   400.0,
+   200.0
+  ]
+ },
+ {
+  "name": "total_cases_for_trial",
+  "title": "State/UT-wise Total Number of Environmental Related Cases for Trial during 2020",
+  "numbers": [
+   40000.0,
+   35000.0,
+   30000.0,
+   25000.0,
+   20000.0,
+   15000.0,
+   10000.0,
+   5000.0
+  ]
+ },
+ {
+  "name": "total_cases_for_trial_plotly",
+  "title": "",
+  "numbers": [
+   40.0,
+   35.0,
+   30.0,
+   25.0,
+   20.0,
+   15.0,
+   10.0,
+   5.0
+  ]
+ },
+ {
+  "name": "total_electors_bokeh",
+  "title": "",
+  "numbers": [
+   2024.0,
+   140000000.0,
+   120000000.0,
+   100000000.0,
+   80000000.0,
+   60000000.0,
+   40000000.0,
+   20000000.0
+  ]
+ },
+ {
+  "name": "total_electors_folium",
+  "title": "",
+  "numbers": [
+   2024.0,
+   57953.0,
+   25679249.4,
+   51300545.8,
+   76921842.2,
+   102543138.6,
+   128164435.0,
+   154403112.0
+  ]
+ },
+ {
+  "name": "total_electors_matplotlib",
+  "title": "State/UT-wise Total Number of Electors in polls during 2024",
+  "numbers": [
+   1.0,
+   8.0,
+   1.4,
+   1.2,
+   1.0,
+   0.8,
+   0.6,
+   0.4,
+   0.2
+  ]
+ },
+ {
+  "name": "total_electors_plotly",
+  "title": "State/UT-wiseTotal Number of ElectorsinPollsduring 2020",
+  "numbers": [
+   140.0,
+   120.0,
+   100.0,
+   80.0,
+   60.0,
+   40.0,
+   20.0
+  ]
+ },
+ {
+  "name": "total_seats_bokeh",
+  "title": "State/UT-wise Total Number of seats in polls during 2024",
+  "numbers": [
+   80.0,
+   70.0,
+   60.0,
+   50.0,
+   40.0,
+   30.0,
+   20.0,
+   10.0
+  ]
+ },
+ {
+  "name": "total_seats_folium",
+  "title": "State/UT-wiseTotal Number of seats inpolls during 2024",
+  "numbers": [
+   14.1,
+   27.2,
+   40.3,
+   53.5,
+   66.6
+  ]
+ },
+ {
+  "name": "total_seats_matplotlib",
+  "title": "State/UT-wise Total Number of seats in polls during 2024",
+  "numbers": [
+   80.0,
+   70.0,
+   60.0,
+   50.0,
+   40.0,
+   30.0,
+   20.0,
+   10.0
+  ]
+ },
+ {
+  "name": "total_seats_plotly",
+  "title": "State/UT-wise Total Number of Seats in Polls during 2024",
+  "numbers": [
+   80.0,
+   70.0,
+   60.0,
+   50.0,
+   40.0,
+   30.0,
+   20.0,
+   10.0
+  ]
+ },
+ {
+  "name": "unemployment_rate",
+  "title": "",
+  "numbers": [
+   2023.0,
+   24.0,
+   10.0
+  ]
+ },
+ {
+  "name": "unknown_offenders",
+  "title": "/UT-wiseNumber of Caseswhere Offenderswere notknown toVictims of Rape during2020",
+  "numbers": [
+   250.0,
+   200.0,
+   150.0,
+   100.0,
+   50.0
+  ]
+ },
+ {
+  "name": "value_of_goods",
+  "title": "State/UT-wise Value of Goods in crore Produced by Inmates during 2020",
+  "numbers": [
+   60.0,
+   50.0,
+   40.0,
+   30.0,
+   20.0,
+   10.0
+  ]
+ },
+ {
+  "name": "ventilators",
+  "title": "State/UT-wise Ventilators for COVID-19 Management as on 05.08.2021",
+  "numbers": [
+   5000.0,
+   4000.0,
+   3000.0,
+   2000.0,
+   1000.0
+  ]
+ },
+ {
+  "name": "victims_female",
+  "title": "State/UT-wise Victims Trafficked during 2022(Female)",
+  "numbers": [
+   700.0,
+   600.0,
+   500.0,
+   400.0,
+   300.0,
+   200.0,
+   100.0
+  ]
+ },
+ {
+  "name": "victims_female_rescude",
+  "title": "State/Ut-wise Victims Rescued during 2022 (Female)",
+  "numbers": [
+   800.0,
+   700.0,
+   600.0,
+   500.0,
+   400.0,
+   300.0,
+   200.0,
+   100.0
+  ]
+ },
+ {
+  "name": "victims_male",
+  "title": "State/UT-wise Victims Trafficked during 2022(Male)",
+  "numbers": [
+   600.0,
+   500.0,
+   400.0,
+   300.0,
+   200.0,
+   100.0
+  ]
+ },
+ {
+  "name": "victims_male_rescued",
+  "title": "State/Ut-wise Victims Rescued during 2022 (Male)",
+  "numbers": [
+   6.0,
+   800.0,
+   700.0,
+   600.0,
+   500.0,
+   400.0,
+   300.0,
+   200.0,
+   100.0
+  ]
+ },
+ {
+  "name": "voters_over_electors_bokeh",
+  "title": "State/UT-wise%OfWomenVoters OverWomenElectors during2024",
+  "numbers": [
+   85.0,
+   80.0,
+   75.0,
+   70.0,
+   65.0,
+   60.0
+  ]
+ },
+ {
+  "name": "voters_over_electors_folium",
+  "title": "State/UT-wise %Of Women Voters Over Women Electors during 2024",
+  "numbers": [
+   55.66,
+   60.6,
+   65.6,
+   70.5,
+   75.4
+  ]
+ },
+ {
+  "name": "voters_over_electors_matplotlib",
+  "title": "State/UT-wise % Of Women Voters Over Women Electors during 2024",
+  "numbers": [
+   85.0,
+   80.0,
+   75.0,
+   70.0,
+   65.0,
+   60.0
+  ]
+ },
+ {
+  "name": "voters_over_electors_plotly",
+  "title": "",
+  "numbers": [
+   2024.0,
+   85.0,
+   80.0,
+   75.0,
+   70.0,
+   65.0,
+   60.0
+  ]
+ },
+ {
+  "name": "women___electors",
+  "title": "",
+  "numbers": [
+   53.0,
+   52.0,
+   51.0,
+   50.0,
+   49.0,
+   48.0,
+   47.0,
+   46.0
+  ]
+ },
+ {
+  "name": "women___electors_matplotlib",
+  "title": "State/UT-wise % Of Votes Polled By Women Over Total Votes Polled during 2024",
+  "numbers": [
+   53.0,
+   52.0,
+   51.0,
+   50.0,
+   49.0,
+   48.0,
+   47.0,
+   46.0
+  ]
+ },
+ {
+  "name": "women_candidates",
+  "title": "",
+  "numbers": [
+   50.0,
+   40.0,
+   30.0,
+   20.0,
+   10.0
+  ]
+ },
+ {
+  "name": "women_electors",
+  "title": "Participation of women electors in polls(in percentage)",
+  "numbers": [
+   53.0,
+   52.0,
+   51.0,
+   50.0,
+   49.0,
+   48.0,
+   47.0,
+   46.0
+  ]
+ },
+ {
+  "name": "women_unemployment",
+  "title": "Unemployment rate of women(2023-24)",
+  "numbers": [
+   30.0,
+   25.0,
+   20.0,
+   15.0,
+   10.0
+  ]
+ },
+ {
+  "name": "13_d_1",
+  "title": "Number of JailsRenovated",
+  "numbers": [
+   0.0,
+   18.0,
+   18.0,
+   37.0,
+   37.0,
+   56.0,
+   56.0,
+   74.0,
+   74.0,
+   93.0,
+   93.0,
+   112.0,
+   112.0,
+   131.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "13_d_2",
+  "title": "Number of Natural Deaths 100 - 150",
+  "numbers": [
+   2022.0,
+   0.0,
+   50.0,
+   50.0,
+   100.0,
+   150.0,
+   200.0,
+   200.0,
+   250.0,
+   250.0,
+   300.0,
+   300.0,
+   351.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "14_d_1",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   50.0,
+   50.0,
+   100.0,
+   100.0,
+   150.0,
+   150.0,
+   200.0,
+   200.0,
+   250.0,
+   250.0,
+   300.0,
+   300.0,
+   351.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "14_d_2",
+  "title": "170 - 341",
+  "numbers": [
+   2022.0,
+   0.0,
+   170.0,
+   341.0,
+   512.0,
+   512.0,
+   682.0,
+   682.0,
+   853.0,
+   853.0,
+   1024.0,
+   1024.0,
+   1195.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "15_d_1",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   170.0,
+   170.0,
+   341.0,
+   341.0,
+   512.0,
+   512.0,
+   682.0,
+   682.0,
+   853.0,
+   853.0,
+   1024.0,
+   1024.0,
+   1195.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "15_d_2",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   696.0,
+   696.0,
+   1393.0,
+   1393.0,
+   2089.0,
+   2089.0,
+   2786.0,
+   2786.0,
+   3482.0,
+   3482.0,
+   4179.0,
+   4179.0,
+   4876.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "16_d_1",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   696.0,
+   696.0,
+   1393.0,
+   1393.0,
+   2089.0,
+   2089.0,
+   2786.0,
+   2786.0,
+   3482.0,
+   3482.0,
+   4179.0,
+   4179.0,
+   4876.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "16_d_2",
+  "title": "0 - 2274 2274 - 4549",
+  "numbers": [
+   2022.0,
+   4549.0,
+   6823.0,
+   6823.0,
+   9098.0,
+   9098.0,
+   11372.0,
+   11372.0,
+   13647.0,
+   13647.0,
+   15922.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "17_d_1",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   2274.0,
+   2274.0,
+   4549.0,
+   4549.0,
+   6823.0,
+   6823.0,
+   9098.0,
+   9098.0,
+   11372.0,
+   11372.0,
+   13647.0,
+   13647.0,
+   15922.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "17_d_2",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   2.0,
+   2.0,
+   4.0,
+   4.0,
+   6.0,
+   6.0,
+   8.0,
+   8.0,
+   10.0,
+   10.0,
+   12.0,
+   12.0,
+   15.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "18_d_1",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   2.0,
+   2.0,
+   4.0,
+   4.0,
+   6.0,
+   6.0,
+   8.0,
+   8.0,
+   10.0,
+   10.0,
+   12.0,
+   12.0,
+   15.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "18_d_2",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   3.0,
+   3.0,
+   6.0,
+   6.0,
+   10.0,
+   10.0,
+   13.0,
+   13.0,
+   17.0,
+   17.0,
+   20.0,
+   20.0,
+   24.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "19_d_1",
+  "title": "Number of Un-Natural Deaths of prisoners in Prisons",
+  "numbers": [
+   2022.0,
+   0.0,
+   3.0,
+   3.0,
+   6.0,
+   6.0,
+   10.0,
+   10.0,
+   13.0,
+   13.0,
+   17.0,
+   17.0,
+   20.0,
+   20.0,
+   24.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "20_d_1",
+  "title": "Number of Undertrials Released 75979 - 113952",
+  "numbers": [
+   2022.0,
+   35.0,
+   38007.0,
+   38007.0,
+   75979.0,
+   113952.0,
+   151924.0,
+   151924.0,
+   189897.0,
+   189897.0,
+   227869.0,
+   227869.0,
+   265842.0,
+   300.0,
+   200.0
+  ]
+ },
+ {
+  "name": "Rate_of_offences_against_state_discrete",
+  "title": "Rate of Offences against State (2020) 0.87 - 1.74 1.74 - 2.61",
+  "numbers": [
+   0.0,
+   0.87,
+   2.61,
+   3.49,
+   3.49,
+   4.36,
+   4.36,
+   5.23,
+   5.23,
+   6.1
+  ]
+ },
+ {
+  "name": "UDID_cards_discrete",
+  "title": "No. of cards",
+  "numbers": [
+   28.07,
+   2021.0,
+   9.0,
+   123498.0,
+   123498.0,
+   246988.0,
+   246988.0,
+   370478.0,
+   370478.0,
+   493968.0,
+   493968.0,
+   617458.0,
+   617458.0,
+   740948.0,
+   740948.0,
+   864438.0,
+   864438.0,
+   987928.0,
+   987928.0,
+   1111418.0
+  ]
+ },
+ {
+  "name": "cases_against_police_discrete",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   78.0,
+   78.0,
+   156.0,
+   156.0,
+   234.0,
+   234.0,
+   312.0,
+   312.0,
+   391.0,
+   391.0,
+   469.0,
+   469.0,
+   547.0,
+   547.0,
+   625.0,
+   625.0,
+   704.0
+  ]
+ },
+ {
+  "name": "discreate_4",
+  "title": "State/UT-wise Motives of Murder during 2020",
+  "numbers": [
+   3239.0,
+   3779.0,
+   2699.0,
+   3239.0,
+   2159.0,
+   2699.0,
+   1620.0,
+   2159.0,
+   11080.0,
+   1620.0,
+   1540.0,
+   1080.0,
+   0.0,
+   540.0
+  ]
+ },
+ {
+  "name": "discreate_5",
+  "title": "State/UT-wise Inmates Admitted During 2020",
+  "numbers": [
+   273775.0,
+   319402.0,
+   228148.0,
+   273775.0,
+   91267.0,
+   136894.0,
+   45640.0,
+   91267.0,
+   13.0,
+   45640.0
+  ]
+ },
+ {
+  "name": "expenses_on_inmates_discrete",
+  "title": "State/UT-wise Expenses on Inmates during 2020-2021 (in Crore)",
+  "numbers": [
+   0.0,
+   60.2,
+   60.2,
+   120.4,
+   120.4,
+   180.6,
+   180.6,
+   240.8,
+   240.8,
+   300.9,
+   300.9,
+   361.1
+  ]
+ },
+ {
+  "name": "foodgrains_discrete_map",
+  "title": "State/UT-wise Allocation of Foodgrains for 3 months during 2021-22 (in LMT)",
+  "numbers": [
+   0.0,
+   269.8,
+   269.8,
+   539.7,
+   539.7,
+   809.5,
+   809.5,
+   1079.3,
+   1079.3,
+   1349.2,
+   1349.2,
+   1619.0,
+   1619.0,
+   1888.9,
+   1888.9,
+   2158.7,
+   2158.7,
+   2428.5
+  ]
+ },
+ {
+  "name": "govt_teachers_discrete_map",
+  "title": "State/UT-wise Number of Teachers by Management (Government) during 2021-22",
+  "numbers": [
+   806.0,
+   71351.0,
+   71351.0,
+   141896.0,
+   141896.0,
+   212441.0,
+   212441.0,
+   282986.0,
+   282986.0,
+   353531.0,
+   353531.0,
+   424076.0,
+   424076.0,
+   494621.0,
+   494621.0,
+   565166.0,
+   565166.0,
+   635712.0
+  ]
+ },
+ {
+  "name": "human_trafficking_discrete_map",
+  "title": "State/UT-wise Human Trafficking Cases (IPC) during 2021",
+  "numbers": [
+   0.0,
+   57.0,
+   57.0,
+   115.0,
+   115.0,
+   173.0,
+   173.0,
+   231.0,
+   231.0,
+   289.0,
+   289.0,
+   347.0
+  ]
+ },
+ {
+  "name": "inmates_2020_Female_discrete",
+  "title": "State/UT-wise Number of inmates admitted during the year 2020 - Female 2 - 1288",
+  "numbers": [
+   1288.0,
+   2575.0,
+   2575.0,
+   3861.0,
+   3861.0,
+   5148.0,
+   5148.0,
+   6434.0,
+   6434.0,
+   7721.0
+  ]
+ },
+ {
+  "name": "inmates_2020_Transgender_discrete",
+  "title": "State/UT-wise Number of inmates admitted during the year 2020 - Transgender",
+  "numbers": [
+   0.0,
+   5.0,
+   5.0,
+   10.0,
+   10.0,
+   15.0,
+   15.0,
+   21.0,
+   21.0,
+   26.0,
+   26.0,
+   31.0,
+   31.0,
+   37.0
+  ]
+ },
+ {
+  "name": "inmates_2020_male_discrete",
+  "title": "State/UT-wise Number of inmates admitted during the year 2020 - Male",
+  "numbers": [
+   11.0,
+   31175.0,
+   31175.0,
+   62340.0,
+   62340.0,
+   93504.0,
+   93504.0,
+   124669.0,
+   124669.0,
+   155833.0,
+   155833.0,
+   186998.0,
+   186998.0,
+   218162.0,
+   218162.0,
+   249327.0,
+   249327.0,
+   280491.0,
+   280491.0,
+   311656.0
+  ]
+ },
+ {
+  "name": "inmates_2020_total_discrete",
+  "title": "",
+  "numbers": [
+   13.0,
+   31951.0,
+   31951.0,
+   63890.0,
+   63890.0,
+   95829.0,
+   95829.0,
+   127768.0,
+   127768.0,
+   159707.0,
+   159707.0,
+   191646.0,
+   191646.0,
+   223585.0,
+   223585.0,
+   255524.0,
+   255524.0,
+   287463.0,
+   287463.0,
+   319402.0
+  ]
+ },
+ {
+  "name": "inmates_2020_total_discrete_folium",
+  "title": "State/UT-wiseNumberof inmates admittedduring theyear2020-Total",
+  "numbers": [
+   13.0,
+   35500.0,
+   35500.0,
+   70988.0,
+   70988.0,
+   106476.0,
+   106476.0,
+   141963.0,
+   141963.0,
+   177451.0,
+   177451.0,
+   212939.0,
+   212939.0,
+   248426.0,
+   248426.0,
+   283914.0,
+   283914.0,
+   319402.0
+  ]
+ },
+ {
+  "name": "inmates_2020_transgender_discrete_folium",
+  "title": "",
+  "numbers": [
+   2020.0,
+   0.0,
+   6.0,
+   6.0,
+   12.0,
+   12.0,
+   18.0,
+   18.0,
+   24.0,
+   24.0,
+   30.0,
+   30.0,
+   37.0
+  ]
+ },
+ {
+  "name": "inmates_female_2020_discrete_folium",
+  "title": "State/UT-wise Number of inmates admitted during the year 2020 -Female",
+  "numbers": [
+   2.0,
+   1288.0,
+   1288.0,
+   2575.0,
+   2575.0,
+   3861.0,
+   3861.0,
+   5148.0,
+   5148.0,
+   6434.0,
+   6434.0,
+   7721.0
+  ]
+ },
+ {
+  "name": "inmates_male_2020_discrete_folium",
+  "title": "",
+  "numbers": [
+   2020.0,
+   11.0,
+   38966.0,
+   38966.0,
+   77922.0,
+   77922.0,
+   116877.0,
+   116877.0,
+   155833.0,
+   155833.0,
+   194789.0,
+   194789.0,
+   233744.0,
+   233744.0,
+   272700.0,
+   272700.0,
+   311656.0
+  ]
+ },
+ {
+  "name": "map19_d_4",
+  "title": "State/UT-wise Number of Un-Natural Deaths of prisoners in Prisons during 2022 Total Un-Natural Deaths 0.0 - 3.0 3.0 - 6.0",
+  "numbers": [
+   6.0,
+   9.0,
+   9.0,
+   12.0,
+   12.0,
+   15.0,
+   15.0,
+   18.0,
+   18.0,
+   21.0,
+   21.0,
+   24.0
+  ]
+ },
+ {
+  "name": "map2",
+  "title": "State/UT-wise Detenues Released during 2020",
+  "numbers": [
+   0.0,
+   304.1,
+   304.1,
+   608.2,
+   608.2,
+   912.4,
+   912.4,
+   1216.5,
+   1216.5,
+   1520.6,
+   1520.6,
+   1824.8,
+   1824.8,
+   2128.9,
+   2128.9,
+   2433.0
+  ]
+ },
+ {
+  "name": "map20_4",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   1236.8,
+   1236.8,
+   2473.7,
+   2473.7,
+   3710.5,
+   3710.5,
+   4947.3,
+   4947.3,
+   6184.2,
+   6184.2,
+   7421.0
+  ]
+ },
+ {
+  "name": "map3",
+  "title": "State/UT-wise Number of Offences against State (IPC & SLL) during 2022",
+  "numbers": [
+   0.0,
+   278.9,
+   278.9,
+   557.8,
+   557.8,
+   836.6,
+   836.6,
+   1115.5,
+   1115.5,
+   1394.4,
+   1394.4,
+   1673.2,
+   1673.2,
+   1952.1,
+   1952.1,
+   2231.0
+  ]
+ },
+ {
+  "name": "missing_male_discrete_map",
+  "title": "tate/UT-wise Total Missing Persons during the years before 2021 (Male)",
+  "numbers": [
+   0.0,
+   2479.0,
+   2479.0,
+   4958.0,
+   4958.0,
+   7437.0,
+   7437.0,
+   9916.0,
+   9916.0,
+   12395.0,
+   12395.0,
+   14874.0,
+   14874.0,
+   17353.0,
+   17353.0,
+   19833.0
+  ]
+ },
+ {
+  "name": "mobile_connectivity_discrete_map",
+  "title": "Number of Inhabited Villages with Mobile Connectivity as per 2020 Data",
+  "numbers": [
+   5.0,
+   10836.2,
+   10836.2,
+   21667.4,
+   21667.4,
+   32498.7,
+   32498.7,
+   43329.9,
+   43329.9,
+   54161.1,
+   54161.1,
+   64992.3,
+   64992.3,
+   75823.6,
+   75823.6,
+   86654.8,
+   86654.8,
+   97486.0
+  ]
+ },
+ {
+  "name": "pending_cases_discrete",
+  "title": "State/UT-wise Number of Cases (Environmental Related Offences)",
+  "numbers": [
+   2020.0,
+   0.0,
+   3952.0,
+   3952.0,
+   7904.0,
+   7904.0,
+   11857.0,
+   11857.0,
+   15809.0,
+   15809.0,
+   19762.0,
+   19762.0,
+   23714.0,
+   23714.0,
+   27667.0
+  ]
+ },
+ {
+  "name": "pvt_teachers_discrete",
+  "title": "",
+  "numbers": [
+   2021.0,
+   22.0,
+   0.0,
+   78216.0,
+   78216.0,
+   156433.0,
+   156433.0,
+   234649.0,
+   234649.0,
+   312866.0,
+   312866.0,
+   391082.0,
+   391082.0,
+   469299.0,
+   469299.0,
+   547515.0,
+   547515.0,
+   625732.0,
+   625732.0,
+   703949.0
+  ]
+ },
+ {
+  "name": "railway_acc_discrete_map",
+  "title": "State & UT-wise Classification of Railway Accidents during 2020",
+  "numbers": [
+   0.0,
+   213.0,
+   213.0,
+   427.0,
+   427.0,
+   640.0,
+   640.0,
+   854.0,
+   854.0,
+   1067.0,
+   1067.0,
+   1281.0,
+   1281.0,
+   1494.0,
+   1494.0,
+   1708.0,
+   1708.0,
+   1922.0
+  ]
+ },
+ {
+  "name": "swachh_bharath_discrete",
+  "title": "under Swachh Bharat Mission (SBM-U) 2.0 from 2021 to 2026",
+  "numbers": [
+   0.0,
+   138.0,
+   138.0,
+   276.0,
+   276.0,
+   414.0,
+   414.0,
+   553.0,
+   553.0,
+   691.0,
+   691.0,
+   829.0
+  ]
+ },
+ {
+  "name": "total_budget_discrete",
+  "title": "",
+  "numbers": [
+   2020.0,
+   2021.0,
+   0.1,
+   225.2,
+   225.2,
+   450.3,
+   450.3,
+   675.4,
+   675.4,
+   900.5,
+   900.5,
+   1125.6
+  ]
+ },
+ {
+  "name": "total_cases_trial_discrete",
+  "title": "State/UT-wise Total Number of Environmental Related Cases for Trial during 2o20 1 - 4528",
+  "numbers": [
+   4528.0,
+   9056.0,
+   9056.0,
+   13584.0,
+   13584.0,
+   18112.0,
+   18112.0,
+   22640.0,
+   22640.0,
+   27168.0,
+   27168.0,
+   31696.0,
+   31696.0,
+   36224.0,
+   36224.0,
+   40752.0
+  ]
+ },
+ {
+  "name": "total_cases_trial_folium_discrete",
+  "title": "State/UT-wise Total Number of Environmental Related Cases for Trial during 2020",
+  "numbers": [
+   1.0,
+   5822.0,
+   5822.0,
+   11644.0,
+   11644.0,
+   17465.0,
+   17465.0,
+   23287.0,
+   23287.0,
+   29108.0,
+   29108.0,
+   34930.0,
+   34930.0,
+   40752.0
+  ]
+ },
+ {
+  "name": "total_electors_discrete",
+  "title": "State/UT-wise Total Number of Electors in polls during 2024",
+  "numbers": [
+   57953.0,
+   19351097.0,
+   19351097.0,
+   38644242.0,
+   38644242.0,
+   57937387.0,
+   57937387.0,
+   77230532.0,
+   77230532.0,
+   96523677.0,
+   96523677.0,
+   115816822.0,
+   115816822.0,
+   135109967.0,
+   135109967.0,
+   154403112.0
+  ]
+ },
+ {
+  "name": "total_electors_discrete_2",
+  "title": "State/UT-wise Total Number of Electors in polls during 2024",
+  "numbers": [
+   57953.0,
+   19351097.0,
+   19351097.0,
+   38644242.0,
+   38644242.0,
+   57937387.0,
+   57937387.0,
+   77230532.0,
+   77230532.0,
+   96523677.0,
+   96523677.0,
+   115816822.0,
+   115816822.0,
+   135109967.0,
+   135109967.0,
+   154403112.0
+  ]
+ },
+ {
+  "name": "total_electors_discrete_folium",
+  "title": "",
+  "numbers": [
+   2024.0,
+   57953.0,
+   25782146.0,
+   25782146.0,
+   51506339.0,
+   51506339.0,
+   77230532.0,
+   77230532.0,
+   102954725.0,
+   102954725.0,
+   128678918.0,
+   128678918.0,
+   154403112.0
+  ]
+ },
+ {
+  "name": "total_electors_discrete_folium_2",
+  "title": "State/UT-wiseTotal Numberof Electors inpolls during 2024",
+  "numbers": [
+   57953.0,
+   25782146.0,
+   51506339.0,
+   77230532.0,
+   102954725.0,
+   128678918.0,
+   25782146.0,
+   51506339.0,
+   77230532.0,
+   102954725.0,
+   128678918.0,
+   154403112.0
+  ]
+ },
+ {
+  "name": "total_expenditure_discrete_map",
+  "title": "State/UT-wise Total Actual Expenditure during 2020-2021",
+  "numbers": [
+   0.0,
+   115.0,
+   115.0,
+   231.0,
+   231.0,
+   347.0,
+   347.0,
+   462.0,
+   462.0,
+   578.0,
+   578.0,
+   694.0,
+   694.0,
+   810.0
+  ]
+ },
+ {
+  "name": "total_seat_discrete",
+  "title": "State/UT-wise Total Number of seats in polls during 2024",
+  "numbers": [
+   1.0,
+   12.0,
+   12.0,
+   23.0,
+   23.0,
+   34.0,
+   34.0,
+   46.0,
+   46.0,
+   57.0,
+   57.0,
+   68.0,
+   68.0,
+   80.0
+  ]
+ },
+ {
+  "name": "total_seats_discrete_2",
+  "title": "State/UT-wise Total Number of seats in polls during 2024",
+  "numbers": [
+   1.0,
+   12.0,
+   12.0,
+   23.0,
+   23.0,
+   34.0,
+   34.0,
+   46.0,
+   46.0,
+   57.0,
+   57.0,
+   68.0,
+   68.0,
+   80.0
+  ]
+ },
+ {
+  "name": "total_seats_discrete_foilum_2",
+  "title": "State/UT-wiseTotal Number of seats in polls during 2024",
+  "numbers": [
+   14.0,
+   14.0,
+   27.0,
+   27.0,
+   40.0,
+   40.0,
+   53.0,
+   53.0,
+   66.0,
+   66.0,
+   80.0
+  ]
+ },
+ {
+  "name": "total_seats_discrete_folium",
+  "title": "State/UT-wise Total Number of seats in polls during 2024",
+  "numbers": [
+   1.0,
+   14.0,
+   14.0,
+   27.0,
+   27.0,
+   40.0,
+   40.0,
+   53.0,
+   53.0,
+   66.0,
+   66.0,
+   80.0
+  ]
+ },
+ {
+  "name": "unemployment_discrete",
+  "title": "\"Unemployment rate (2023-24)\"",
+  "numbers": [
+   1.0,
+   3.0,
+   3.0,
+   5.0,
+   5.0,
+   7.0,
+   7.0,
+   9.0,
+   9.0,
+   11.0
+  ]
+ },
+ {
+  "name": "unknown_offenders_discrete",
+  "title": "State/UT-wise Number of Cases where Offenders were not known to Victims of Rape during 2020",
+  "numbers": [
+   0.0,
+   37.0,
+   37.0,
+   75.0,
+   75.0,
+   113.0,
+   113.0,
+   150.0,
+   150.0,
+   188.0,
+   188.0,
+   226.0,
+   226.0,
+   264.0
+  ]
+ },
+ {
+  "name": "value_of_goods_discrete",
+  "title": "State/UT-wise Value of Goods in crore Produced by Inmates during 2020",
+  "numbers": [
+   0.0,
+   7.0,
+   7.0,
+   14.0,
+   14.0,
+   22.0,
+   22.0,
+   29.0,
+   29.0,
+   36.0,
+   36.0,
+   44.0,
+   44.0,
+   51.0,
+   51.0,
+   58.0,
+   58.0,
+   66.0
+  ]
+ },
+ {
+  "name": "ventilators_discrete_map",
+  "title": "State/UT-wise Ventilators for C0VlD-19 Management as on 05.08.2021",
+  "numbers": [
+   0.0,
+   910.0,
+   910.0,
+   1821.0,
+   1821.0,
+   2732.0,
+   2732.0,
+   3643.0,
+   3643.0,
+   4554.0,
+   4554.0,
+   5465.0
+  ]
+ },
+ {
+  "name": "victims_female_discrete",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   71.0,
+   71.0,
+   143.0,
+   143.0,
+   214.0,
+   214.0,
+   286.0,
+   286.0,
+   358.0,
+   358.0,
+   429.0,
+   429.0,
+   501.0,
+   501.0,
+   573.0,
+   573.0,
+   644.0,
+   644.0,
+   716.0,
+   716.0,
+   788.0
+  ]
+ },
+ {
+  "name": "victims_rescued_female_discrete",
+  "title": "",
+  "numbers": [
+   2022.0,
+   0.0,
+   144.0,
+   144.0,
+   288.0,
+   288.0,
+   432.0,
+   432.0,
+   576.0,
+   576.0,
+   720.0,
+   720.0,
+   865.0
+  ]
+ },
+ {
+  "name": "voters_over_electors_discrete_1",
+  "title": "State/UT-wise % Of Women Voters Over Women Electors during 2024",
+  "numbers": [
+   55.7,
+   61.6,
+   61.6,
+   67.6,
+   67.6,
+   73.5,
+   73.5,
+   79.5,
+   79.5,
+   85.5
+  ]
+ },
+ {
+  "name": "voters_over_electors_discrete_2",
+  "title": "State/UT-wise % Of Women Voters Over Women Electors during 2024 59.9 - 64.2",
+  "numbers": [
+   55.7,
+   59.9,
+   64.2,
+   68.4,
+   68.4,
+   72.7,
+   72.7,
+   76.9,
+   76.9,
+   81.2,
+   81.2,
+   85.5
+  ]
+ },
+ {
+  "name": "voters_over_electors_folium_discrete_1",
+  "title": "State/UT-wise %OfWomenVoters OverWomenElectorsduring2024",
+  "numbers": [
+   55.66,
+   61.62,
+   61.62,
+   67.58,
+   67.58,
+   73.54,
+   73.54,
+   79.5,
+   79.5,
+   85.46
+  ]
+ },
+ {
+  "name": "voters_over_electors_folium_discrete_2",
+  "title": "State/UT-wise %Of WomenVoters Over Women Electors during 2024",
+  "numbers": [
+   55.66,
+   61.62,
+   61.62,
+   67.58,
+   67.58,
+   73.54,
+   73.54,
+   79.5,
+   79.5,
+   85.46
+  ]
+ },
+ {
+  "name": "women_unemployment_discrete",
+  "title": "\"Unemployment rate of women(2023-24)\"",
+  "numbers": [
+   0.0,
+   3.0,
+   7.0,
+   10.0,
+   10.0,
+   13.0,
+   13.0,
+   17.0,
+   17.0,
+   20.0,
+   20.0,
+   24.0,
+   24.0,
+   27.0,
+   27.0,
+   30.0,
+   30.0,
+   34.0
+  ]
+ },
+ {
+  "name": "capital_punishment",
+  "title": "Capital Punishment during the Year during 2020",
+  "numbers": [
+   14.0,
+   10.0
+  ]
+ },
+ {
+  "name": "cases_against_police",
+  "title": "State/UT-wise Cases Registered against State Police Personnel during 2022",
+  "numbers": [
+   700.0,
+   600.0,
+   500.0,
+   400.0,
+   300.0,
+   200.0,
+   100.0
+  ]
+ },
+ {
+  "name": "constituencies",
+  "title": "State/UT-wise Number and Types of Constituencies during 2024",
+  "numbers": [
+   80.0,
+   70.0,
+   60.0,
+   50.0,
+   40.0,
+   30.0,
+   20.0,
+   10.0
+  ]
+ },
+ {
+  "name": "expenditure",
+  "title": "",
+  "numbers": [
+   2020.0,
+   2021.0,
+   134.5,
+   269.1,
+   403.6,
+   538.1,
+   672.6,
+   810.4
+  ]
+ },
+ {
+  "name": "expenses_on_inmates",
+  "title": "State/UT-wise Expenses on Inmates during 2020-2021 (in Crore)",
+  "numbers": [
+   350.0,
+   300.0,
+   250.0,
+   200.0,
+   150.0,
+   100.0,
+   50.0
+  ]
+ },
+ {
+  "name": "female_missing",
+  "title": "State-wise Unrecovered /Untraced MissingPersons(Female,yearsbefore2021)",
+  "numbers": [
+   4208.0,
+   8416.0,
+   12624.0,
+   16833.0,
+   21041.0,
+   25249.0,
+   29.457
+  ]
+ },
+ {
+  "name": "foodgrains",
+  "title": "State/UT-wise Allocation of Foodgrains for 3 months during 2021-22 (in LMT)",
+  "numbers": [
+   2000.0,
+   1500.0,
+   1000.0,
+   500.0
+  ]
+ },
+ {
+  "name": "govt_teachers",
+  "title": "State/UT-wise Number of Teachers by Management(Government) during 2021-22",
+  "numbers": [
+   106200.4,
+   211594.8,
+   316989.2,
+   422383.6,
+   527778.0,
+   635712.0
+  ]
+ },
+ {
+  "name": "human_trafficking",
+  "title": "State/UT-wise Human Trafficking Cases (IPC) during 2021",
+  "numbers": [
+   300.0,
+   250.0,
+   200.0,
+   150.0,
+   100.0,
+   50.0
+  ]
+ },
+ {
+  "name": "known_offenders",
+  "title": "",
+  "numbers": [
+   2020.0,
+   463.8,
+   927.6,
+   1391.4,
+   1855.2,
+   2319.0
+  ]
+ },
+ {
+  "name": "lpg",
+  "title": "State/UT-wise Details of Demand of Liquefied Petroleum Gas (LPG) during 2023-24",
+  "numbers": [
+   4000.0,
+   3500.0,
+   3000.0,
+   2500.0,
+   2000.0,
+   1500.0,
+   1000.0,
+   500.0
+  ]
+ },
+ {
+  "name": "map1",
+  "title": "State/UT-wise Detenues Released during 2020",
+  "numbers": [
+   304.0,
+   608.0,
+   912.0,
+   1217.0,
+   1521.0,
+   1825.0,
+   2129.0,
+   2433.0
+  ]
+ },
+ {
+  "name": "map10",
+  "title": "State/UT-wise Number of Seizure of Original Indian Currency during 2022",
+  "numbers": [
+   1.0,
+   7.0,
+   4.0
+  ]
+ },
+ {
+  "name": "map11_d_3",
+  "title": "State/UT-wise Number of Incidence of Recidivism during 2022",
+  "numbers": [
+   0.0,
+   141.8,
+   141.8,
+   283.7,
+   283.7,
+   425.5,
+   425.5,
+   567.3,
+   567.3,
+   709.2,
+   709.2,
+   851.0
+  ]
+ },
+ {
+  "name": "map12_d_2",
+  "title": "State/UT-wise Number of Undertrials Released / Transferred during 2022",
+  "numbers": [
+   35.0,
+   33260.9,
+   33260.9,
+   66486.8,
+   66486.8,
+   99712.6,
+   99712.6,
+   132938.5,
+   132938.5,
+   166164.4,
+   166164.4,
+   199390.2,
+   199390.2,
+   232616.1,
+   232616.1,
+   265842.0
+  ]
+ },
+ {
+  "name": "map12_d_3",
+  "title": "State/UT-wise Number of Undertrials Released / Transferred during 2022",
+  "numbers": [
+   35.0,
+   33260.9,
+   33260.9,
+   66486.8,
+   66486.8,
+   99712.6,
+   99712.6,
+   132938.5,
+   132938.5,
+   166164.4,
+   166164.4,
+   199390.2,
+   199390.2,
+   232616.1,
+   232616.1,
+   265842.0
+  ]
+ },
+ {
+  "name": "map13_d_3",
+  "title": "State/UT-wise Number of Jails Renovated / Expanded",
+  "numbers": [
+   0.0,
+   32.8,
+   32.8,
+   65.5,
+   65.5,
+   98.2,
+   98.2,
+   131.0
+  ]
+ },
+ {
+  "name": "map13_d_4",
+  "title": "State/UT-wise Number of Jails Renovated / Expanded",
+  "numbers": [
+   0.0,
+   32.8,
+   32.8,
+   65.5,
+   65.5,
+   98.2,
+   98.2,
+   131.0
+  ]
+ },
+ {
+  "name": "map14_d_3",
+  "title": "State/UT-wise Number of Natural Deaths in Prisons during 2022",
+  "numbers": [
+   0.0,
+   43.9,
+   43.9,
+   87.8,
+   87.8,
+   131.6,
+   131.6,
+   175.5,
+   175.5,
+   219.4,
+   219.4,
+   263.2,
+   263.2,
+   307.1,
+   307.1,
+   351.0
+  ]
+ },
+ {
+  "name": "map14_d_4",
+  "title": "State/UT-wise Number of Natural Deaths in Prisons during 2022 Number of Natural Deaths 0.0 - 43.9 43.9 - 87.8",
+  "numbers": [
+   87.8,
+   131.6,
+   131.6,
+   175.5,
+   175.5,
+   219.4,
+   219.4,
+   263.2,
+   263.2,
+   307.1,
+   307.1,
+   351.0
+  ]
+ },
+ {
+  "name": "map15_d_3",
+  "title": "State/UT-wise Number of Educational Facilities(Computer Course) for Prisoners during 2022",
+  "numbers": [
+   0.0,
+   170.7,
+   170.7,
+   341.4,
+   341.4,
+   512.1,
+   512.1,
+   682.9,
+   682.9,
+   853.6,
+   853.6,
+   1024.3,
+   1024.3,
+   1195.0
+  ]
+ },
+ {
+  "name": "map15_d_4",
+  "title": "State/UT-wise Number of Educational Facilities(Computer Course) for Prisoners during 2022 No.of PrisonersBenefitted by Computer Course",
+  "numbers": [
+   0.0,
+   170.7,
+   170.7,
+   341.4,
+   341.4,
+   512.1,
+   512.1,
+   682.9,
+   682.9,
+   853.6,
+   853.6,
+   1024.3,
+   1024.3,
+   1195.0
+  ]
+ },
+ {
+  "name": "map16_3",
+  "title": "State/UT-wise Number of Educational Facilities(Higher Education) for Prisoners during 2022",
+  "numbers": [
+   0.0,
+   696.6,
+   696.6,
+   1393.1,
+   1393.1,
+   2089.7,
+   2089.7,
+   2786.3,
+   2786.3,
+   3482.9,
+   3482.9,
+   4179.4,
+   4179.4,
+   4876.0
+  ]
+ },
+ {
+  "name": "map16_4",
+  "title": "State/UT-wise Number of Educational Facilities(Higher Education) for Prisoners during 2022",
+  "numbers": [
+   0.0,
+   696.6,
+   696.6,
+   1393.1,
+   1393.1,
+   2089.7,
+   2089.7,
+   2786.3,
+   2786.3,
+   3482.9,
+   3482.9,
+   4179.4,
+   4179.4,
+   4876.0
+  ]
+ },
+ {
+  "name": "map17_d_3",
+  "title": "State/UT-wise Number of Educational Facilities(Elementary Education) for Prisoners during 2022",
+  "numbers": [
+   0.0,
+   1990.2,
+   1990.2,
+   3980.5,
+   3980.5,
+   5970.8,
+   5970.8,
+   7961.0,
+   7961.0,
+   9951.2,
+   9951.2,
+   11941.5,
+   11941.5,
+   13931.8,
+   13931.8,
+   15922.0
+  ]
+ },
+ {
+  "name": "map17_d_4",
+  "title": "State/UT-wise Number of Educational Facilities(Elementary Education) for Prisoners during 2022",
+  "numbers": [
+   0.0,
+   1990.2,
+   1990.2,
+   3980.5,
+   3980.5,
+   5970.8,
+   5970.8,
+   7961.0,
+   7961.0,
+   9951.2,
+   9951.2,
+   11941.5,
+   11941.5,
+   13931.8,
+   13931.8,
+   15922.0
+  ]
+ },
+ {
+  "name": "map18_d_3",
+  "title": "State/UT-wise Number of Mode of Suicide by Prison Inmates during 2022",
+  "numbers": [
+   0.0,
+   1.9,
+   1.9,
+   3.8,
+   3.8,
+   5.6,
+   5.6,
+   7.5,
+   7.5,
+   9.4,
+   9.4,
+   11.2,
+   11.2,
+   13.1,
+   13.1,
+   15.0
+  ]
+ },
+ {
+  "name": "map18_d_4",
+  "title": "State/UT-wise Number of Mode of Suicide by Prison Inmates during 2022 Number of Mode of Suicide 0.0 - 1.9 1.9 - 3.8",
+  "numbers": [
+   3.8,
+   5.6,
+   5.6,
+   7.5,
+   7.5,
+   9.4,
+   9.4,
+   11.2,
+   11.2,
+   13.1,
+   13.1,
+   15.0
+  ]
+ },
+ {
+  "name": "known_offenders_discrete",
+  "title": "State/UT-wise Number of Cases where Offenders were known to Victims of Rape during 2o20",
+  "numbers": [
+   0.0,
+   310.0,
+   310.0,
+   620.0,
+   620.0,
+   931.0,
+   931.0,
+   1241.0,
+   1241.0,
+   1552.0,
+   1552.0,
+   1862.0,
+   1862.0,
+   2173.0,
+   2173.0,
+   2483.0,
+   2483.0,
+   2794.0
+  ]
+ },
+ {
+  "name": "prnding_cases",
+  "title": "pending trial attheendof2020",
+  "numbers": [
+   4592.7,
+   9185.4,
+   13778.2,
+   18370.9,
+   22963.6,
+   27667.0
+  ]
+ }
+]

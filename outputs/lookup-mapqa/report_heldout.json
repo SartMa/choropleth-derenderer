@@ -1,0 +1,26 @@
+{
+ "held_out": {
+  "discrete_maps": 308,
+  "states_right": 0.999935064935065,
+  "every_state_right": 0.9967532467532467,
+  "RI": 0.9967532467532467,
+  "DE": 1.0,
+  "continuous_maps": 92,
+  "continuous_unread": 0,
+  "median_error": 0.003591351891287488,
+  "mean_error": 0.004112420543264117,
+  "within_5pct": 0.9969565217391304
+ },
+ "development": {
+  "discrete_maps": 302,
+  "states_right": 0.9997350993377484,
+  "every_state_right": 0.9867549668874173,
+  "RI": 0.9933774834437086,
+  "DE": 0.9933774834437086,
+  "continuous_maps": 98,
+  "continuous_unread": 0,
+  "median_error": 0.003615870627553126,
+  "mean_error": 0.006462998572916501,
+  "within_5pct": 0.9889795918367346
+ }
+}

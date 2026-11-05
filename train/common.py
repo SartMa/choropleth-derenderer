@@ -122,7 +122,8 @@ def sample_records(records, n, seed):
 
 
 def training_records(args, mapqa_root):
-    records = sample_records(read_split(args.data, "train", mapqa_root), args.train_maps, args.seed)
+    records = [] if args.train_maps == 0 else sample_records(read_split(args.data, "train", mapqa_root),
+                                                             args.train_maps, args.seed)
     synthetic = []
     if args.synth:
         folder = find_images_root(args.synth, "synth_*")
@@ -137,7 +138,9 @@ def training_records(args, mapqa_root):
 
 def evaluation_sets(args, mapqa_root):
     """(name, records) pairs: MapQA test maps, plus synthetic US / India test maps when those are given."""
-    sets = [("mapqa", sample_records(read_split(args.data, "test", mapqa_root), args.eval_maps, seed=0))]
+    sets = []
+    if args.eval_maps:
+        sets.append(("mapqa", sample_records(read_split(args.data, "test", mapqa_root), args.eval_maps, seed=0)))
     if args.synth:
         folder = find_images_root(args.synth, "synth_*")
         sets.append(("synth", sample_records(read_split(folder, "test", folder), args.synth_eval_maps, seed=0)))
@@ -332,6 +335,9 @@ def per_state_summary(group, unparsed):
 
 def evaluate_and_save(records, predictions, out_dir, name):
     """Score one test set; writes predictions_<name>.jsonl and metrics_<name>.json."""
+    with open(out_dir / f"raw_predictions_{name}.jsonl", "w", encoding="utf-8") as f:  # kept if scoring fails
+        for record, prediction in zip(records, predictions):
+            f.write(json.dumps({"id": record["id"], "prediction": prediction}, ensure_ascii=False) + "\n")
     scores = [score_map(r, p) for r, p in zip(records, predictions)]
     with open(out_dir / f"predictions_{name}.jsonl", "w", encoding="utf-8") as f:
         for record, prediction, score in zip(records, predictions, scores):

@@ -1,0 +1,23 @@
+{
+ "id": "sartma/mapqa-derender-qwen-sheet-smoke",
+ "title": "mapqa-derender-qwen-sheet-smoke",
+ "code_file": "notebook.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "machine_shape": "NvidiaTeslaT4",
+ "dataset_sources": [
+  "sartma/mapqa-s",
+  "sartma/synth-usa-choropleth",
+  "sartma/synth-india-choropleth",
+  "sartma/region-probe"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [
+  "sartma/mapqa-derender-qwen"
+ ],
+ "model_sources": []
+}

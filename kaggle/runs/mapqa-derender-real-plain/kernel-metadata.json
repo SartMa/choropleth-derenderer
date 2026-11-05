@@ -1,0 +1,21 @@
+{
+ "id": "skini501/mapqa-derender-real-plain",
+ "title": "mapqa-derender-real-plain",
+ "code_file": "notebook.ipynb",
+ "language": "python",
+ "kernel_type": "notebook",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "machine_shape": "NvidiaTeslaT4",
+ "dataset_sources": [
+  "sartma/mapqa-s",
+  "skini501/real-sheets"
+ ],
+ "competition_sources": [],
+ "kernel_sources": [
+  "skini501/mapqa-derender-qwen-full"
+ ],
+ "model_sources": []
+}

@@ -1,0 +1,124 @@
+[{"stream_name":"stderr","time":8.00576193,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.005801613,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.005807736,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.005811593,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.642172536,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.642202205,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.642207261,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.642211051,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.882718318,"data":"$ nvidia-smi\n"}
+,{"stream_name":"stdout","time":9.916175156,"data":"Sat Oct 31 05:02:25 2026       \n"}
+,{"stream_name":"stdout","time":9.917400133,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.918325447,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":9.91935001,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.920208339,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":9.921042752,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":9.921813727,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":9.922625072,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":9.971691615,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.972683232,"data":"| N/A   51C    P8             12W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.973759142,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.97494963,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.975985751,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.976988163,"data":"| N/A   54C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.978073272,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.979203192,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.980194135,"data":"\n"}
+,{"stream_name":"stdout","time":9.981136623,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.981985634,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":9.982646511,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":9.983377867,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":9.984067333,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":9.984812794,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":9.985597898,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":10.305658871,"data":"$ pip install -q transformers==4.57.1 peft==0.17.1 accelerate\n"}
+,{"stream_name":"stdout","time":27.992204273,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stdout","time":27.993338601,"data":"gradio 6.26.0 requires huggingface-hub\u003c2.0,\u003e=1.16.0, but you have huggingface-hub 0.36.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":27.994148697,"data":"gradio 6.26.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":27.994928563,"data":"diffusers 0.40.0 requires huggingface-hub\u003c2.0,\u003e=1.23.0, but you have huggingface-hub 0.36.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":28.239547349,"data":"Writing convert_mapqa.py\n"}
+,{"stream_name":"stdout","time":28.260604384,"data":"Writing common.py\n"}
+,{"stream_name":"stdout","time":28.277162733,"data":"Writing tiles.py\n"}
+,{"stream_name":"stdout","time":28.311427859,"data":"Writing train_qwen.py\n"}
+,{"stream_name":"stdout","time":28.330480631,"data":"Writing region_head.py\n"}
+,{"stream_name":"stdout","time":28.342452082,"data":"$ python convert_mapqa.py --mapqa /kaggle/input --out /kaggle/working/data\n"}
+,{"stream_name":"stdout","time":1125.930091098,"data":"Read 20789 maps from /kaggle/input\n"}
+,{"stream_name":"stdout","time":1125.931009818,"data":"  train  12470 maps (9421 discrete, 3049 continuous) -\u003e /kaggle/working/data/train.jsonl\n"}
+,{"stream_name":"stdout","time":1125.931852323,"data":"  dev     4155 maps (3187 discrete, 968 continuous) -\u003e /kaggle/working/data/dev.jsonl\n"}
+,{"stream_name":"stdout","time":1125.932680496,"data":"  test    4157 maps (3114 discrete, 1043 continuous) -\u003e /kaggle/working/data/test.jsonl\n"}
+,{"stream_name":"stdout","time":1125.933519847,"data":"  skipped 7 map(s) that no question file uses: [135, 2139, 3711, 6802, 13284, 13932, 16473]\n"}
+,{"stream_name":"stdout","time":1125.934348516,"data":"  target length in characters: min 488, median 546, max 784\n"}
+,{"stream_name":"stdout","time":1125.953796192,"data":"$ python region_head.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/region --india /kaggle/input --adapter /kaggle/input\n"}
+,{"stream_name":"stdout","time":1167.494020261,"data":"The image processor of type `Qwen2VLImageProcessor` is now loaded as a fast processor by default, even if the model checkpoint was saved with a slow processor. This is a breaking change and may produce slightly different outputs. To continue using the slow processor, instantiate this class with `use_fast=False`. Note that this behavior will be extended to all models in a future release.\n"}
+,{"stream_name":"stdout","time":1169.249838081,"data":"`torch_dtype` is deprecated! Use `dtype` instead!\n"}
+,{"stream_name":"stdout","time":1169.563572339,"data":"\n"}
+,{"stream_name":"stdout","time":1208.924781482,"data":"Fetching 2 files:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1208.925815206,"data":"Fetching 2 files:  50%|█████     | 1/2 [00:39\u003c00:39, 39.36s/it]\n"}
+,{"stream_name":"stdout","time":1208.9271484,"data":"Fetching 2 files: 100%|██████████| 2/2 [00:39\u003c00:00, 19.68s/it]\n"}
+,{"stream_name":"stdout","time":1209.463671341,"data":"\n"}
+,{"stream_name":"stdout","time":1212.03956954,"data":"Loading checkpoint shards:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":1214.324516035,"data":"Loading checkpoint shards:  50%|█████     | 1/2 [00:02\u003c00:02,  2.58s/it]\n"}
+,{"stream_name":"stdout","time":1214.325475657,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:04\u003c00:00,  2.40s/it]\n"}
+,{"stream_name":"stdout","time":1214.326417192,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:04\u003c00:00,  2.43s/it]\n"}
+,{"stream_name":"stdout","time":1343.662590388,"data":"tokens: 200/2400 maps (2.0 min)\n"}
+,{"stream_name":"stdout","time":1474.490566394,"data":"tokens: 400/2400 maps (4.2 min)\n"}
+,{"stream_name":"stdout","time":1605.02405058,"data":"tokens: 600/2400 maps (6.4 min)\n"}
+,{"stream_name":"stdout","time":1736.367853044,"data":"tokens: 800/2400 maps (8.6 min)\n"}
+,{"stream_name":"stdout","time":1867.854623382,"data":"tokens: 1000/2400 maps (10.8 min)\n"}
+,{"stream_name":"stdout","time":1997.043351545,"data":"tokens: 1200/2400 maps (12.9 min)\n"}
+,{"stream_name":"stdout","time":2127.428320496,"data":"tokens: 1400/2400 maps (15.1 min)\n"}
+,{"stream_name":"stdout","time":2258.278828681,"data":"tokens: 1600/2400 maps (17.3 min)\n"}
+,{"stream_name":"stdout","time":2388.951484738,"data":"tokens: 1800/2400 maps (19.5 min)\n"}
+,{"stream_name":"stdout","time":2519.566716856,"data":"tokens: 2000/2400 maps (21.6 min)\n"}
+,{"stream_name":"stdout","time":2649.538124758,"data":"tokens: 2200/2400 maps (23.8 min)\n"}
+,{"stream_name":"stdout","time":2781.236640808,"data":"tokens: 2400/2400 maps (26.0 min)\n"}
+,{"stream_name":"stdout","time":2909.264314809,"data":"tokens: 200/300 maps (2.1 min)\n"}
+,{"stream_name":"stdout","time":3088.952604373,"data":"tokens: 200/300 maps (1.9 min)\n"}
+,{"stream_name":"stdout","time":3250.933953069,"data":"token epoch 1: loss 0.2297\n"}
+,{"stream_name":"stdout","time":3254.190768535,"data":"token epoch 2: loss 0.1334\n"}
+,{"stream_name":"stdout","time":3257.359169455,"data":"token epoch 3: loss 0.1245\n"}
+,{"stream_name":"stdout","time":3260.576851412,"data":"token epoch 4: loss 0.1192\n"}
+,{"stream_name":"stdout","time":3263.981962236,"data":"token epoch 5: loss 0.1164\n"}
+,{"stream_name":"stdout","time":3267.423297804,"data":"token epoch 6: loss 0.1140\n"}
+,{"stream_name":"stdout","time":3270.856733503,"data":"token epoch 7: loss 0.1124\n"}
+,{"stream_name":"stdout","time":3274.294246461,"data":"token epoch 8: loss 0.1108\n"}
+,{"stream_name":"stdout","time":3277.72503818,"data":"token epoch 9: loss 0.1097\n"}
+,{"stream_name":"stdout","time":3281.133028881,"data":"token epoch 10: loss 0.1089\n"}
+,{"stream_name":"stdout","time":3284.566109852,"data":"token epoch 11: loss 0.1082\n"}
+,{"stream_name":"stdout","time":3288.001652258,"data":"token epoch 12: loss 0.1074\n"}
+,{"stream_name":"stdout","time":3289.975482233,"data":"token {\"as_drawn\": {\"maps\": 300, \"token_accuracy\": 0.8716787069915514, \"big_found\": 0.9080246913580247, \"big_touched\": 0.9998765432098765, \"small_found\": 0.0, \"small_touched\": 0.9673333333333334}, \"moved\": {\"maps\": 300, \"token_accuracy\": 0.8622201883842429, \"big_found\": 0.7765432098765432, \"big_touched\": 0.9997530864197531, \"small_found\": 0.0, \"small_touched\": 0.954}, \"real_cma_boxes\": {\"maps\": 10, \"big_found\": 0.9518518518518518, \"big_regions\": 270, \"small_found\": 0.525}}\n"}
+,{"stream_name":"stdout","time":3294.361242096,"data":"grid epoch 1: loss 0.1852\n"}
+,{"stream_name":"stdout","time":3298.307554959,"data":"grid epoch 2: loss 0.1040\n"}
+,{"stream_name":"stdout","time":3302.303661579,"data":"grid epoch 3: loss 0.1005\n"}
+,{"stream_name":"stdout","time":3306.302859686,"data":"grid epoch 4: loss 0.0989\n"}
+,{"stream_name":"stdout","time":3310.301971518,"data":"grid epoch 5: loss 0.0978\n"}
+,{"stream_name":"stdout","time":3314.292480953,"data":"grid epoch 6: loss 0.0971\n"}
+,{"stream_name":"stdout","time":3318.216738817,"data":"grid epoch 7: loss 0.0966\n"}
+,{"stream_name":"stdout","time":3322.185222683,"data":"grid epoch 8: loss 0.0962\n"}
+,{"stream_name":"stdout","time":3326.162510718,"data":"grid epoch 9: loss 0.0959\n"}
+,{"stream_name":"stdout","time":3330.139875191,"data":"grid epoch 10: loss 0.0957\n"}
+,{"stream_name":"stdout","time":3334.141754886,"data":"grid epoch 11: loss 0.0955\n"}
+,{"stream_name":"stdout","time":3338.09806769,"data":"grid epoch 12: loss 0.0954\n"}
+,{"stream_name":"stdout","time":3340.36332139,"data":"grid {\"as_drawn\": {\"maps\": 300, \"token_accuracy\": 0.9462470919554304, \"big_found\": 0.9234567901234568, \"big_touched\": 1.0, \"small_found\": 0.0, \"small_touched\": 0.9953333333333333}, \"moved\": {\"maps\": 300, \"token_accuracy\": 0.9431033825267895, \"big_found\": 0.7966666666666666, \"big_touched\": 1.0, \"small_found\": 0.0, \"small_touched\": 0.992}, \"real_cma_boxes\": {\"maps\": 10, \"big_found\": 0.9629629629629629, \"big_regions\": 270, \"small_found\": 0.55}}\n"}
+,{"stream_name":"stdout","time":3343.777562265,"data":"position epoch 1: loss 0.7233\n"}
+,{"stream_name":"stdout","time":3347.172615227,"data":"position epoch 2: loss 0.4630\n"}
+,{"stream_name":"stdout","time":3350.309298928,"data":"position epoch 3: loss 0.4340\n"}
+,{"stream_name":"stdout","time":3353.540889856,"data":"position epoch 4: loss 0.4299\n"}
+,{"stream_name":"stdout","time":3356.69027802,"data":"position epoch 5: loss 0.4294\n"}
+,{"stream_name":"stdout","time":3359.825525404,"data":"position epoch 6: loss 0.4269\n"}
+,{"stream_name":"stdout","time":3363.006308896,"data":"position epoch 7: loss 0.4275\n"}
+,{"stream_name":"stdout","time":3366.112476334,"data":"position epoch 8: loss 0.4245\n"}
+,{"stream_name":"stdout","time":3369.232516682,"data":"position epoch 9: loss 0.4249\n"}
+,{"stream_name":"stdout","time":3372.42900228,"data":"position epoch 10: loss 0.4236\n"}
+,{"stream_name":"stdout","time":3375.570521528,"data":"position epoch 11: loss 0.4244\n"}
+,{"stream_name":"stdout","time":3378.698089795,"data":"position epoch 12: loss 0.4233\n"}
+,{"stream_name":"stdout","time":3380.796030494,"data":"position {\"as_drawn\": {\"maps\": 300, \"token_accuracy\": 0.02759887351536672, \"big_found\": 0.1985185185185185, \"big_touched\": 0.44641975308641973, \"small_found\": 0.0, \"small_touched\": 0.0}, \"moved\": {\"maps\": 300, \"token_accuracy\": 0.035922663310834, \"big_found\": 0.09358024691358025, \"big_touched\": 0.2544444444444444, \"small_found\": 0.0, \"small_touched\": 0.062}, \"real_cma_boxes\": {\"maps\": 10, \"big_found\": 0.24074074074074073, \"big_regions\": 270, \"small_found\": 0.0}}\n"}
+,{"stream_name":"stderr","time":3391.175387169,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":3391.175429378,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":3391.38409742,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":3391.384139548,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":3392.255268988,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":3392.359763293,"data":"[NbConvertApp] Writing 132919 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":3394.936098429,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":3395.762030891,"data":"[NbConvertApp] Writing 771655 bytes to __results__.html\n"}
+]

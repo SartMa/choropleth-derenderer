@@ -1,0 +1,137 @@
+[{"stream_name":"stderr","time":7.76780634,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.767852674,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.76785896,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.767863153,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.368233551,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.368276861,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.368282108,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.36828562,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":9.499857615,"data":"$ nvidia-smi\n"}
+,{"stream_name":"stdout","time":9.531644262,"data":"Mon Nov  2 18:46:19 2026       \n"}
+,{"stream_name":"stdout","time":9.533832584,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.534050855,"data":"| NVIDIA-SMI 580.178.04             Driver Version: 580.178.04     CUDA Version: 13.0     |\n"}
+,{"stream_name":"stdout","time":9.535014774,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.535865608,"data":"| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |\n"}
+,{"stream_name":"stdout","time":9.536640925,"data":"| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |\n"}
+,{"stream_name":"stdout","time":9.537437985,"data":"|                                         |                        |               MIG M. |\n"}
+,{"stream_name":"stdout","time":9.538211353,"data":"|=========================================+========================+======================|\n"}
+,{"stream_name":"stdout","time":9.581088286,"data":"|   0  Tesla T4                       Off |   00000000:00:04.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.582493037,"data":"| N/A   46C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.583355772,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.584332582,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.585373175,"data":"|   1  Tesla T4                       Off |   00000000:00:05.0 Off |                    0 |\n"}
+,{"stream_name":"stdout","time":9.586318121,"data":"| N/A   46C    P8             10W /   70W |       0MiB /  15360MiB |      0%      Default |\n"}
+,{"stream_name":"stdout","time":9.58726486,"data":"|                                         |                        |                  N/A |\n"}
+,{"stream_name":"stdout","time":9.588194681000001,"data":"+-----------------------------------------+------------------------+----------------------+\n"}
+,{"stream_name":"stdout","time":9.589184386,"data":"\n"}
+,{"stream_name":"stdout","time":9.590116039,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.591031606,"data":"| Processes:                                                                              |\n"}
+,{"stream_name":"stdout","time":9.591841785,"data":"|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |\n"}
+,{"stream_name":"stdout","time":9.592905607,"data":"|        ID   ID                                                               Usage      |\n"}
+,{"stream_name":"stdout","time":9.593709298,"data":"|=========================================================================================|\n"}
+,{"stream_name":"stdout","time":9.59447218,"data":"|  No running processes found                                                             |\n"}
+,{"stream_name":"stdout","time":9.595233291,"data":"+-----------------------------------------------------------------------------------------+\n"}
+,{"stream_name":"stdout","time":9.909591287,"data":"$ pip install -q transformers==4.57.1 peft==0.17.1 accelerate\n"}
+,{"stream_name":"stdout","time":26.217287152,"data":"ERROR: pip's dependency resolver does not currently take into account all the packages that are installed. This behaviour is the source of the following dependency conflicts.\n"}
+,{"stream_name":"stdout","time":26.218334172,"data":"gradio-client 2.7.2 requires huggingface-hub\u003c3.0,\u003e=1.16.0, but you have huggingface-hub 0.36.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":26.219150879,"data":"gradio 6.30.0 requires huggingface-hub\u003c3.0,\u003e=1.16.0, but you have huggingface-hub 0.36.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":26.21987954,"data":"gradio 6.30.0 requires pillow\u003c13.0,\u003e=8.0, but you have pillow 13.0.0 which is incompatible.\n"}
+,{"stream_name":"stdout","time":26.220574157,"data":"diffusers 0.42.0 requires huggingface-hub\u003c3.0,\u003e=1.32.0, but you have huggingface-hub 0.36.2 which is incompatible.\n"}
+,{"stream_name":"stdout","time":26.464096984,"data":"Writing convert_mapqa.py\n"}
+,{"stream_name":"stdout","time":26.48227027,"data":"Writing common.py\n"}
+,{"stream_name":"stdout","time":26.496690239,"data":"Writing tiles.py\n"}
+,{"stream_name":"stdout","time":26.512478498,"data":"Writing sheet.py\n"}
+,{"stream_name":"stdout","time":26.544791588,"data":"Writing train_qwen.py\n"}
+,{"stream_name":"stdout","time":26.558293128,"data":"Writing read_real.py\n"}
+,{"stream_name":"stdout","time":26.571052056,"data":"$ python read_real.py --data /kaggle/working/data --mapqa /kaggle/input --out /kaggle/working/real --sheets /kaggle/input --adapter /kaggle/input --plain\n"}
+,{"stream_name":"stdout","time":59.344837084,"data":"WARNING: All log messages before absl::InitializeLog() is called are written to STDERR\n"}
+,{"stream_name":"stdout","time":59.345739679,"data":"I0000 00:00:1793645229.587606      68 cudart_stub.cc:31] Could not find cuda drivers on your machine, GPU will not be used.\n"}
+,{"stream_name":"stdout","time":64.777766231,"data":"The image processor of type `Qwen2VLImageProcessor` is now loaded as a fast processor by default, even if the model checkpoint was saved with a slow processor. This is a breaking change and may produce slightly different outputs. To continue using the slow processor, instantiate this class with `use_fast=False`. Note that this behavior will be extended to all models in a future release.\n"}
+,{"stream_name":"stdout","time":67.144589457,"data":"`torch_dtype` is deprecated! Use `dtype` instead!\n"}
+,{"stream_name":"stdout","time":67.705355585,"data":"\n"}
+,{"stream_name":"stdout","time":101.61884343,"data":"Fetching 2 files:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":101.619228999,"data":"Fetching 2 files:  50%|█████     | 1/2 [00:33\u003c00:33, 33.91s/it]\n"}
+,{"stream_name":"stdout","time":101.620023321,"data":"Fetching 2 files: 100%|██████████| 2/2 [00:33\u003c00:00, 16.95s/it]\n"}
+,{"stream_name":"stdout","time":108.079352398,"data":"\n"}
+,{"stream_name":"stdout","time":110.551715211,"data":"Loading checkpoint shards:   0%|          | 0/2 [00:00\u003c?, ?it/s]\n"}
+,{"stream_name":"stdout","time":112.759542555,"data":"Loading checkpoint shards:  50%|█████     | 1/2 [00:02\u003c00:02,  2.47s/it]\n"}
+,{"stream_name":"stdout","time":112.760455812,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:04\u003c00:00,  2.32s/it]\n"}
+,{"stream_name":"stdout","time":112.761232439,"data":"Loading checkpoint shards: 100%|██████████| 2/2 [00:04\u003c00:00,  2.34s/it]\n"}
+,{"stream_name":"stdout","time":130.484013143,"data":"The following generation flags are not valid and may be ignored: ['temperature']. Set `TRANSFORMERS_VERBOSITY=info` for more details.\n"}
+,{"stream_name":"stdout","time":163.984310189,"data":"11_1\n"}
+,{"stream_name":"stdout","time":201.817074838,"data":"12_1\n"}
+,{"stream_name":"stdout","time":224.948283296,"data":"13_1\n"}
+,{"stream_name":"stdout","time":251.38580302,"data":"13_d_2\n"}
+,{"stream_name":"stdout","time":278.151817777,"data":"14_1\n"}
+,{"stream_name":"stdout","time":304.272241327,"data":"14_2\n"}
+,{"stream_name":"stdout","time":336.221862124,"data":"16_1\n"}
+,{"stream_name":"stdout","time":364.605367406,"data":"16_2\n"}
+,{"stream_name":"stdout","time":399.482190989,"data":"17_1\n"}
+,{"stream_name":"stdout","time":431.770105022,"data":"17_2\n"}
+,{"stream_name":"stdout","time":458.493511692,"data":"19_d_1\n"}
+,{"stream_name":"stdout","time":490.634858715,"data":"20_1\n"}
+,{"stream_name":"stdout","time":518.464813774,"data":"3\n"}
+,{"stream_name":"stdout","time":547.025238219,"data":"4\n"}
+,{"stream_name":"stdout","time":574.848146481,"data":"5\n"}
+,{"stream_name":"stdout","time":609.314271146,"data":"6\n"}
+,{"stream_name":"stdout","time":637.89640086,"data":"7\n"}
+,{"stream_name":"stdout","time":668.566359547,"data":"8\n"}
+,{"stream_name":"stdout","time":692.025748026,"data":"9\n"}
+,{"stream_name":"stdout","time":720.233393465,"data":"Rate_of_offences_against_state_discrete\n"}
+,{"stream_name":"stdout","time":749.32445567,"data":"cases_against_police_discrete\n"}
+,{"stream_name":"stdout","time":772.673109357,"data":"constituencies\n"}
+,{"stream_name":"stdout","time":798.867617164,"data":"discreate_4\n"}
+,{"stream_name":"stdout","time":825.895683255,"data":"discreate_5\n"}
+,{"stream_name":"stdout","time":852.659459167,"data":"expenses_on_inmates\n"}
+,{"stream_name":"stdout","time":881.495172133,"data":"expenses_on_inmates_discrete\n"}
+,{"stream_name":"stdout","time":911.421576828,"data":"foodgrains\n"}
+,{"stream_name":"stdout","time":946.576370987,"data":"foodgrains_discrete_map\n"}
+,{"stream_name":"stdout","time":991.476436273,"data":"govt_teachers\n"}
+,{"stream_name":"stdout","time":1026.924321415,"data":"govt_teachers_discrete_map\n"}
+,{"stream_name":"stdout","time":1053.182671684,"data":"human_trafficking_discrete_map\n"}
+,{"stream_name":"stdout","time":1080.381671698,"data":"inmates_2020_Female_discrete\n"}
+,{"stream_name":"stdout","time":1105.607089805,"data":"inmates_2020_Transgender_discrete\n"}
+,{"stream_name":"stdout","time":1141.224882732,"data":"inmates_2020_male_discrete\n"}
+,{"stream_name":"stdout","time":1176.986805125,"data":"inmates_2020_total_discrete\n"}
+,{"stream_name":"stdout","time":1211.671350867,"data":"inmates_2020_total_discrete_folium\n"}
+,{"stream_name":"stdout","time":1236.811032326,"data":"inmates_2020_transgender_discrete_folium\n"}
+,{"stream_name":"stdout","time":1264.722078825,"data":"inmates_female_2020_discrete_folium\n"}
+,{"stream_name":"stdout","time":1297.624039546,"data":"inmates_male_2020_discrete_folium\n"}
+,{"stream_name":"stdout","time":1328.543337918,"data":"map1\n"}
+,{"stream_name":"stdout","time":1357.779606061,"data":"map11_d_3\n"}
+,{"stream_name":"stdout","time":1394.723506049,"data":"map12_d_2\n"}
+,{"stream_name":"stdout","time":1431.543917675,"data":"map12_d_3\n"}
+,{"stream_name":"stdout","time":1463.185890099,"data":"map14_d_3\n"}
+,{"stream_name":"stdout","time":1494.796228409,"data":"map14_d_4\n"}
+,{"stream_name":"stdout","time":1527.703355301,"data":"map16_3\n"}
+,{"stream_name":"stdout","time":1560.844513896,"data":"map16_4\n"}
+,{"stream_name":"stdout","time":1596.051315528,"data":"map17_d_3\n"}
+,{"stream_name":"stdout","time":1631.206460125,"data":"map17_d_4\n"}
+,{"stream_name":"stdout","time":1661.439924604,"data":"map19_d_4\n"}
+,{"stream_name":"stdout","time":1694.730512229,"data":"map2\n"}
+,{"stream_name":"stdout","time":1727.985330533,"data":"map3\n"}
+,{"stream_name":"stdout","time":1756.148395247,"data":"map4\n"}
+,{"stream_name":"stdout","time":1790.356009767,"data":"map5\n"}
+,{"stream_name":"stdout","time":1821.774518265,"data":"map6\n"}
+,{"stream_name":"stdout","time":1852.145586026,"data":"pending_cases_discrete\n"}
+,{"stream_name":"stdout","time":1890.656240445,"data":"pvt_teachers\n"}
+,{"stream_name":"stdout","time":1920.677807193,"data":"railway_acc_discrete_map\n"}
+,{"stream_name":"stdout","time":1943.521018933,"data":"unemployment_discrete\n"}
+,{"stream_name":"stdout","time":1970.95182227,"data":"unknown_offenders_discrete\n"}
+,{"stream_name":"stdout","time":1994.728053184,"data":"value_of_goods\n"}
+,{"stream_name":"stdout","time":2021.550643673,"data":"value_of_goods_discrete\n"}
+,{"stream_name":"stdout","time":2053.250289353,"data":"ventilators\n"}
+,{"stream_name":"stdout","time":2081.559376343,"data":"ventilators_discrete_map\n"}
+,{"stream_name":"stdout","time":2108.450197424,"data":"victims_female\n"}
+,{"stream_name":"stdout","time":2135.247128578,"data":"victims_male\n"}
+,{"stream_name":"stdout","time":2164.439934648,"data":"women_unemployment\n"}
+,{"stream_name":"stdout","time":2192.034863867,"data":"women_unemployment_discrete\n"}
+,{"stream_name":"stderr","time":2201.935850453,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":2201.935882739,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":2202.112742111,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":2202.112771486,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":2202.919037096,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":2203.010539831,"data":"[NbConvertApp] Writing 126975 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":2205.539433909,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":2206.28552797,"data":"[NbConvertApp] Writing 739358 bytes to __results__.html\n"}
+]

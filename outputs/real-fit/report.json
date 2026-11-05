@@ -1,0 +1,22 @@
+{
+ "maps": 164,
+ "on_edge_quantiles": [
+  0.95,
+  0.991,
+  0.994,
+  0.996,
+  0.997,
+  0.998,
+  1.0
+ ],
+ "projections": {
+  "plate": 62,
+  "plate_equal_area": 42,
+  "mercator": 60
+ },
+ "against_cma_boxes": {
+  "regions": 327,
+  "centre_in_box": 0.9694189602446484,
+  "median_box_overlap": 0.8410019350788202
+ }
+}

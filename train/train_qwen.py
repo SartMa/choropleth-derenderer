@@ -36,6 +36,7 @@ from common import (add_common_args, autocast, evaluate_and_save, evaluation_set
 def training_records_mapqa(args, root):
     """MapQA training maps only: what the picker is taught on (the rule's labels are tuned to these)."""
     return read_split(args.data, "train", root)
+from sheet import SHEET_PROMPT, SheetDataset, Sheets
 from tiles import boundary_mask, busiest_tiles, map_body, small_regions
 
 PROMPT = (
@@ -54,7 +55,8 @@ assert INDIA_PROMPT != PROMPT
 
 
 def prompt_for(record):
-    return INDIA_PROMPT if record.get("id", "").startswith("synthind_") else PROMPT
+    """prompt_note: an extra sentence some probe maps carry, e.g. naming the region outlined on the map."""
+    return (INDIA_PROMPT if record.get("id", "").startswith("synthind_") else PROMPT) + record.get("prompt_note", "")
 
 
 CROP_NOTE = (" The second image is a magnified view of part of the same map; "
@@ -304,8 +306,34 @@ class TokenPicker(torch.nn.Module):
         super().__init__()
         self.net = torch.nn.Sequential(torch.nn.Linear(width, hidden), torch.nn.GELU(), torch.nn.Linear(hidden, 1))
 
-    def forward(self, tokens):
-        return self.net(tokens).squeeze(-1)  # log of the expected count
+    def forward(self, tokens, shape=None):
+        return self.net(tokens).squeeze(-1)  # log of the expected count; every token is judged alone
+
+
+class ConvPicker(torch.nn.Module):
+    """The same job as TokenPicker, but each token is judged together with its neighbours.
+
+    The tokens are laid back on the map's grid; one 1x1 layer shrinks them, then two 3x3 layers (the second
+    skipping every other token) let a token see about 7x7 tokens around it. A small state next to other small
+    states should read as a cluster, which a token-by-token network cannot see. About as many weights as the
+    MLP (0.56M against 0.52M), so a difference is not just size.
+    """
+
+    def __init__(self, width, hidden=128):
+        super().__init__()
+        self.reduce = torch.nn.Conv2d(width, hidden, 1)
+        self.context = torch.nn.Sequential(
+            torch.nn.GELU(), torch.nn.Conv2d(hidden, hidden, 3, padding=1),
+            torch.nn.GELU(), torch.nn.Conv2d(hidden, hidden, 3, padding=2, dilation=2),
+            torch.nn.GELU(), torch.nn.Conv2d(hidden, 1, 1))
+
+    def forward(self, tokens, shape):
+        rows, columns = shape
+        grid = tokens.reshape(-1, rows, columns, tokens.shape[-1]).permute(0, 3, 1, 2)  # maps, width, rows, columns
+        return self.context(self.reduce(grid)).reshape(-1)  # log of the expected count, map by map, row by row
+
+
+PICKERS = {"mlp": TokenPicker, "cnn": ConvPicker}
 
 
 PICKER_TILE_FRACTION = 0.14  # tile side as a share of image width (the rule's run 0.10-0.15 on MapQA)
@@ -373,68 +401,106 @@ def covered(box, centres):
     return {i for i, (y, x) in enumerate(centres) if box[0] <= x < box[2] and box[1] <= y < box[3]}
 
 
-def train_picker(model, processor, records, device, amp_dtype, out_dir, epochs=8, seed=0):
-    """Count small regions per token with the rule, train the picker on every token, and check it.
+def fit_picker(kind, maps, width, device, epochs, seed):
+    """maps: one (tokens, counts, (rows, columns)) per map. The MLP learns from random batches of tokens; the CNN
+    from batches of whole maps of the same size, so that its neighbours are real neighbours."""
+    torch.manual_seed(seed)
+    picker = PICKERS[kind](width).to(device)
+    optimizer = torch.optim.AdamW(picker.parameters(), lr=1e-3, weight_decay=0.01)
+    loss_fn = torch.nn.PoissonNLLLoss(log_input=True)
+    if kind == "mlp":
+        flat_features, flat_labels = torch.cat([m[0] for m in maps]), torch.cat([m[1] for m in maps])
+    by_shape = {}
+    for i, (_, _, shape) in enumerate(maps):
+        by_shape.setdefault(shape, []).append(i)
+    for epoch in range(epochs):
+        batches = []  # (features, labels, shape) for this epoch
+        if kind == "mlp":
+            order = torch.randperm(len(flat_labels))
+            for start in range(0, len(order), 4096):
+                batch = order[start: start + 4096]
+                batches.append((flat_features[batch], flat_labels[batch], None))
+        else:
+            for shape, members in by_shape.items():
+                members = [members[i] for i in torch.randperm(len(members)).tolist()]
+                for start in range(0, len(members), 8):  # 8 maps is about 3,600 tokens, like the MLP's batch
+                    chosen = members[start: start + 8]
+                    batches.append((torch.cat([maps[i][0] for i in chosen]), torch.cat([maps[i][1] for i in chosen]),
+                                    shape))
+            random.Random(seed + epoch).shuffle(batches)
+        total, seen = 0.0, 0
+        for features, labels, shape in batches:
+            loss = loss_fn(picker(features.to(device).float(), shape), labels.to(device))
+            optimizer.zero_grad()
+            loss.backward()
+            optimizer.step()
+            total += loss.item() * len(labels)
+            seen += len(labels)
+        print(f"picker {kind} epoch {epoch + 1}: loss {total / seen:.4f}", flush=True)
+    picker.eval()
+    return picker
 
-    The last tenth of the maps is held out. On those, the picker's first tile is compared with the rule's:
-    how many of the small regions inside the rule's tile are also inside the picker's.
+
+def train_picker(model, processor, records, device, amp_dtype, out_dir, kinds=("mlp",), epochs=8, seed=0):
+    """Count small regions per token with the rule, train each kind of picker on the same tokens, and check it.
+
+    The last tenth of the maps is held out. On those: the picker's loss (the same Poisson loss it trained
+    on), and how many of the small regions inside the rule's first tile are also inside the picker's.
+    Returns {kind: picker}; the MLP is saved as picker.pt, the others as picker_<kind>.pt.
     """
     split = max(1, len(records) // 10)
     held_out, training = records[:split], records[split:]
-    features, labels = [], []
+    maps = []
     began = time.time()
     for n, record in enumerate(training, 1):
         image = Image.open(record["image_path"]).convert("RGB")
         tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
-        features.append(tokens.half().cpu())
-        labels.append(token_counts(image, rows, columns))
+        maps.append((tokens.half().cpu(), token_counts(image, rows, columns), (rows, columns)))
         if n % 500 == 0:
             print(f"picker: counted {n}/{len(training)} maps ({(time.time() - began) / 60:.1f} min)", flush=True)
-    features, labels = torch.cat(features), torch.cat(labels)
-    torch.manual_seed(seed)
-    picker = TokenPicker(features.shape[1]).to(device)
-    optimizer = torch.optim.AdamW(picker.parameters(), lr=1e-3, weight_decay=0.01)
-    loss_fn = torch.nn.PoissonNLLLoss(log_input=True)
-    for epoch in range(epochs):
-        order = torch.randperm(len(labels))
-        total = 0.0
-        for start in range(0, len(order), 4096):
-            batch = order[start: start + 4096]
-            loss = loss_fn(picker(features[batch].to(device).float()), labels[batch].to(device))
-            optimizer.zero_grad()
-            loss.backward()
-            optimizer.step()
-            total += loss.item() * len(batch)
-        print(f"picker epoch {epoch + 1}: loss {total / len(labels):.4f}", flush=True)
-    picker.eval()
+    width, tokens_seen = maps[0][0].shape[1], sum(len(m[1]) for m in maps)
+    small_regions_counted = int(sum(m[1].sum() for m in maps))
+    pickers = {}
+    for kind in kinds:
+        pickers[kind] = fit_picker(kind, maps, width, device, epochs, seed)
+        torch.save(pickers[kind].state_dict(), out_dir / ("picker.pt" if kind == "mlp" else f"picker_{kind}.pt"))
+    del maps
 
-    kept, wanted, same_place = 0, 0, 0
+    loss_fn = torch.nn.PoissonNLLLoss(log_input=True, reduction="sum")
+    kept, wanted, same_place, held_loss, held_tokens = {k: 0 for k in kinds}, {k: 0 for k in kinds}, \
+        {k: 0 for k in kinds}, {k: 0.0 for k in kinds}, 0
     for record in held_out:
         image = Image.open(record["image_path"]).convert("RGB")
         tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
-        with torch.no_grad():
-            counts = picker(tokens).exp().cpu()
+        labels = token_counts(image, rows, columns)
+        held_tokens += len(labels)
         body = map_body(image)
         centres, _ = small_regions(image, body, boundary_mask(image, body))
         rule = busiest_tiles(image, tiles=1)
-        if not rule or not len(centres):
-            continue
-        target = covered(rule[0], centres)
-        mine = covered(picker_boxes(counts, rows, columns, image, 1)[0], centres)
-        kept += len(target & mine)
-        wanted += len(target)
-        same_place += int(len(target & mine) >= 0.8 * len(target))
-    report = {"training_maps": len(training), "held_out_maps": len(held_out), "tokens": len(labels),
-              "small_regions_counted": int(labels.sum()),
-              "rule_tile_regions_also_in_picker_tile": kept / max(1, wanted),
-              "maps_where_picker_tile_holds_80pct_of_rule_tile": same_place / len(held_out)}
-    print("picker:", json.dumps(report), flush=True)
+        for kind, picker in pickers.items():
+            with torch.no_grad():
+                logs = picker(tokens, (rows, columns))
+            held_loss[kind] += loss_fn(logs.cpu(), labels).item()
+            if not rule or not len(centres):
+                continue
+            target = covered(rule[0], centres)
+            mine = covered(picker_boxes(logs.exp().cpu(), rows, columns, image, 1)[0], centres)
+            kept[kind] += len(target & mine)
+            wanted[kind] += len(target)
+            same_place[kind] += int(len(target & mine) >= 0.8 * len(target))
+    report = {}
+    for kind in kinds:
+        report[kind] = {"training_maps": len(training), "held_out_maps": len(held_out), "tokens": tokens_seen,
+                        "small_regions_counted": small_regions_counted,
+                        "held_out_loss": held_loss[kind] / held_tokens,
+                        "rule_tile_regions_also_in_picker_tile": kept[kind] / max(1, wanted[kind]),
+                        "maps_where_picker_tile_holds_80pct_of_rule_tile": same_place[kind] / len(held_out)}
+        print(f"picker {kind}:", json.dumps(report[kind]), flush=True)
     (out_dir / "picker_report.json").write_text(json.dumps(report, indent=1))
-    torch.save(picker.state_dict(), out_dir / "picker.pt")
-    return picker
+    return pickers
 
 
-def probe_picker(model, processor, picker, sets, device, amp_dtype, out_dir):
+def probe_picker(model, processor, picker, sets, device, amp_dtype, out_dir, suffix=""):
     """Does the picker follow small regions, or remember where they usually are?
 
     Every MapQA map is also shown mirrored and flipped, which moves the north-east cluster to another
@@ -460,7 +526,7 @@ def probe_picker(model, processor, picker, sets, device, amp_dtype, out_dir):
                     continue
                 tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
                 with torch.no_grad():
-                    counts = picker(tokens).exp().cpu()
+                    counts = picker(tokens, (rows, columns)).exp().cpu()
                 mine = picker_boxes(counts, rows, columns, image, 2)
                 rule = busiest_tiles(image, tiles=2)
                 rule_share.append(len(set().union(*[covered(b, centres) for b in rule])) / len(centres))
@@ -475,7 +541,7 @@ def probe_picker(model, processor, picker, sets, device, amp_dtype, out_dir):
                 "picker_tiles_hold": sum(picker_share) / maps,
                 "picker_first_tile_in_top_right_quarter": top_right / maps}
             print(f"probe {name}, {label}: {json.dumps(report[f'{name}, {label}'])}", flush=True)
-    (out_dir / "picker_probe.json").write_text(json.dumps(report, indent=1))
+    (out_dir / f"picker_probe{suffix}.json").write_text(json.dumps(report, indent=1))
 
 
 def picker_tiles(model, processor, picker, device, amp_dtype):
@@ -483,7 +549,7 @@ def picker_tiles(model, processor, picker, device, amp_dtype):
     def pick(image, count):
         tokens, (rows, columns) = map_tokens(model, processor, image, device, amp_dtype)
         with torch.no_grad():
-            counts = picker(tokens).exp().cpu()
+            counts = picker(tokens, (rows, columns)).exp().cpu()
         return picker_boxes(counts, rows, columns, image, count)
     return pick
 
@@ -537,7 +603,7 @@ def chat_text(processor, target=None, images=1, boxes=None, prompt=PROMPT):
     if boxes:
         note = tiles_note(boxes)
     else:
-        note = "" if images == 1 else (CROP_NOTE if images == 2 else TILES_NOTE)
+        note = "" if images == 1 or prompt == SHEET_PROMPT else (CROP_NOTE if images == 2 else TILES_NOTE)
     content.append({"type": "text", "text": prompt + note})
     messages = [{"role": "user", "content": content}]
     if target is not None:
@@ -614,7 +680,7 @@ class TrainCollate:
 
 
 def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=None, fine_processor=None,
-            tiles=0, fusion=None, pick=None):
+            tiles=0, fusion=None, pick=None, sheets=None):
     def generate(batch):
         """Predictions for one batch; on running out of GPU memory, the batch is split in two and retried,
         so a long run is not lost to one oversized batch at the very end."""
@@ -641,8 +707,11 @@ def predict(model, processor, records, args, device, amp_dtype, crop=False, s2=N
                 extra, boxes = tile_images(image, tiles, args.tile_zoom, boxes=chosen)
             elif crop:
                 extra = [make_crop(image, random, train=False)]
+            elif sheets:
+                extra = [sheets.scored(image, record)]
             images.extend(extra)
-            texts.append(chat_text(processor, images=1 + len(extra), boxes=boxes, prompt=prompt_for(record)))
+            texts.append(chat_text(processor, images=1 + len(extra), boxes=boxes,
+                                   prompt=SHEET_PROMPT if sheets else prompt_for(record)))
         fine = None
         if fine_processor is not None:
             images, fine_images = two_scale_images(processor, images, args.s2_scale)
@@ -725,9 +794,16 @@ def main():
                         help="learning rate for the fusion weights alone (default: --lr); they start from nothing")
     parser.add_argument("--fusion-init-std", type=float, default=0.0,
                         help="start the fusion output layer at this small spread instead of exactly zero")
-    parser.add_argument("--picker", choices=["rule", "mlp"], default="rule",
-                        help="mlp: train a small network on the vision tokens to pick the tiles, and score with "
-                             "both the rule's tiles and the network's, on the same weights")
+    parser.add_argument("--sheet", type=Path, help="a folder of region labels: add a region sheet as a second image "
+                                                   "(train/sheet.py); synthetic maps only, so MapQA is not scored")
+    parser.add_argument("--picker", choices=["rule", "mlp", "cnn", "both"], default="rule",
+                        help="mlp / cnn / both: train small networks on the vision tokens to pick the tiles, and "
+                             "score with the rule's tiles and each network's, on the same weights")
+    parser.add_argument("--skip-rule-eval", action="store_true",
+                        help="with --picker: score only the learned pickers' tiles, not the rule's")
+    parser.add_argument("--probe-trained", action="store_true",
+                        help="with --picker: after training, probe each new picker on mirrored / flipped maps and "
+                             "India (as --probe-picker does), writing picker_probe_<kind>.json")
     parser.add_argument("--picker-maps", type=int, default=2000, help="training maps used to teach the picker")
     parser.add_argument("--probe-picker", type=Path,
                         help="a folder holding a trained picker.pt: check where it puts tiles on mirrored and "
@@ -793,14 +869,15 @@ def main():
         print(f"S2: second pass at {args.s2_scale}x the size, fusing into "
               f"{s2.fuse.weight.numel():,} trainable weights", flush=True)
 
+    sheets = Sheets(args.sheet) if args.sheet else None
     if not args.skip_train:
         model.print_trainable_parameters()
         model.config.use_cache = False
         model.gradient_checkpointing_enable(gradient_checkpointing_kwargs={"use_reentrant": False})
         model.enable_input_require_grads()
         train = training_records(args, root)
-        dataset = CropDataset(train, args.crop_dropout if (args.crop or args.tiles) else 1.0,
-                              args.tiles, args.tile_zoom, fuse=args.fusion)
+        dataset = SheetDataset(train, sheets) if sheets else CropDataset(
+            train, args.crop_dropout if (args.crop or args.tiles) else 1.0, args.tiles, args.tile_zoom, fuse=args.fusion)
         collate = TrainCollate(processor, fine_processor, args.s2_scale,
                                (args.tiles, args.fusion_cells, args.fusion_zoom) if args.fusion else None)
         loader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True, num_workers=args.workers,
@@ -843,13 +920,20 @@ def main():
         probe_picker(model, processor, picker, evaluation_sets(args, root), device, amp_dtype, args.out)
         return
 
-    variants = [("", args.crop or bool(args.tiles), None)]
-    if args.picker == "mlp":
+    variants = [] if args.skip_rule_eval and args.picker != "rule" else [("", args.crop or bool(args.tiles), None)]
+    if args.picker != "rule":
         if not args.tiles or fusion is not None:
-            raise SystemExit("--picker mlp picks tiles for --tiles N, passed as images")
+            raise SystemExit("--picker picks tiles for --tiles N, passed as images")
+        kinds = ("mlp", "cnn") if args.picker == "both" else (args.picker,)
         teach = sample_records(training_records_mapqa(args, root), args.picker_maps, seed=args.seed + 1)
-        picker = train_picker(model, processor, teach, device, amp_dtype, args.out)
-        variants.append(("_mlp", True, picker_tiles(model, processor, picker, device, amp_dtype)))
+        pickers = train_picker(model, processor, teach, device, amp_dtype, args.out, kinds=kinds)
+        if args.probe_trained:
+            for kind, picker in pickers.items():
+                print(f"probing the {kind} picker", flush=True)
+                probe_sets = [(name, records[:200]) for name, records in evaluation_sets(args, root)]
+                probe_picker(model, processor, picker, probe_sets, device, amp_dtype, args.out, suffix=f"_{kind}")
+        for kind, picker in pickers.items():
+            variants.append((f"_{kind}", True, picker_tiles(model, processor, picker, device, amp_dtype)))
     if (args.crop or args.tiles) and args.eval_both:
         variants.append(("_nocrop", False, None))  # same weights, extra views withheld: their effect on its own
     for name, records in evaluation_sets(args, root):
@@ -858,7 +942,7 @@ def main():
                   f"{' with the learned picker' if pick else ''}", flush=True)
             predictions = predict(model, processor, records, args, device, amp_dtype, crop=use_crop,
                                   s2=s2, fine_processor=fine_processor,
-                                  tiles=args.tiles if use_crop else 0, fusion=fusion, pick=pick)
+                                  tiles=args.tiles if use_crop else 0, fusion=fusion, pick=pick, sheets=sheets)
             evaluate_and_save(records, predictions, args.out, name + suffix)
 
 

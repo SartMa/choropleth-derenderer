@@ -1,0 +1,20 @@
+{
+ "mlp": {
+  "training_maps": 1800,
+  "held_out_maps": 200,
+  "tokens": 810000,
+  "small_regions_counted": 23445,
+  "held_out_loss": 0.02846462756792704,
+  "rule_tile_regions_also_in_picker_tile": 0.8924646781789639,
+  "maps_where_picker_tile_holds_80pct_of_rule_tile": 0.855
+ },
+ "cnn": {
+  "training_maps": 1800,
+  "held_out_maps": 200,
+  "tokens": 810000,
+  "small_regions_counted": 23445,
+  "held_out_loss": 0.02390465392006768,
+  "rule_tile_regions_also_in_picker_tile": 0.9167974882260597,
+  "maps_where_picker_tile_holds_80pct_of_rule_tile": 0.89
+ }
+}

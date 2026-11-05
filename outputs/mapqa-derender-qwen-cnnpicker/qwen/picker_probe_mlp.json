@@ -1,0 +1,32 @@
+{
+ "mapqa, as drawn": {
+  "maps": 200,
+  "rule_tiles_hold": 0.7863459029145949,
+  "picker_tiles_hold": 0.6833904636814853,
+  "picker_first_tile_in_top_right_quarter": 1.0
+ },
+ "mapqa, mirrored left-right": {
+  "maps": 200,
+  "rule_tiles_hold": 0.7626750202197183,
+  "picker_tiles_hold": 0.6814534736419411,
+  "picker_first_tile_in_top_right_quarter": 0.005
+ },
+ "mapqa, flipped top-bottom": {
+  "maps": 200,
+  "rule_tiles_hold": 0.7050922535067272,
+  "picker_tiles_hold": 0.6106705447760015,
+  "picker_first_tile_in_top_right_quarter": 0.02
+ },
+ "mapqa, rotated 180": {
+  "maps": 200,
+  "rule_tiles_hold": 0.7086816560202783,
+  "picker_tiles_hold": 0.628592235744132,
+  "picker_first_tile_in_top_right_quarter": 0.0
+ },
+ "india, as drawn": {
+  "maps": 96,
+  "rule_tiles_hold": 0.6347025030389001,
+  "picker_tiles_hold": 0.5439032330346668,
+  "picker_first_tile_in_top_right_quarter": 1.0
+ }
+}

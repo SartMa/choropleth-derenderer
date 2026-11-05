@@ -429,6 +429,12 @@ def text_outside_image(fig, texts):
     return clipped
 
 
+# Test-only switches for synth/probe_maps.py: redraw a map with its region codes, or with one region outlined,
+# without changing any random draw, so the map is otherwise identical to the original.
+OVERRIDES = {"state_labels": False, "outline": None}
+OUTLINE_COLOR = "#ff00ff"
+
+
 def draw_map(rng, geo, facecolors, title, legend_title, leg, cmap, bin_colors, no_data, has_missing, check_rng):
     legend_pos = str(rng.choice(["right", "bottom"]))
     if leg["type"] == "binned" and len(leg["labels"]) + has_missing > 5:
@@ -453,8 +459,12 @@ def draw_map(rng, geo, facecolors, title, legend_title, leg, cmap, bin_colors, n
         gpd.GeoSeries(geo["drawn"]).plot(ax=ax, color=facecolors, edgecolor=style["border"],
                                          linewidth=style["border_width"])
 
-        if style["state_labels"]:
-            size = float(rng.uniform(5.5, 8))
+        if OVERRIDES["outline"]:
+            i = geo["codes"].index(OVERRIDES["outline"])
+            gpd.GeoSeries([geo["drawn"][i]]).plot(ax=ax, facecolor="none", edgecolor=OUTLINE_COLOR, linewidth=2.5)
+        forced = OVERRIDES["state_labels"] and not style["state_labels"]
+        if style["state_labels"] or forced:
+            size = 7.0 if forced else float(rng.uniform(5.5, 8))
             for i, (x, y) in enumerate(geo["label_xy"]):
                 if geo["codes"][i] in settings["no_label"]:
                     continue
