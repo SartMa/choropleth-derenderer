@@ -417,7 +417,10 @@ def main():
     parser.add_argument("--labels", type=Path, default=Path("/kaggle/input"))
     parser.add_argument("--real", type=Path, default=Path("/kaggle/input"))
     parser.add_argument("--model", default="Qwen/Qwen2.5-VL-3B-Instruct")
-    parser.add_argument("--adapter", required=True, help="holds the adapter/ and region_head.pt to continue from")
+    parser.add_argument("--adapter", required=True,
+                        help="folder holding the adapter/ and region_head.pt to continue from, or 'none' to train "
+                             "from plain Qwen with a fresh LoRA and head")
+    parser.add_argument("--lora-r", type=int, default=16, help="LoRA rank when training from scratch")
     parser.add_argument("--prefer", default="", help="pick the adapter and head whose path contains this")
     parser.add_argument("--mode", choices=["s2", "zoom"], default="zoom")
     parser.add_argument("--max-pixels", type=int, default=640_000)
@@ -452,13 +455,22 @@ def main():
     processor.tokenizer.padding_side = "left"
     model = Qwen2_5_VLForConditionalGeneration.from_pretrained(args.model, torch_dtype=dtype,
                                                                attn_implementation="sdpa").to(device)
-    adapter = pick(args.adapter, "adapter_config.json", args.prefer).parent
-    head_file = pick(args.adapter, "region_head.pt", args.prefer)
-    model = A.load_adapter(model, adapter, trainable=True)
+    if str(args.adapter).lower() == "none":  # from scratch: plain Qwen, a fresh LoRA and a fresh head
+        from peft import LoraConfig, get_peft_model
+        from train_qwen import LORA_TARGETS
+        model = get_peft_model(model, LoraConfig(r=args.lora_r, lora_alpha=2 * args.lora_r, lora_dropout=0.05,
+                                                 target_modules=LORA_TARGETS, task_type="CAUSAL_LM"))
+        head_file = None
+        print(f"mode {args.mode}; from scratch: {args.model}, fresh LoRA (r={args.lora_r}) and head", flush=True)
+    else:
+        adapter = pick(args.adapter, "adapter_config.json", args.prefer).parent
+        head_file = pick(args.adapter, "region_head.pt", args.prefer)
+        model = A.load_adapter(model, adapter, trainable=True)
+        print(f"mode {args.mode}; continuing from {adapter} and {head_file}", flush=True)
     report_lora(model)
     wrapper = attach(model, len(labels.vocab), device)
-    wrapper.head.load_state_dict(torch.load(head_file, map_location=device))
-    print(f"mode {args.mode}; continuing from {adapter} and {head_file}", flush=True)
+    if head_file is not None:
+        wrapper.head.load_state_dict(torch.load(head_file, map_location=device))
 
     mapqa_root = find_images_root(args.mapqa, "map_*.png")
     usa_root = find_images_root(args.synth, "synth_*")

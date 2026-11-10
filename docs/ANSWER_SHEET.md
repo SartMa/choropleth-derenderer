@@ -54,6 +54,10 @@ Each region's patch features are then averaged, weighted by the head's belief sq
 2x2 merger, giving **one token per region**. The language model sees the normal map tokens plus
 `AP: [token] AR: [token] ...` and writes the JSON. Half the training maps use random made-up codes and a random
 subset of regions, so it learns to copy colours rather than recall names.
+(The renaming only changes the text in the prompt, `QX: [token]`, and the key in the answer, `"QX": 2`. The region
+head is untouched: it still uses the real region, e.g. class IN-MH, to build the token. The language model writes
+free text, so any code works; it learns that a code's value must be read from the token right after it, because it
+cannot know QX is Maharashtra. When reading real maps, the real codes are used.)
 
 **2. Why small regions failed.** Delhi and Rhode Island cover about a fifth of one 14-px patch. No patch is mostly
 Delhi, so Delhi's token is mostly its neighbours' colour. Accuracy followed region area almost exactly (Delhi 63%,
@@ -162,7 +166,11 @@ python kaggle/launch.py v3 --tag zoom --owner skini501 --wait-only      # later:
 
 MapQA metrics are written by the run itself (`metrics_mapqa.json`). A run takes about 7.3 h on a T4.
 
-**Full-scale run on the lab machine (Windows, RTX A4000):** see `lab/README.md`. One Docker image, then
+**Full-scale run on the lab machine (Windows, RTX A4000), from scratch:** v1, v2 and v3 were each continued from the
+previous model (quick Kaggle experiments), so the Kaggle v3 weights carry that whole history. The final model is
+trained once with the v3 recipe from plain Qwen2.5-VL-3B (`answer_v3.py --adapter none`: fresh LoRA, rank 16 on the
+same layers as before, and a fresh head), two passes over ~21,700 maps, and evaluated on its own on the full test
+sets; the Kaggle v3 model is scored on the same sets for comparison. See `lab/README.md`. One Docker image, then
 `python lab/run.py check | prepare | smoke | full | status | score`. Training saves a resume checkpoint every
 30 minutes and keeps a usable copy of the model every 6 hours; re-running `full` continues after any stop.
 

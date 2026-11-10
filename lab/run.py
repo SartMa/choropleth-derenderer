@@ -6,9 +6,10 @@ Run from the repo root, in the conda environment from lab/README.md (native Wind
     python lab/run.py check      GPU, library versions, free disk
     python lab/run.py prepare    download the data and v3's weights from Kaggle (needs KAGGLE_API_TOKEN), convert MapQA
     python lab/run.py smoke      ~30 min on a few maps: training, a forced stop and resume, a snapshot, scoring
-    python lab/run.py full       the real run; run the same command again to continue after any stop
+    python lab/run.py full       the real run, from scratch (plain Qwen); run it again to continue after any stop
     python lab/run.py status     progress of the full run
-    python lab/run.py score <weights folder>   score a kept snapshot (or any adapter/ + region_head.pt folder)
+    python lab/run.py score <weights folder>   score a kept snapshot, or the Kaggle v3 model for comparison:
+                                               python lab/run.py score data/lab/inputs/v3-weights
 
 Everything goes under data/lab/ (git-ignored): inputs/, mapqa_data/, hf/ (the Qwen download) and runs/.
 The full run keeps a resume checkpoint every 30 minutes (runs/full/checkpoint.pt) and a usable copy of the model
@@ -33,12 +34,14 @@ DATASETS = {  # folder under inputs/ -> Kaggle dataset
     "answer-inputs": "skini501/answer-v2-inputs",
     "real-sheets": "skini501/real-sheets",
 }
-WEIGHTS = ("v3-weights", "skini501/mapqa-derender-v3-zoom")  # v3's Kaggle run output: v3/adapter, v3/region_head.pt
+WEIGHTS = ("v3-weights", "skini501/mapqa-derender-v3-zoom")  # the Kaggle v3 model, scored for comparison only
 
+EPOCHS = 2
 FULL = ["--train-maps", "100000",          # every MapQA training map that has shapefile labels (~3,700)
         "--synth-train-maps", "8000",      # synthetic US
         "--india-train-maps", "10000",     # synthetic India: India is where the gap is
-        "--epochs", "1", "--hours", "200",  # one full pass; the hours only cap it
+        "--epochs", str(EPOCHS), "--hours", "300",  # two full passes; the hours only cap it
+        "--head-minutes", "60",            # a fresh head gets longer on its own first
         "--eval-maps", "100000",           # the whole MapQA test set (4,157 maps)
         "--india-eval-maps", "1000",       # the whole synthetic India test set
         "--checkpoint-every", "30", "--snapshot-every", "6"]
@@ -126,12 +129,13 @@ def smoke(_):
     out = LAB / "runs" / "smoke"
     shutil.rmtree(out, ignore_errors=True)
     env = environment()
-    print("1/2: training stops itself after 6 updates, as if the machine had been taken away", flush=True)
-    first = run(v3_command(out, INPUTS / WEIGHTS[0], SMOKE + ["--resume", "--halt-after", "6"]), env=env)
+    print("1/2: training (from scratch) stops itself after 6 updates, as if the machine had been taken away",
+          flush=True)
+    first = run(v3_command(out, "none", SMOKE + ["--resume", "--halt-after", "6"]), env=env)
     if first.returncode == 0 or not (out / "checkpoint.pt").exists():
         sys.exit("smoke FAILED: the forced stop did not happen or left no checkpoint")
     print("2/2: the same command again resumes, finishes training and scores", flush=True)
-    if run(v3_command(out, INPUTS / WEIGHTS[0], SMOKE + ["--resume"]), env=env).returncode:
+    if run(v3_command(out, "none", SMOKE + ["--resume"]), env=env).returncode:
         sys.exit("smoke FAILED: the resumed run crashed (see the output above)")
     log = [json.loads(line) for line in open(out / "train_log.jsonl")]
     snapshots = sorted((out / "snapshots").glob("update_*")) if (out / "snapshots").exists() else []
@@ -144,7 +148,8 @@ def smoke(_):
     per_map = log[-1]["minutes"] * 60 / (log[-1]["update"] * 4)
     maps = 3700 + 8000 + 10000
     print(f"\nsmoke PASSED. Training speed here: about {per_map:.1f} s per map, so the full run's training "
-          f"(~{maps:,} maps) takes about {maps * per_map / 3600:.0f} h, plus scoring ~5,200 test maps.")
+          f"({EPOCHS} passes over ~{maps:,} maps) takes about {EPOCHS * maps * per_map / 3600:.0f} h, plus scoring "
+          f"~5,200 test maps.")
 
 
 def full(_):
@@ -155,7 +160,7 @@ def full(_):
     with open(log, "a", encoding="utf-8") as f:
         f.write(f"\n===== started {time.strftime('%Y-%m-%d %H:%M')} =====\n")
         f.flush()
-        process = subprocess.Popen([str(c) for c in v3_command(out, INPUTS / WEIGHTS[0], FULL + ["--resume"])],
+        process = subprocess.Popen([str(c) for c in v3_command(out, "none", FULL + ["--resume"])],
                                    cwd=ROOT, env=environment(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                    text=True, encoding="utf-8", errors="replace", bufsize=1)
         for line in process.stdout:
@@ -190,7 +195,8 @@ def score(rest):
         sys.exit("give the weights folder, e.g. data/lab/runs/full/snapshots/update_01234")
     weights = Path(rest[0]).resolve()
     out = LAB / "runs" / f"score_{weights.name}"
-    extra = [a for a in FULL if a not in ("--checkpoint-every", "30", "--snapshot-every", "6")]
+    keep = {"--train-maps", "--synth-train-maps", "--india-train-maps", "--eval-maps", "--india-eval-maps"}
+    extra = [x for flag, value in zip(FULL[::2], FULL[1::2]) if flag in keep for x in (flag, value)]
     sys.exit(run(v3_command(out, weights, extra + ["--skip-train", "--resume"]), env=environment()).returncode)
 
 

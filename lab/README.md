@@ -1,8 +1,10 @@
 # Training on the lab machine (Windows, RTX A4000)
 
-What gets trained: answer sheet v3 (S2 + zoom, `train/answer_v3.py`), continuing from the Kaggle v3 weights, on
-3,704 MapQA + 8,000 synthetic US + 10,000 synthetic India maps (one full pass), then scored on the full test sets
-(4,157 MapQA, 1,000 synthetic India, 68 real India maps). See `docs/ANSWER_SHEET.md` for the method.
+What gets trained: answer sheet v3 (S2 + zoom, `train/answer_v3.py`) **from scratch**: plain Qwen2.5-VL-3B with a
+fresh LoRA and a fresh region head, two passes over 3,704 MapQA + 8,000 synthetic US + 10,000 synthetic India maps,
+then scored on the full test sets (4,157 MapQA, 1,000 synthetic India, 68 real India maps). The Kaggle v3 model (built
+by continuing v1 -> v2 -> v3) is downloaded only to be scored on the same test sets for comparison:
+`python lab\run.py score data\lab\inputs\v3-weights`. See `docs/ANSWER_SHEET.md` for the method.
 
 Everything goes through `python lab/run.py <step>`, run from the repo folder. Data, the Qwen download and results go
 to `data\lab\` (git-ignored).
@@ -44,7 +46,7 @@ but it loses time.
 ```powershell
 python lab\run.py check                          # GPU, versions, speed, free disk (need ~30 GB)
 $env:KAGGLE_API_TOKEN = "<the skini501 token>"   # only in this window; never written to a file
-python lab\run.py prepare                        # ~10 GB of maps + v3's weights, then converts MapQA
+python lab\run.py prepare                        # ~10 GB of maps + the Kaggle v3 model, then converts MapQA
 python lab\run.py smoke                          # ~30-40 minutes
 ```
 
@@ -79,8 +81,8 @@ python lab\run.py status          # training update, test maps read, snapshots k
   (score with `lookup\score_real.py`), `metrics_head.json`, `train_log.jsonl`, and the final `adapter\` +
   `region_head.pt`. The whole console log is in `run.log`.
 
-Expected time: training about a day on the A4000 (the smoke test prints a better estimate), then several hours of
-scoring.
+Expected time: training about two days on the A4000 (the smoke test prints a better estimate), then several hours
+of scoring.
 
 ## B. Docker (only if hardware virtualization is on)
 
