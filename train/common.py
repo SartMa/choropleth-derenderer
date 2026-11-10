@@ -22,6 +22,7 @@ Scoring (per legend type; MapQA and synthetic test maps are scored separately):
 Maps whose output doesn't parse count as 0 for accuracies and 1 for errors.
 """
 
+import argparse
 import contextlib
 import json
 import math
@@ -31,6 +32,11 @@ from pathlib import Path
 
 import torch
 from PIL import Image
+
+def argparse_suppress():
+    """Help text for testing-only options: hidden from --help."""
+    return argparse.SUPPRESS
+
 
 def add_common_args(parser):
     parser.add_argument("--data", type=Path, required=True, help="folder with MapQA train.jsonl and test.jsonl")
@@ -62,6 +68,12 @@ def add_common_args(parser):
     parser.add_argument("--log-every", type=int, default=20)
     parser.add_argument("--skip-train", action="store_true", help="only score the model as loaded")
     parser.add_argument("--seed", type=int, default=0)
+    parser.add_argument("--checkpoint-every", type=float, default=0,
+                        help="minutes between training checkpoints (out/checkpoint.pt); 0 = none")
+    parser.add_argument("--resume", action="store_true", help="continue from out/checkpoint.pt if it exists")
+    parser.add_argument("--snapshot-every", type=float, default=0,
+                        help="hours between kept copies of the model (out/snapshots/); 0 = none")
+    parser.add_argument("--halt-after", type=int, help=argparse_suppress())
 
 
 def set_seed(seed):
@@ -172,16 +184,25 @@ def autocast(device, amp_dtype):
     return torch.autocast(device.type, dtype=amp_dtype) if amp_dtype else contextlib.nullcontext()
 
 
-def train_loop(model, loader, args, forward, out_dir, amp_dtype=None, groups=None):
+def train_loop(model, loader, args, forward, out_dir, amp_dtype=None, groups=None, snapshot=None):
     """AdamW with warmup + cosine decay. Stops after --epochs or --hours, whichever comes first.
 
     forward(batch) returns the loss. After 20 updates the schedule is shortened, if needed, so the
     learning rate still decays to zero within the time budget. groups: optional AdamW parameter groups,
     for weights that need their own learning rate; the warmup and decay apply to every group alike.
+
+    With --checkpoint-every N (minutes), the trainable weights, optimizer, schedule and position in the data are
+    saved to out_dir/checkpoint.pt every N minutes and when training ends; with --resume, training continues from
+    that file, in the same data order, and --hours counts the time already spent. Each epoch then draws its order
+    from --seed, so a resumed run sees exactly the maps an uninterrupted one would.
+
+    snapshot(update): optional; called every --snapshot-every hours of training to keep a usable copy of the model
+    (the caller decides what to save; nothing is overwritten).
     """
     params = [p for p in model.parameters() if p.requires_grad]
     optimizer = torch.optim.AdamW(groups or params, lr=args.lr, weight_decay=args.weight_decay)
-    schedule = {"total": max(1, args.epochs * math.ceil(len(loader) / args.grad_accum))}
+    batches = len(loader)
+    schedule = {"total": max(1, args.epochs * math.ceil(batches / args.grad_accum))}
 
     def lr_factor(update):
         warmup = max(1, round(0.03 * schedule["total"]))
@@ -193,18 +214,64 @@ def train_loop(model, loader, args, forward, out_dir, amp_dtype=None, groups=Non
     scheduler = torch.optim.lr_scheduler.LambdaLR(optimizer, lr_factor)
     scaler = torch.amp.GradScaler("cuda", enabled=amp_dtype == torch.float16)
     device = next(model.parameters()).device
+    every = getattr(args, "checkpoint_every", 0) or 0
+    checkpointing = every > 0 or getattr(args, "resume", False)
+    path = Path(out_dir) / "checkpoint.pt"
+    update, first_epoch, first_batch, spent = 0, 0, 0, 0.0
+    if getattr(args, "resume", False) and path.exists():
+        state = torch.load(path, map_location=device, weights_only=False)
+        if state.get("finished"):
+            load_trainable(model, state)
+            print(f"training already finished ({state['update']} updates); weights loaded from {path}", flush=True)
+            return state["update"]
+        load_trainable(model, state)
+        optimizer.load_state_dict(state["optimizer"])
+        scaler.load_state_dict(state["scaler"])
+        schedule["total"] = state["schedule_total"]
+        update, first_epoch, first_batch, spent = state["update"], state["epoch"], state["batch"], state["spent"]
+        scheduler.load_state_dict(state["scheduler"])
+        print(f"resuming at update {update}/{schedule['total']} (epoch {first_epoch}, batch {first_batch}, "
+              f"{spent / 3600:.2f} h already spent)", flush=True)
+
     start = time.time()
-    deadline = start + args.hours * 3600
-    update, update_loss, window = 0, 0.0, []
+    deadline = start + args.hours * 3600 - spent
+    last_save = time.time()
+    halt_after = getattr(args, "halt_after", None)
+    period = (getattr(args, "snapshot_every", 0) or 0) * 3600
+    next_snapshot = (math.floor(spent / period) + 1) * period if period and snapshot else None
+
+    def save(epoch, batch, finished=False):
+        state = {"trainable": {n: p.detach().cpu() for n, p in model.named_parameters() if p.requires_grad},
+                 "optimizer": optimizer.state_dict(), "scheduler": scheduler.state_dict(),
+                 "scaler": scaler.state_dict(), "schedule_total": schedule["total"], "update": update,
+                 "epoch": epoch, "batch": batch, "spent": spent + time.time() - start, "finished": finished}
+        partial = path.with_suffix(".tmp")
+        torch.save(state, partial)
+        partial.replace(path)  # atomic: a run killed mid-save keeps the previous checkpoint
+        print(f"checkpoint saved at update {update}", flush=True)
+
+    def epoch_batches(epoch, skip):
+        """(batch number, batch) pairs of one epoch, from batch `skip` + 1 on."""
+        if not checkpointing:
+            return enumerate(loader, 1)
+        order = torch.randperm(len(loader.dataset), generator=torch.Generator().manual_seed(args.seed * 1000 + epoch))
+        rest = order[skip * loader.batch_size:].tolist()
+        part = torch.utils.data.DataLoader(loader.dataset, batch_size=loader.batch_size, sampler=rest,
+                                           num_workers=loader.num_workers, collate_fn=loader.collate_fn,
+                                           pin_memory=loader.pin_memory)
+        return enumerate(part, skip + 1)
+
+    update_loss, window = 0.0, []
     model.train()
-    with open(out_dir / "train_log.jsonl", "a") as log:
-        for epoch in range(args.epochs):
-            for i, batch in enumerate(loader, 1):
+    with open(Path(out_dir) / "train_log.jsonl", "a") as log:
+        for epoch in range(first_epoch, args.epochs):
+            skip = first_batch if epoch == first_epoch else 0
+            for i, batch in epoch_batches(epoch, skip):
                 with autocast(device, amp_dtype):
                     loss = forward(batch)
                 scaler.scale(loss / args.grad_accum).backward()
                 update_loss += loss.item() / args.grad_accum
-                if i % args.grad_accum and i != len(loader):
+                if i % args.grad_accum and i != batches:
                     continue
                 scaler.unscale_(optimizer)
                 torch.nn.utils.clip_grad_norm_(params, 1.0)
@@ -215,22 +282,46 @@ def train_loop(model, loader, args, forward, out_dir, amp_dtype=None, groups=Non
                 update += 1
                 window.append(update_loss)
                 update_loss = 0.0
-                if update == 20:
+                if update == 20 and not spent:
                     seconds_per_update = (time.time() - start) / update
                     fits = update + int((deadline - time.time()) / seconds_per_update)
                     schedule["total"] = max(update + 1, min(schedule["total"], fits))
                 if update == 1 or update % args.log_every == 0:
                     entry = {"epoch": epoch, "update": update, "of": schedule["total"],
                              "loss": round(sum(window) / len(window), 4), "lr": scheduler.get_last_lr()[0],
-                             "minutes": round((time.time() - start) / 60, 1)}
+                             "minutes": round((spent + time.time() - start) / 60, 1)}
                     window.clear()
                     print(json.dumps(entry), flush=True)
                     log.write(json.dumps(entry) + "\n")
                     log.flush()
-                if update >= schedule["total"] or time.time() > deadline:
-                    print(f"stopping after {update} updates ({(time.time() - start) / 3600:.2f} h)", flush=True)
+                done = update >= schedule["total"] or time.time() > deadline
+                if next_snapshot is not None and spent + time.time() - start >= next_snapshot:
+                    snapshot(update)
+                    print(f"snapshot kept at update {update} ({next_snapshot / 3600:.0f} h)", flush=True)
+                    next_snapshot += period
+                if checkpointing and (done or time.time() - last_save > every * 60 or update == halt_after):
+                    position = (epoch, i) if i < batches else (epoch + 1, 0)
+                    save(*position, finished=done)
+                    last_save = time.time()
+                if done:
+                    print(f"stopping after {update} updates ({(spent + time.time() - start) / 3600:.2f} h)", flush=True)
                     return update
+                if update == halt_after:  # testing resume: stop as if the machine had been taken away
+                    raise SystemExit(f"halted after update {update} (--halt-after)")
+    if checkpointing:
+        save(args.epochs, 0, finished=True)
     return update
+
+
+def load_trainable(model, state):
+    """Put a checkpoint's trainable weights back into the model, by name."""
+    named = dict(model.named_parameters())
+    missing = [n for n in state["trainable"] if n not in named]
+    if missing:
+        raise SystemExit(f"checkpoint has {len(missing)} weights this model lacks, e.g. {missing[0]}")
+    with torch.no_grad():
+        for name, value in state["trainable"].items():
+            named[name].copy_(value.to(named[name].device, named[name].dtype))
 
 
 # ---------------------------------------------------------------- scoring

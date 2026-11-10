@@ -363,6 +363,29 @@ def predict(model, wrapper, processor, records, labels, args, device, amp_dtype)
     return answers, countries, stats
 
 
+def predict_saving(model, wrapper, processor, records, labels, args, device, amp_dtype, partial, chunk=64):
+    """predict(), writing each chunk of answers to `partial` as it goes; with --resume, maps already in it are
+    not read again. Returns answers, countries and stats in the order of `records`."""
+    done = {}
+    if args.resume and partial.exists():
+        done = {row["id"]: row for row in map(json.loads, open(partial))}
+        print(f"resume: {len(done)} of {len(records)} maps already read", flush=True)
+    else:
+        partial.write_text("")
+    todo = [r for r in records if r["id"] not in done]
+    for start in range(0, len(todo), chunk):
+        part = todo[start: start + chunk]
+        answers, countries, stats = predict(model, wrapper, processor, part, labels, args, device, amp_dtype)
+        with open(partial, "a") as f:
+            for record, answer, country in zip(part, answers, countries):
+                row = {"id": record["id"], "prediction": answer, "country": country,
+                       "stats": [s for s in stats if s["id"] == record["id"]]}
+                done[record["id"]] = row
+                f.write(json.dumps(row) + "\n")
+    rows = [done[r["id"]] for r in records]
+    return ([r["prediction"] for r in rows], [r["country"] for r in rows], [s for r in rows for s in r["stats"]])
+
+
 def summarise(stats):
     by = {}
     for s in stats:
@@ -458,17 +481,25 @@ def main():
     for p in model.parameters():
         p.requires_grad_(False)
     model.eval()
-    report = {"start": head_report(wrapper, processor, head_sets, labels, args, device, amp_dtype)}
-    (args.out / "metrics_head.json").write_text(json.dumps(report, indent=1))
-
-    # stage A
-    wrapper.head.requires_grad_(True)
-    teach = (sample_records(mapqa_train, args.head_maps, 1) + sample_records(usa_train, args.head_maps, 1)
-             + sample_records(india_train, args.head_maps, 1))
-    teach_head(wrapper, processor, teach, labels, args, device, amp_dtype)
-    torch.save(wrapper.head.state_dict(), args.out / "region_head_stage_a.pt")
-    report["stage_a"] = head_report(wrapper, processor, head_sets, labels, args, device, amp_dtype)
-    (args.out / "metrics_head.json").write_text(json.dumps(report, indent=1))
+    report_file, stage_a_file = args.out / "metrics_head.json", args.out / "region_head_stage_a.pt"
+    report = json.loads(report_file.read_text()) if args.resume and report_file.exists() else {}
+    if args.skip_train:  # only score the weights given by --adapter
+        print("skip-train: scoring the loaded weights", flush=True)
+    elif args.resume and stage_a_file.exists():  # stage A finished on an earlier run
+        wrapper.head.load_state_dict(torch.load(stage_a_file, map_location=device))
+        wrapper.head.requires_grad_(True)
+        print(f"resume: stage A done, head from {stage_a_file}", flush=True)
+    else:
+        report["start"] = head_report(wrapper, processor, head_sets, labels, args, device, amp_dtype)
+        report_file.write_text(json.dumps(report, indent=1))
+        # stage A
+        wrapper.head.requires_grad_(True)
+        teach = (sample_records(mapqa_train, args.head_maps, 1) + sample_records(usa_train, args.head_maps, 1)
+                 + sample_records(india_train, args.head_maps, 1))
+        teach_head(wrapper, processor, teach, labels, args, device, amp_dtype)
+        torch.save(wrapper.head.state_dict(), stage_a_file)
+        report["stage_a"] = head_report(wrapper, processor, head_sets, labels, args, device, amp_dtype)
+        report_file.write_text(json.dumps(report, indent=1))
 
     # stage B
     lora = [p for n, p in model.named_parameters() if "lora_" in n]
@@ -489,23 +520,31 @@ def main():
             loss = loss + args.aux_weight * wrapper.aux_loss
         return loss
 
-    groups = [{"params": lora}, {"params": list(wrapper.head.parameters()), "lr": args.head_lr}]
-    print(f"{len(loader)} batches per epoch", flush=True)
-    train_loop(model, loader, args, forward, args.out, amp_dtype, groups)
-    A.save_adapter(model, args.out / "adapter")
-    torch.save(wrapper.head.state_dict(), args.out / "region_head.pt")
+    def snapshot(update):  # a usable copy of the model, loadable with --adapter <folder>
+        folder = args.out / "snapshots" / f"update_{update:05d}"
+        A.save_adapter(model, folder / "adapter")
+        torch.save(wrapper.head.state_dict(), folder / "region_head.pt")
+
+    if not args.skip_train:
+        groups = [{"params": lora}, {"params": list(wrapper.head.parameters()), "lr": args.head_lr}]
+        print(f"{len(loader)} batches per epoch", flush=True)
+        train_loop(model, loader, args, forward, args.out, amp_dtype, groups, snapshot=snapshot)
+        A.save_adapter(model, args.out / "adapter")
+        torch.save(wrapper.head.state_dict(), args.out / "region_head.pt")
 
     model.eval()
     model.config.use_cache = True
     if device.type == "cuda":
         torch.cuda.empty_cache()
-    report["stage_b"] = head_report(wrapper, processor, head_sets, labels, args, device, amp_dtype)
-    (args.out / "metrics_head.json").write_text(json.dumps(report, indent=1))
+    if "stage_b" not in report:
+        report["stage_b"] = head_report(wrapper, processor, head_sets, labels, args, device, amp_dtype)
+        report_file.write_text(json.dumps(report, indent=1))
 
     sets = [("real", A.real_records(args.real)[: args.eval_limit]), ("mapqa", mapqa_test), ("india", india_test)]
     for name, records in sets:
         print(f"scoring {len(records)} {name} maps, mode {args.mode}", flush=True)
-        answers, countries, stats = predict(model, wrapper, processor, records, labels, args, device, amp_dtype)
+        answers, countries, stats = predict_saving(model, wrapper, processor, records, labels, args, device,
+                                                   amp_dtype, args.out / f"partial_{name}.jsonl")
         (args.out / f"purity_{name}.json").write_text(json.dumps(summarise(stats), indent=1))
         if name == "real":
             with open(args.out / "predictions_real.jsonl", "w") as f:

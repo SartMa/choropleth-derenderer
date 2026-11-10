@@ -58,7 +58,8 @@ def fit_mapqa(map_id):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--train-maps", type=int, default=2000)
+    parser.add_argument("--train-maps", type=int, default=2000, help="MapQA training maps to fit (12470 = all); "
+                        "maps fitted on an earlier run are reused")
     parser.add_argument("--workers", type=int, default=6)
     args = parser.parse_args()
     for folder in ("mapqa", "real"):
@@ -78,9 +79,11 @@ def main():
             target = ROOT / "images" / f"{map_id}.png"
             if not target.exists():
                 target.write_bytes(z.read(f"MapQA_S/images/{map_id}.png"))
+    done = [i for i in chosen if (OUT / "mapqa" / f"{i}.png").exists()]  # fitted and kept on an earlier run
+    todo = [i for i in chosen if i not in set(done)]
     with ProcessPoolExecutor(args.workers) as pool:
-        edges = dict(pool.map(fit_mapqa, chosen, chunksize=8))
-    kept = [i for i, e in edges.items() if e >= GOOD_EDGE]
+        edges = dict(pool.map(fit_mapqa, todo, chunksize=8))
+    kept = done + [i for i, e in edges.items() if e >= GOOD_EDGE]
     (OUT / "mapqa_train_ids.json").write_text(json.dumps(sorted(kept)))
 
     # Real India maps that passed the trust check
@@ -91,7 +94,7 @@ def main():
             regions = fr.TEMPLATES[row["projection"]][0]
             label = paint(row["size"], regions, row["fit"], "IN")
             Image.fromarray(label).save(OUT / "real" / f"{Path(row['name']).stem}.png", optimize=True)
-    print(f"{len(VOCAB)} classes; MapQA training fits kept {len(kept)}/{len(chosen)}; real India maps {len(trusted)}")
+    print(f"{len(VOCAB)} classes; MapQA training fits kept {len(kept)}/{len(chosen)} ({len(todo)} fitted now); real India maps {len(trusted)}")
 
 
 if __name__ == "__main__":

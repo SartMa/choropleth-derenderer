@@ -1,0 +1,6 @@
+# keep Linux line endings: the code runs in a Linux container, also when checked out on Windows
+*.py text eol=lf
+Dockerfile text eol=lf
+*.md text eol=lf
+*.json text eol=lf
+*.jsonl text eol=lf

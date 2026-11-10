@@ -162,6 +162,10 @@ python kaggle/launch.py v3 --tag zoom --owner skini501 --wait-only      # later:
 
 MapQA metrics are written by the run itself (`metrics_mapqa.json`). A run takes about 7.3 h on a T4.
 
+**Full-scale run on the lab machine (Windows, RTX A4000):** see `lab/README.md`. One Docker image, then
+`python lab/run.py check | prepare | smoke | full | status | score`. Training saves a resume checkpoint every
+30 minutes and keeps a usable copy of the model every 6 hours; re-running `full` continues after any stop.
+
 ## New files
 
 ```
