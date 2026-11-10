@@ -7,3 +7,4 @@ kaggle==2.2.4
 opencv-python-headless==4.10.0.84
 scipy
 pillow
+matplotlib  # imported via train_qwen -> sheet.py (font list), not used in training
