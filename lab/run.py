@@ -99,6 +99,19 @@ def check(_):
     print(f"free disk where data/lab lives: {free:.0f} GB (need about 30 GB)")
 
 
+def unzip_inner(folder):
+    """Unpack zips left inside a downloaded dataset (folders uploaded zipped, e.g. images.zip) where they lie."""
+    import zipfile
+    for archive in sorted(Path(folder).rglob("*.zip")):
+        print(f"unpacking {archive.relative_to(folder)}", flush=True)
+        with zipfile.ZipFile(archive) as z:
+            # kaggle -r zip packs a folder's contents without the folder's name: put them back under it
+            names = z.namelist()
+            inside = all(n.startswith(archive.stem + "/") for n in names)
+            z.extractall(archive.parent if inside else archive.parent / archive.stem)
+        archive.unlink()
+
+
 def prepare(_):
     if not os.environ.get("KAGGLE_API_TOKEN") and not (Path.home() / ".kaggle").exists():
         sys.exit("set KAGGLE_API_TOKEN first (the skini501 token); it is read from the environment, never saved")
@@ -111,7 +124,8 @@ def prepare(_):
         target.mkdir(parents=True, exist_ok=True)
         if run([kaggle, "datasets", "download", dataset, "-p", target, "--unzip"]).returncode:
             shutil.rmtree(target)
-            sys.exit(f"download of {dataset} failed")
+            sys.exit(f"download of {dataset} failed. If its Kaggle page says 'awaiting compression', wait and retry")
+        unzip_inner(target)
     folder, kernel = WEIGHTS
     target = INPUTS / folder
     if not (target.exists() and any(target.rglob("adapter_config.json"))):
