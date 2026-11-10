@@ -1,7 +1,7 @@
 # Training on the lab machine (Windows, RTX A4000)
 
 What gets trained: answer sheet v3 (S2 + zoom, `train/answer_v3.py`) **from scratch**: plain Qwen2.5-VL-3B with a
-fresh LoRA and a fresh region head, two passes over 3,704 MapQA + 8,000 synthetic US + 10,000 synthetic India maps,
+fresh LoRA and a fresh region head, two passes over 3,704 MapQA + 10,000 synthetic US + 10,000 synthetic India maps,
 then scored on the full test sets (4,157 MapQA, 1,000 synthetic India, 68 real India maps). The Kaggle v3 model (built
 by continuing v1 -> v2 -> v3) is downloaded only to be scored on the same test sets for comparison:
 `python lab\run.py score data\lab\inputs\v3-weights`. See `docs/ANSWER_SHEET.md` for the method.
@@ -83,6 +83,22 @@ python lab\run.py status          # training update, test maps read, snapshots k
 
 Expected time: training about two days on the A4000 (the smoke test prints a better estimate), then several hours
 of scoring.
+
+## A4. The tiles model, for comparison
+
+The tiles model (the map plus 2 tiles magnified 3x; a rule places them in training, an MLP picker taught afterwards
+places them when reading; `train/train_qwen.py`) is trained the same way: from plain Qwen, on **exactly the same
+maps** (the same 3,704 MapQA maps, all 10,000 synthetic US and 10,000 synthetic India), 2 passes, the same batch and
+learning rate, scored on the same test sets including the 68 real India maps.
+
+```powershell
+python lab\run.py tiles-smoke     # ~30 min, same checks as the answer sheet's smoke test
+python lab\run.py tiles-full      # after the answer sheet's full run has finished: one run at a time on the GPU
+python lab\run.py status          # shows both runs
+```
+
+Its results are in `data\lab\runs\tiles-full\` with `_mlp` in the names (`metrics_mapqa_mlp.json`,
+`predictions_real_mlp.jsonl`, ...). Snapshots: `python lab\run.py tiles-score data\lab\runs\tiles-full\snapshots\update_NNNNN`.
 
 ## B. Docker (only if hardware virtualization is on)
 

@@ -34,8 +34,15 @@ from common import (add_common_args, autocast, evaluate_and_save, evaluation_set
 
 
 def training_records_mapqa(args, root):
-    """MapQA training maps only: what the picker is taught on (the rule's labels are tuned to these)."""
-    return read_split(args.data, "train", root)
+    """MapQA training maps only: what the picker is taught on (the rule's labels are tuned to these). With
+    --mapqa-ids, only those maps, so the picker sees nothing the rest of the model did not."""
+    records = read_split(args.data, "train", root)
+    if getattr(args, "mapqa_ids", None):
+        path = Path(args.mapqa_ids)
+        path = next(path.rglob("mapqa_train_ids.json")) if path.is_dir() else path
+        keep = set(json.loads(path.read_text()))
+        records = [r for r in records if r["id"] in keep]
+    return records
 from sheet import SHEET_PROMPT, SheetDataset, Sheets
 from tiles import boundary_mask, busiest_tiles, map_body, small_regions
 
@@ -56,7 +63,36 @@ assert INDIA_PROMPT != PROMPT
 
 def prompt_for(record):
     """prompt_note: an extra sentence some probe maps carry, e.g. naming the region outlined on the map."""
-    return (INDIA_PROMPT if record.get("id", "").startswith("synthind_") else PROMPT) + record.get("prompt_note", "")
+    india = record.get("id", "").startswith("synthind_") or record.get("country") == "IN"
+    return (INDIA_PROMPT if india else PROMPT) + record.get("prompt_note", "")
+
+
+def real_records(root):
+    """The linked real India maps (records.jsonl beside maps/, from lookup/), without targets: scored locally."""
+    path = next(Path(root).rglob("records.jsonl"), None)
+    if path is None:
+        return []
+    return [{"id": r["id"], "image_path": str(path.parent / r["map"]), "country": "IN"}
+            for r in map(json.loads, open(path))]
+
+
+def predict_saving(predict_some, records, partial, resume, chunk=64):
+    """predict_some(records) in chunks, each chunk's answers appended to `partial` as it goes; with resume, maps
+    already in it are not read again. Returns the answers in the order of `records`."""
+    done = {}
+    if resume and partial.exists():
+        done = {row["id"]: row["prediction"] for row in map(json.loads, open(partial))}
+        print(f"resume: {len(done)} of {len(records)} maps already read", flush=True)
+    else:
+        partial.write_text("")
+    todo = [r for r in records if r["id"] not in done]
+    for start in range(0, len(todo), chunk):
+        part = todo[start: start + chunk]
+        with open(partial, "a") as f:
+            for record, answer in zip(part, predict_some(part)):
+                done[record["id"]] = answer
+                f.write(json.dumps({"id": record["id"], "prediction": answer}) + "\n")
+    return [done[r["id"]] for r in records]
 
 
 CROP_NOTE = (" The second image is a magnified view of part of the same map; "
@@ -805,6 +841,11 @@ def main():
                         help="with --picker: after training, probe each new picker on mirrored / flipped maps and "
                              "India (as --probe-picker does), writing picker_probe_<kind>.json")
     parser.add_argument("--picker-maps", type=int, default=2000, help="training maps used to teach the picker")
+    parser.add_argument("--mapqa-ids", type=Path,
+                        help="train only on these MapQA maps: a JSON list of ids, or a folder holding "
+                             "mapqa_train_ids.json (the answer sheet's labelled maps, for a like-for-like comparison)")
+    parser.add_argument("--real", type=Path, help="also read the linked real India maps (records.jsonl) found here; "
+                        "writes predictions_real<variant>.jsonl, scored with lookup/score_real.py")
     parser.add_argument("--probe-picker", type=Path,
                         help="a folder holding a trained picker.pt: check where it puts tiles on mirrored and "
                              "flipped maps (and India maps with --india), then stop; nothing is generated")
@@ -900,8 +941,11 @@ def main():
             rest = [p for p in model.parameters() if p.requires_grad and id(p) not in ids]
             groups = [{"params": rest}, {"params": own, "lr": args.fusion_lr}]
             print(f"fusion weights learn at {args.fusion_lr}, the rest at {args.lr}", flush=True)
+        def snapshot(update):  # a usable copy of the adapter, kept every --snapshot-every hours
+            model.save_pretrained(args.out / "snapshots" / f"update_{update:05d}" / "adapter")
+
         print(f"{len(loader)} batches per epoch", flush=True)
-        train_loop(model, loader, args, forward, args.out, amp_dtype, groups)
+        train_loop(model, loader, args, forward, args.out, amp_dtype, groups, snapshot=snapshot)
         model.save_pretrained(args.out / "adapter")
         if s2 is not None:  # the fusion is not part of the LoRA adapter, so it is saved beside it
             torch.save(s2.fuse.state_dict(), args.out / "s2_fuse.pt")
@@ -925,8 +969,16 @@ def main():
         if not args.tiles or fusion is not None:
             raise SystemExit("--picker picks tiles for --tiles N, passed as images")
         kinds = ("mlp", "cnn") if args.picker == "both" else (args.picker,)
-        teach = sample_records(training_records_mapqa(args, root), args.picker_maps, seed=args.seed + 1)
-        pickers = train_picker(model, processor, teach, device, amp_dtype, args.out, kinds=kinds)
+        saved = args.out / "picker.pt"
+        if args.resume and kinds == ("mlp",) and saved.exists():  # taught on an earlier run
+            picker = TokenPicker(vision_tower(model).config.out_hidden_size).to(device)
+            picker.load_state_dict(torch.load(saved, map_location=device))
+            picker.eval()
+            pickers = {"mlp": picker}
+            print(f"resume: picker from {saved}", flush=True)
+        else:
+            teach = sample_records(training_records_mapqa(args, root), args.picker_maps, seed=args.seed + 1)
+            pickers = train_picker(model, processor, teach, device, amp_dtype, args.out, kinds=kinds)
         if args.probe_trained:
             for kind, picker in pickers.items():
                 print(f"probing the {kind} picker", flush=True)
@@ -936,14 +988,28 @@ def main():
             variants.append((f"_{kind}", True, picker_tiles(model, processor, picker, device, amp_dtype)))
     if (args.crop or args.tiles) and args.eval_both:
         variants.append(("_nocrop", False, None))  # same weights, extra views withheld: their effect on its own
-    for name, records in evaluation_sets(args, root):
+    sets = evaluation_sets(args, root)
+    if args.real:
+        real = real_records(args.real)
+        sets = [("real", real[: args.eval_limit] if args.eval_limit else real)] + sets
+    for name, records in sets:
         for suffix, use_crop, pick in variants:
             print(f"scoring {len(records)} {name} test maps{' without the crop' if suffix == '_nocrop' else ''}"
                   f"{' with the learned picker' if pick else ''}", flush=True)
-            predictions = predict(model, processor, records, args, device, amp_dtype, crop=use_crop,
-                                  s2=s2, fine_processor=fine_processor,
-                                  tiles=args.tiles if use_crop else 0, fusion=fusion, pick=pick, sheets=sheets)
-            evaluate_and_save(records, predictions, args.out, name + suffix)
+
+            def predict_some(part, use_crop=use_crop, pick=pick):
+                return predict(model, processor, part, args, device, amp_dtype, crop=use_crop,
+                               s2=s2, fine_processor=fine_processor,
+                               tiles=args.tiles if use_crop else 0, fusion=fusion, pick=pick, sheets=sheets)
+
+            predictions = predict_saving(predict_some, records, args.out / f"partial_{name}{suffix}.jsonl",
+                                         args.resume)
+            if name == "real":
+                with open(args.out / f"predictions_real{suffix}.jsonl", "w") as f:
+                    for record, prediction in zip(records, predictions):
+                        f.write(json.dumps({"id": record["id"], "prediction": prediction}) + "\n")
+            else:
+                evaluate_and_save(records, predictions, args.out, name + suffix)
 
 
 if __name__ == "__main__":

@@ -134,8 +134,14 @@ def sample_records(records, n, seed):
 
 
 def training_records(args, mapqa_root):
-    records = [] if args.train_maps == 0 else sample_records(read_split(args.data, "train", mapqa_root),
-                                                             args.train_maps, args.seed)
+    records = [] if args.train_maps == 0 else read_split(args.data, "train", mapqa_root)
+    if getattr(args, "mapqa_ids", None):  # e.g. the maps the answer sheet trains on, for a like-for-like comparison
+        path = Path(args.mapqa_ids)
+        if path.is_dir():
+            path = next(path.rglob("mapqa_train_ids.json"))
+        keep = set(json.loads(path.read_text()))
+        records = [r for r in records if r["id"] in keep]
+    records = sample_records(records, args.train_maps, args.seed) if records else records
     synthetic = []
     if args.synth:
         folder = find_images_root(args.synth, "synth_*")
