@@ -169,7 +169,7 @@ MapQA metrics are written by the run itself (`metrics_mapqa.json`). A run takes 
 **Full-scale run on the lab machine (Windows, RTX A4000), from scratch:** v1, v2 and v3 were each continued from the
 previous model (quick Kaggle experiments), so the Kaggle v3 weights carry that whole history. The final model is
 trained once with the v3 recipe from plain Qwen2.5-VL-3B (`answer_v3.py --adapter none`: fresh LoRA, rank 16 on the
-same layers as before, and a fresh head), two passes over ~21,700 maps, and evaluated on its own on the full test
+same layers as before, and a fresh head), two passes over ~23,700 maps (3,704 MapQA + 10,000 synthetic US + 10,000 synthetic India), and evaluated on its own on the full test
 sets; the Kaggle v3 model is scored on the same sets for comparison. See `lab/README.md`. One Docker image, then
 `python lab/run.py check | prepare | smoke | full | status | score`. Training saves a resume checkpoint every
 30 minutes and keeps a usable copy of the model every 6 hours; re-running `full` continues after any stop.
