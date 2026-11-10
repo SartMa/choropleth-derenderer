@@ -1,88 +1,105 @@
 # Training on the lab machine (Windows, RTX A4000)
 
-Everything runs in a Linux Docker container on the GPU, with the same library versions as our Kaggle runs. The code
-stays in the repo folder and is mounted into the container; data, the Qwen download and results go to `data\lab\`
-(git-ignored). Commands below are for PowerShell, run from the repo folder.
-
 What gets trained: answer sheet v3 (S2 + zoom, `train/answer_v3.py`), continuing from the Kaggle v3 weights, on
 3,704 MapQA + 8,000 synthetic US + 10,000 synthetic India maps (one full pass), then scored on the full test sets
 (4,157 MapQA, 1,000 synthetic India, 68 real India maps). See `docs/ANSWER_SHEET.md` for the method.
 
-## 0. Once: get Docker's engine running
+Everything goes through `python lab/run.py <step>`, run from the repo folder. Data, the Qwen download and results go
+to `data\lab\` (git-ignored).
 
-`docker --version` working but `docker ps` failing with *"request returned Internal Server Error for API route and
-version ... docker_engine"* means the Docker command is installed but **Docker Desktop's engine is not running**.
+The lab machine has **hardware virtualization off in the BIOS**, so Docker Desktop and WSL2 cannot run there. We run
+natively on Windows with conda instead (section A). If virtualization is ever turned on (Intel VT-x / AMD SVM in the
+BIOS), the Docker route in section B also works.
 
-1. Start **Docker Desktop** from the Start menu and wait until it shows *Engine running* (green, bottom left).
-   Then `docker ps` should print an empty table.
-2. If it never starts: in PowerShell **as Administrator** run `wsl --update`, then `wsl --status` (default version
-   should be 2), restart Docker Desktop. In Docker Desktop, Settings > General, *Use the WSL 2 based engine* must be on.
-3. If downloads hang later, try pausing Cloudflare WARP (it is running on this machine and can block Docker's network).
-4. Check the GPU works inside a container:
-   ```powershell
-   docker run --rm --gpus all nvidia/cuda:12.4.1-base-ubuntu22.04 nvidia-smi
-   ```
-   It should print the same RTX A4000 table as `nvidia-smi` on Windows.
+## A. Native Windows with conda (use this)
 
-Also set Windows to **never sleep** while plugged in (Settings > System > Power), or a long run stops when the
-machine sleeps (it can be resumed, but it loses time).
+### A1. Once: environment and code
 
-## 1. Once: get the code and build the image
+In the **Anaconda PowerShell Prompt** (or any PowerShell where `conda` works):
 
 ```powershell
+conda create -n derender python=3.11 -y
+conda activate derender
+pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu124
 git clone -b answer-sheet https://github.com/SartMa/choropleth-derenderer.git
 cd choropleth-derenderer
-docker build -t derender lab
+pip install -r lab\requirements.txt
 ```
 
-The build downloads about 4 GB (PyTorch with CUDA 12.4) and takes 5-15 minutes.
+No git on the machine? Download the `answer-sheet` branch as a ZIP from GitHub and unpack it instead.
 
-To save typing, define this once per PowerShell window (it starts the container on the GPU with the repo mounted):
+Then, **every time you open a new window** for this:
 
 ```powershell
-function derender { docker run --rm -it --gpus all --shm-size 16g -v "${PWD}:/work" -e KAGGLE_API_TOKEN derender python lab/run.py @args }
+conda activate derender
+cd <path>\choropleth-derenderer
+$env:PYTHONUTF8 = "1"
 ```
 
-## 2. Check, download, smoke test
+Also set Windows to **never sleep** while plugged in (Settings > System > Power). A run that stops can be resumed,
+but it loses time.
+
+### A2. Check, download, smoke test
 
 ```powershell
-derender check                                  # GPU, versions, matmul speed, free disk (need ~30 GB)
-$env:KAGGLE_API_TOKEN = "<the skini501 token>"  # only in this window; never written to a file
-derender prepare                                # ~10 GB of maps + v3's weights, then converts MapQA
-derender smoke                                  # ~30 minutes
+python lab\run.py check                          # GPU, versions, speed, free disk (need ~30 GB)
+$env:KAGGLE_API_TOKEN = "<the skini501 token>"   # only in this window; never written to a file
+python lab\run.py prepare                        # ~10 GB of maps + v3's weights, then converts MapQA
+python lab\run.py smoke                          # ~30-40 minutes
 ```
+
+`check` must say the GPU is an RTX A4000 with bf16. If it says no CUDA GPU, the PyTorch install got the CPU build:
+run the `pip install torch...` line again.
 
 The smoke test trains on a few maps, **stops itself on purpose** after 6 updates, resumes from the checkpoint,
 finishes, keeps a snapshot and scores a few maps. It ends with `smoke PASSED` and an estimate of how long the full
-run's training will take on this GPU. The first run also downloads Qwen2.5-VL-3B (7.5 GB) into `data\lab\hf`.
+run's training takes on this GPU. The first run also downloads Qwen2.5-VL-3B (7.5 GB) into `data\lab\hf`.
 
-## 3. The full run
+### A3. The full run
 
-Run it detached, so closing the window does not stop it:
+Open a separate window for it (A1's three lines), then:
 
 ```powershell
-docker run -d --name derender-full --gpus all --shm-size 16g -v "${PWD}:/work" derender python lab/run.py full
-docker logs -f derender-full          # watch it (Ctrl+C stops watching, not the run)
-derender status                       # progress: training update, test maps read, snapshots kept
+python lab\run.py full
 ```
 
-- **Stopping and continuing.** `docker stop derender-full` (or a reboot, a power cut, someone needing the GPU). To
-  continue: `docker rm derender-full` and the same `docker run -d ...` line again. It picks up from the last
-  checkpoint (saved every 30 minutes), in the same data order, and scoring skips maps already read.
+Leave that window open. From any other window (A1's three lines first):
+
+```powershell
+python lab\run.py status          # training update, test maps read, snapshots kept
+```
+
+- **Stopping and continuing.** Ctrl+C in the run's window, closing it, a reboot or a power cut all stop the run. To
+  continue, run `python lab\run.py full` again. It picks up from the last checkpoint (saved every 30 minutes), in the
+  same data order; scoring skips maps already read.
 - **Kept copies.** Every 6 hours of training, a usable copy of the model goes to
   `data\lab\runs\full\snapshots\update_NNNNN\` and is never overwritten. To score one:
-  `derender score data/lab/runs/full/snapshots/update_01234`.
+  `python lab\run.py score data\lab\runs\full\snapshots\update_01234`.
 - **Results** are in `data\lab\runs\full\`: `metrics_mapqa.json`, `metrics_india.json`, `predictions_real.jsonl`
-  (score with `lookup/score_real.py`), `metrics_head.json`, `train_log.jsonl`, and the final `adapter\` +
+  (score with `lookup\score_real.py`), `metrics_head.json`, `train_log.jsonl`, and the final `adapter\` +
   `region_head.pt`. The whole console log is in `run.log`.
 
 Expected time: training about a day on the A4000 (the smoke test prints a better estimate), then several hours of
 scoring.
 
+## B. Docker (only if hardware virtualization is on)
+
+`docker ps` failing with *"request returned Internal Server Error for API route ... docker_engine"* means Docker
+Desktop's engine is not running; on this machine that is because virtualization is off. With it on:
+
+```powershell
+docker build -t derender lab
+function derender { docker run --rm -it --gpus all --shm-size 16g -v "${PWD}:/work" -e KAGGLE_API_TOKEN derender python lab/run.py @args }
+derender check; derender prepare; derender smoke
+docker run -d --name derender-full --gpus all --shm-size 16g -v "${PWD}:/work" derender python lab/run.py full
+```
+
 ## If something goes wrong
 
-- `no CUDA GPU visible`: the container was started without `--gpus all`, or step 0.4 fails.
-- `CUDA out of memory`: should not happen (same batch settings as the 16 GB Kaggle T4); if it does, close other GPU
-  programs and continue the run.
-- A DataLoader error about shared memory: the `--shm-size 16g` part is missing.
+- `no CUDA GPU visible`: PyTorch is the CPU build (reinstall with the `--index-url` line), or another program holds
+  the GPU.
+- `CUDA out of memory`: should not happen (same batch settings as the 16 GB Kaggle T4); close other GPU programs
+  (games, browsers with heavy tabs) and run the same command again.
+- `UnicodeDecodeError`: `$env:PYTHONUTF8 = "1"` was not set in that window.
+- Downloads hang: pause Cloudflare WARP.
 - Anything else: send the last 50 lines of `data\lab\runs\full\run.log` (or of the smoke output).

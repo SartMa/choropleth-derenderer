@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Train and score the derenderer (answer sheet v3, S2 + zoom) on the lab GPU.
 
-Run from the repo root, inside the Docker image (lab/README.md) or any Python with the same packages:
+Run from the repo root, in the conda environment from lab/README.md (native Windows) or inside the Docker image:
 
     python lab/run.py check      GPU, library versions, free disk
     python lab/run.py prepare    download the data and v3's weights from Kaggle (needs KAGGLE_API_TOKEN), convert MapQA
@@ -41,11 +41,14 @@ FULL = ["--train-maps", "100000",          # every MapQA training map that has s
         "--epochs", "1", "--hours", "200",  # one full pass; the hours only cap it
         "--eval-maps", "100000",           # the whole MapQA test set (4,157 maps)
         "--india-eval-maps", "1000",       # the whole synthetic India test set
-        "--checkpoint-every", "30", "--snapshot-every", "6", "--workers", "4"]
+        "--checkpoint-every", "30", "--snapshot-every", "6"]
 SMOKE = ["--train-maps", "40", "--synth-train-maps", "40", "--india-train-maps", "40", "--head-maps", "20",
          "--head-minutes", "2", "--report-maps", "5", "--eval-maps", "8", "--india-eval-maps", "8", "--eval-limit", "8",
          "--epochs", "1", "--hours", "1", "--grad-accum", "4", "--log-every", "1", "--checkpoint-every", "1",
-         "--snapshot-every", "0.05", "--workers", "2"]
+         "--snapshot-every", "0.05"]
+# Native Windows starts DataLoader workers by re-importing everything, which is fragile and slow to start; there the
+# maps are prepared in the main process instead (about 10% slower). Linux (Docker) uses worker processes.
+WORKERS = ["--workers", "0" if os.name == "nt" else "4"]
 
 
 def run(command, **kwargs):
@@ -55,7 +58,9 @@ def run(command, **kwargs):
 
 def environment():
     env = dict(os.environ)
-    env.setdefault("HF_HOME", str(LAB / "hf"))  # keep the 7.5 GB Qwen download between container runs
+    env.setdefault("HF_HOME", str(LAB / "hf"))  # keep the 7.5 GB Qwen download between runs
+    env["PYTHONUTF8"] = "1"  # Windows would otherwise read text files as cp1252 (map ranges contain "–")
+    env.setdefault("HF_HUB_DISABLE_SYMLINKS_WARNING", "1")
     return env
 
 
@@ -64,7 +69,7 @@ def v3_command(out, weights, extra):
             "--data", LAB / "mapqa_data", "--mapqa", INPUTS / "mapqa-s",
             "--synth", INPUTS / "synth-usa", "--india", INPUTS / "synth-india",
             "--labels", INPUTS / "answer-inputs", "--real", INPUTS / "real-sheets",
-            "--adapter", weights, "--mode", "zoom", "--out", out, *extra]
+            "--adapter", weights, "--mode", "zoom", "--out", out, *WORKERS, *extra]
 
 
 def check(_):
@@ -74,7 +79,7 @@ def check(_):
     print(f"python {sys.version.split()[0]}, torch {torch.__version__}, transformers {transformers.__version__}, "
           f"peft {peft.__version__}")
     if not torch.cuda.is_available():
-        sys.exit("no CUDA GPU visible. In Docker, start the container with --gpus all (lab/README.md)")
+        sys.exit("no CUDA GPU visible: install the CUDA build of PyTorch (lab/README.md), or in Docker use --gpus all")
     name = torch.cuda.get_device_name(0)
     memory = torch.cuda.get_device_properties(0).total_memory / 2 ** 30
     bf16 = torch.cuda.is_bf16_supported()
@@ -112,7 +117,7 @@ def prepare(_):
             sys.exit(f"download of {kernel}'s output failed")
     if not (LAB / "mapqa_data" / "train.jsonl").exists():
         if run([sys.executable, ROOT / "mapqa" / "convert_mapqa.py", "--mapqa", INPUTS / "mapqa-s",
-                "--out", LAB / "mapqa_data"]).returncode:
+                "--out", LAB / "mapqa_data"], env=environment()).returncode:
             sys.exit("converting MapQA failed")
     print("prepared: inputs in", INPUTS)
 
@@ -147,12 +152,12 @@ def full(_):
     out.mkdir(parents=True, exist_ok=True)
     log = out / "run.log"
     print(f"full run; output and log in {out}. Stop any time (Ctrl+C or docker stop); run the same command to continue.")
-    with open(log, "a") as f:
+    with open(log, "a", encoding="utf-8") as f:
         f.write(f"\n===== started {time.strftime('%Y-%m-%d %H:%M')} =====\n")
         f.flush()
         process = subprocess.Popen([str(c) for c in v3_command(out, INPUTS / WEIGHTS[0], FULL + ["--resume"])],
                                    cwd=ROOT, env=environment(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                   text=True, bufsize=1)
+                                   text=True, encoding="utf-8", errors="replace", bufsize=1)
         for line in process.stdout:
             sys.stdout.write(line)
             f.write(line)

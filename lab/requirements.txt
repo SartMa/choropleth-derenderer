@@ -1,0 +1,9 @@
+# The same versions as the Kaggle runs. PyTorch itself is installed first, from PyTorch's CUDA 12.4 index
+# (lab/README.md), because the default pip build has no GPU support on Windows.
+transformers==4.57.1
+peft==0.17.1
+accelerate>=1.0,<2
+kaggle==2.2.4
+opencv-python-headless==4.10.0.84
+scipy
+pillow
